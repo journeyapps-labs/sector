@@ -1,0 +1,26 @@
+{
+  "name": "@journeyapps-labs/reactor-mod-sector",
+  "main": "./dist/index.js",
+  "typings": "./dist/@types/index",
+  "private": true,
+  "author": "JOURNEYAPPS",
+  "license": "Apache-2.0",
+  "scripts": {
+    "build:module": "reactor build .",
+    "watch:module": "pnpm build:module --watch"
+  },
+  "dependencies": {
+    "@emotion/styled": "^11.14.1",
+    "@journeyapps-labs/common-utils": "^1.0.0",
+    "@journeyapps-labs/common-ioc": "^1.0.0",
+    "@journeyapps-labs/reactor-mod": "^1.2.0",
+    "@journeyapps-labs/reactor-mod-data-browser": "workspace:^",
+    "react": "19.1.1",
+    "uuid": "^11.1.0",
+    "mobx": "^6.13.7"
+  },
+  "devDependencies": {
+    "@journeyapps-labs/lib-reactor-builder": "^1.0.3",
+    "@types/uuid": "^10.0.0"
+  }
+}

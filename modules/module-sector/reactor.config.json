@@ -1,0 +1,8 @@
+{
+  "name": "Sector Frontend",
+  "slug": "module-sector",
+  "loader": {
+    "fragment": "./media/loader.html",
+    "backgroundColor": "rgb(30,30,30)"
+  }
+}
