@@ -1,5 +1,11 @@
 # @journeyapps-labs/reactor-mod-data-browser
 
+## 1.1.0
+
+### Minor Changes
+
+- cd5ddb0: Export various classes and types
+
 ## 1.0.0
 
 ### Major Changes
