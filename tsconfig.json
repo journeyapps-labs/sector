@@ -1,0 +1,14 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "./server"
+    },
+    {
+      "path": "./modules/module-data-browser"
+    },
+    {
+      "path": "./modules/module-sector"
+    }
+  ]
+}

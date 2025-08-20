@@ -1,0 +1,97 @@
+import {
+  BooleanInput,
+  DateInput,
+  DateTimePickerType,
+  FormModel,
+  SelectInput,
+  TextInput
+} from '@journeyapps-labs/reactor-mod';
+import { SchemaModelDefinition } from '../core/SchemaModelDefinition';
+import { SchemaModelObject } from '../core/SchemaModelObject';
+import * as _ from 'lodash';
+import {
+  AttachmentType,
+  BooleanType,
+  DatetimeType,
+  DateType,
+  LocationType,
+  MultipleChoiceType,
+  PhotoType,
+  SignatureType,
+  SingleChoiceIntegerType,
+  SingleChoiceType,
+  TextType
+} from '@journeyapps/db';
+
+export interface SchemaModelFormOptions {
+  definition: SchemaModelDefinition;
+  object?: SchemaModelObject;
+}
+
+export class SchemaModelForm extends FormModel {
+  constructor(protected options: SchemaModelFormOptions) {
+    super();
+
+    _.map(options.definition.definition.attributes, (attribute) => {
+      if (attribute.type instanceof DatetimeType) {
+        return new DateInput({
+          name: attribute.name,
+          label: attribute.label,
+          value: options.object?.model[attribute.name] || null,
+          type: DateTimePickerType.DATETIME
+        });
+      }
+      if (attribute.type instanceof DateType) {
+        return new DateInput({
+          name: attribute.name,
+          label: attribute.label,
+          value: options.object?.model[attribute.name] || null,
+          type: DateTimePickerType.DATE
+        });
+      }
+      if (attribute.type instanceof AttachmentType) {
+      }
+      if (attribute.type instanceof SignatureType) {
+        console.log(options.object?.model[attribute.name]);
+      }
+      if (attribute.type instanceof PhotoType) {
+        console.log(options.object?.model[attribute.name]);
+      }
+      if (attribute.type instanceof BooleanType) {
+        return new BooleanInput({
+          name: attribute.name,
+          label: attribute.label,
+          value: options.object?.model[attribute.name]
+        });
+      }
+      if (attribute.type instanceof LocationType) {
+      }
+      if (attribute.type instanceof SingleChoiceIntegerType) {
+      }
+      if (attribute.type instanceof SingleChoiceType) {
+        return new SelectInput({
+          name: attribute.name,
+          label: attribute.label,
+          value: options.object?.model[attribute.name],
+          options: _.mapValues(attribute.type.options, (option) => {
+            return `${option.value}`;
+          })
+        });
+      }
+      if (attribute.type instanceof MultipleChoiceType) {
+      }
+      if (attribute.type instanceof TextType) {
+        return new TextInput({
+          name: attribute.name,
+          label: attribute.label,
+          value: options.object?.model[attribute.name]
+        });
+      }
+      return null;
+    })
+      .filter((f) => !!f)
+      .forEach((a) => {
+        this.addInput(a);
+      });
+  }
+}
