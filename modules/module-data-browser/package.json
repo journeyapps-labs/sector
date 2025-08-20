@@ -1,6 +1,6 @@
 {
   "name": "@journeyapps-labs/reactor-mod-data-browser",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "main": "./dist/index.js",
   "typings": "./dist/@types/index",
   "private": true,
