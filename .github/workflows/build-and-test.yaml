@@ -1,5 +1,3 @@
-# Action to publish packages under the `next` tag for testing
-# Packages are versioned as `0.0.0-{tag}-DATETIMESTAMP`
 name: Build and test
 
 on:
