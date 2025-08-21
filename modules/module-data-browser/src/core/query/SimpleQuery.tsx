@@ -9,7 +9,7 @@ import {
 } from '@journeyapps-labs/reactor-mod';
 import { ConnectionStore } from '../../stores/ConnectionStore';
 import * as db from '@journeyapps/db';
-import { Attachment, Location, Promise } from '@journeyapps/db';
+import { Attachment, Day, Location, Promise } from '@journeyapps/db';
 import { Page, PageRow } from './Page';
 import { SchemaModelDefinition } from '../SchemaModelDefinition';
 import * as _ from 'lodash';
@@ -121,6 +121,7 @@ namespace S {
   export const Preview = styled.img`
     max-height: 40px;
     max-width: 40px;
+    cursor: pointer;
   `;
 
   export const pill = styled.div`
@@ -155,6 +156,9 @@ export const CellDisplayWidget: React.FC<CellDisplayWidgetProps> = (props) => {
     }
     return cell;
   }
+  if (_.isNumber(cell)) {
+    return cell;
+  }
   if (_.isArray(cell)) {
     if (cell.length === 0) {
       return <S.Empty>empty array</S.Empty>;
@@ -174,8 +178,12 @@ export const CellDisplayWidget: React.FC<CellDisplayWidgetProps> = (props) => {
   if (cell instanceof Date) {
     return <SmartDateDisplayWidget date={cell} />;
   }
+  if (cell instanceof Day) {
+    return <SmartDateDisplayWidget date={cell.toDate()} />;
+  }
   if (_.isBoolean(cell)) {
-    return <CheckboxWidget checked={cell} onChange={() => {}} />;
+    return <CheckboxWidget checked={cell} onChange={() => {
+    }} />;
   }
   if (cell instanceof Location) {
     return (
@@ -184,12 +192,12 @@ export const CellDisplayWidget: React.FC<CellDisplayWidgetProps> = (props) => {
         <MetadataWidget label={'Long'} value={`${cell.longitude}`} />
       </>
     );
-
-    return JSON.stringify(cell.toJSON());
   }
   if (cell instanceof Attachment) {
     if (cell.uploaded()) {
-      return <S.Preview src={cell.urls['thumbnail']} />;
+      return <S.Preview onClick={() => {
+        window.open(cell.url(), '_blank');
+      }} src={cell.urls['thumbnail']} />;
     }
     return <S.Empty>Not uploaded</S.Empty>;
   }
