@@ -181,7 +181,7 @@ export const CellDisplayWidget: React.FC<CellDisplayWidgetProps> = (props) => {
     return (
       <>
         <MetadataWidget label={'Lat'} value={`${cell.latitude}`} />
-        <MetadataWidget label={'Lon'} value={`${cell.longitude}`} />
+        <MetadataWidget label={'Long'} value={`${cell.longitude}`} />
       </>
     );
 
