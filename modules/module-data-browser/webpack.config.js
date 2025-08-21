@@ -3,6 +3,7 @@ module.exports = (webpack) => {
   return patchExportedLibrary({
     w: webpack,
     module: '@journeyapps/db',
-    dir: __dirname
+    dir: __dirname,
+    alias: true
   });
 };
