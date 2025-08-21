@@ -1,6 +1,5 @@
 import {
   DescendantEntityProviderComponent,
-  EntityActionHandlerComponent,
   EntityDefinition,
   EntityDescriberComponent,
   EntityPanelComponent,
@@ -30,9 +29,7 @@ export class ConnectionEntityDefinition extends EntityDefinition<AbstractConnect
       new EntityDescriberComponent<AbstractConnection>({
         label: 'Simple',
         describe: (entity: AbstractConnection) => {
-          return {
-            simpleName: entity.name
-          };
+          return entity.name;
         }
       })
     );
@@ -69,6 +66,7 @@ export class ConnectionEntityDefinition extends EntityDefinition<AbstractConnect
       })
     );
   }
+
   matchEntity(t: any): boolean {
     if (t instanceof AbstractConnection) {
       return true;

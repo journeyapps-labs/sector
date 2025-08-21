@@ -7,6 +7,7 @@ import { v4 } from 'uuid';
 import { BaseObserver } from '@journeyapps-labs/common-utils';
 import { Collection, LifecycleCollection } from '@journeyapps-labs/lib-reactor-data-layer';
 import { when } from 'mobx';
+import { EntityDescription } from '@journeyapps-labs/reactor-mod';
 
 export interface AbstractConnectionSerialized {
   factory: string;
@@ -91,8 +92,10 @@ export abstract class AbstractConnection extends BaseObserver<AbstractConnection
     };
   }
 
-  get name() {
-    return this.id;
+  get name(): EntityDescription {
+    return {
+      simpleName: this.id
+    };
   }
 
   abstract _serialize(): any;

@@ -1,6 +1,7 @@
 import { ApiCredentialOptions, Database } from '@journeyapps/db';
 import { AbstractConnection } from '../AbstractConnection';
 import { ManualConnectionFactory } from './ManualConnectionFactory';
+import { EntityDescription } from '@journeyapps-labs/reactor-mod';
 
 export interface ManualConnectionDetails extends ApiCredentialOptions {
   name: string;
@@ -26,7 +27,9 @@ export class ManualConnection extends AbstractConnection {
     this.options = data;
   }
 
-  get name(): string {
-    return this.options.name;
+  get name(): EntityDescription {
+    return {
+      simpleName: this.options.name
+    };
   }
 }
