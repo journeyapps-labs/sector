@@ -1,5 +1,11 @@
 # @journeyapps-labs/reactor-mod-data-browser
 
+## 2.0.2
+
+### Patch Changes
+
+- 375d338: Add support for Day and number type
+
 ## 2.0.1
 
 ### Patch Changes
