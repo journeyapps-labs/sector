@@ -1,5 +1,12 @@
 import { AbstractQuery, AbstractQueryEncoded } from './AbstractQuery';
-import { CheckboxWidget, inject, SmartDateDisplayWidget, styled, TableColumn } from '@journeyapps-labs/reactor-mod';
+import {
+  CheckboxWidget,
+  inject,
+  MetadataWidget,
+  SmartDateDisplayWidget,
+  styled,
+  TableColumn
+} from '@journeyapps-labs/reactor-mod';
 import { ConnectionStore } from '../../stores/ConnectionStore';
 import * as db from '@journeyapps/db';
 import { Attachment, Location, Promise } from '@journeyapps/db';
@@ -171,6 +178,13 @@ export const CellDisplayWidget: React.FC<CellDisplayWidgetProps> = (props) => {
     return <CheckboxWidget checked={cell} onChange={() => {}} />;
   }
   if (cell instanceof Location) {
+    return (
+      <>
+        <MetadataWidget label={'Lat'} value={`${cell.latitude}`} />
+        <MetadataWidget label={'Lon'} value={`${cell.longitude}`} />
+      </>
+    );
+
     return JSON.stringify(cell.toJSON());
   }
   if (cell instanceof Attachment) {
