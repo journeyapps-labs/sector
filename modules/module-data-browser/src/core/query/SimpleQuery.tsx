@@ -182,8 +182,7 @@ export const CellDisplayWidget: React.FC<CellDisplayWidgetProps> = (props) => {
     return <SmartDateDisplayWidget date={cell.toDate()} />;
   }
   if (_.isBoolean(cell)) {
-    return <CheckboxWidget checked={cell} onChange={() => {
-    }} />;
+    return <CheckboxWidget checked={cell} onChange={() => {}} />;
   }
   if (cell instanceof Location) {
     return (
@@ -195,9 +194,14 @@ export const CellDisplayWidget: React.FC<CellDisplayWidgetProps> = (props) => {
   }
   if (cell instanceof Attachment) {
     if (cell.uploaded()) {
-      return <S.Preview onClick={() => {
-        window.open(cell.url(), '_blank');
-      }} src={cell.urls['thumbnail']} />;
+      return (
+        <S.Preview
+          onClick={() => {
+            window.open(cell.url(), '_blank');
+          }}
+          src={cell.urls['thumbnail']}
+        />
+      );
     }
     return <S.Empty>Not uploaded</S.Empty>;
   }
