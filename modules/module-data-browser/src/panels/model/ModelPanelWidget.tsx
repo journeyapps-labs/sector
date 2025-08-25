@@ -5,7 +5,6 @@ import styled from '@emotion/styled';
 import {
   BorderLayoutWidget,
   LoadingPanelWidget,
-  MetaBarWidget,
   PANEL_CONTENT_PADDING,
   PanelToolbarWidget,
   ScrollableDivCss
@@ -42,15 +41,17 @@ export const ModelPanelWidget: React.FC<QueryPanelWidgetProps> = observer((props
   }, [props.model.model, props.model.definition]);
 
   let top = null;
-  if (props.model) {
+  if (props.model.model) {
     top = (
       <PanelToolbarWidget
-        btns={[
-          {
-            label: 'Delete object',
-            action: () => {}
-          }
-        ]}
+        btns={
+          [
+            // {
+            //   label: 'Delete object',
+            //   action: () => {}
+            // }
+          ]
+        }
         meta={[
           {
             label: 'ID',

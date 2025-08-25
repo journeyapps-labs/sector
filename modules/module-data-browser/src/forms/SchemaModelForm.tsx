@@ -25,6 +25,7 @@ import {
   SingleChoiceType,
   TextType
 } from '@journeyapps/db';
+import { LocationInput } from './inputs/LocationInput';
 
 export interface SchemaModelFormOptions {
   definition: SchemaModelDefinition;
@@ -80,10 +81,13 @@ export class SchemaModelForm extends FormModel {
         });
       }
       if (attribute.type instanceof LocationType) {
+        return new LocationInput({
+          name: attribute.name,
+          label: attribute.label,
+          value: options.object?.model[attribute.name]
+        });
       }
-      if (attribute.type instanceof SingleChoiceIntegerType) {
-      }
-      if (attribute.type instanceof SingleChoiceType) {
+      if (attribute.type instanceof SingleChoiceIntegerType || attribute.type instanceof SingleChoiceType) {
         return new SelectInput({
           name: attribute.name,
           label: attribute.label,
