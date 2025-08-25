@@ -24,7 +24,7 @@ export class ModelPanelModel extends ReactorPanelModel {
 
   constructor(options?: ModelPanelModelOptions) {
     super(ModelPanelFactory.TYPE);
-    this.setExpand(true, true);
+    this.setExpand(false, true);
     this.definition = options?.definition;
     this.model = options?.model;
   }
