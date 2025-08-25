@@ -1,6 +1,7 @@
 import { AbstractQuery, AbstractQueryEncoded } from './AbstractQuery';
 import {
   CheckboxWidget,
+  ImageMedia,
   inject,
   MetadataWidget,
   SmartDateDisplayWidget,
@@ -9,7 +10,7 @@ import {
 } from '@journeyapps-labs/reactor-mod';
 import { ConnectionStore } from '../../stores/ConnectionStore';
 import * as db from '@journeyapps/db';
-import { Attachment, Day, Location, Promise } from '@journeyapps/db';
+import { Attachment, Day, Location, Promise, Variable } from '@journeyapps/db';
 import { Page, PageRow } from './Page';
 import { SchemaModelDefinition } from '../SchemaModelDefinition';
 import * as _ from 'lodash';
@@ -101,7 +102,7 @@ export class SimpleQuery extends AbstractQuery<SimpleQueryEncoded> {
           noWrap: true,
           shrink: true,
           accessor: (cell, row: PageRow) => {
-            return <CellDisplayWidget cell={cell} row={row} />;
+            return <CellDisplayWidget variable={a} cell={cell} row={row} />;
           }
         } as TableColumn;
       })
@@ -141,12 +142,13 @@ namespace S {
 export interface CellDisplayWidgetProps {
   row: PageRow;
   cell: any;
+  variable: Variable;
 }
 
 const MAX_NUMBER_OF_ARR_ITEMS_TO_DISPLAY = 3;
 
 export const CellDisplayWidget: React.FC<CellDisplayWidgetProps> = (props) => {
-  const { row, cell } = props;
+  const { row, cell, variable } = props;
   if (cell == null) {
     return <S.Empty>null</S.Empty>;
   }
@@ -197,7 +199,13 @@ export const CellDisplayWidget: React.FC<CellDisplayWidgetProps> = (props) => {
       return (
         <S.Preview
           onClick={() => {
-            window.open(cell.url(), '_blank');
+            row.model.getMedia(variable.name).then((media) => {
+              if (media instanceof ImageMedia) {
+                media.open();
+              } else {
+                window.open(cell.url(), '_blank');
+              }
+            });
           }}
           src={cell.urls['thumbnail']}
         />

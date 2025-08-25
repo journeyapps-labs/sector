@@ -2,7 +2,10 @@ import {
   BooleanInput,
   DateInput,
   DateTimePickerType,
+  FileInput,
   FormModel,
+  ImageInput,
+  ImageMedia,
   SelectInput,
   TextInput
 } from '@journeyapps-labs/reactor-mod';
@@ -49,13 +52,25 @@ export class SchemaModelForm extends FormModel {
           type: DateTimePickerType.DATE
         });
       }
+      if (attribute.type instanceof SignatureType || attribute.type instanceof PhotoType) {
+        let media = new ImageInput({
+          name: attribute.name,
+          label: attribute.label
+        });
+
+        if (options.object) {
+          options.object.getMedia(attribute.name).then((m) => {
+            media.setValue(m as ImageMedia);
+          });
+        }
+        return media;
+      }
       if (attribute.type instanceof AttachmentType) {
-      }
-      if (attribute.type instanceof SignatureType) {
-        console.log(options.object?.model[attribute.name]);
-      }
-      if (attribute.type instanceof PhotoType) {
-        console.log(options.object?.model[attribute.name]);
+        return new FileInput({
+          name: attribute.name,
+          label: attribute.label,
+          value: options.object?.model[attribute.name] || null
+        });
       }
       if (attribute.type instanceof BooleanType) {
         return new BooleanInput({
