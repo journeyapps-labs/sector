@@ -16,4 +16,22 @@ export class SchemaModelObject {
   get model() {
     return this.options.model;
   }
+
+  async displayValue(): Promise<string> {
+    if (!this.model) {
+      return null;
+    }
+    let val = this.model.toString();
+    if (val) {
+      return val;
+    }
+    for (let i = 0; i < 10; i++) {
+      await new Promise((resolve) => setTimeout(resolve, 40));
+      let val = this.model.toString();
+      if (val) {
+        return val;
+      }
+    }
+    return null;
+  }
 }

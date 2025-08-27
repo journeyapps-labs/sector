@@ -30,9 +30,11 @@
     "mobx": "^6.13.7",
     "mobx-react": "^9.2.0",
     "react": "19.1.1",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "async": "^3.2.6"
   },
   "devDependencies": {
+    "@types/async": "^3.2.25",
     "@journeyapps-labs/lib-reactor-builder": "^1.0.3",
     "@types/lodash": "^4.17.20",
     "@types/uuid": "^10.0.0"

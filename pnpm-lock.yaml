@@ -53,6 +53,9 @@ importers:
       '@projectstorm/react-workspaces-core':
         specifier: 4.2.2
         version: 4.2.2(@types/react@19.1.10)
+      async:
+        specifier: ^3.2.6
+        version: 3.2.6
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -72,6 +75,9 @@ importers:
       '@journeyapps-labs/lib-reactor-builder':
         specifier: ^1.0.3
         version: 1.0.3
+      '@types/async':
+        specifier: ^3.2.25
+        version: 3.2.25
       '@types/lodash':
         specifier: ^4.17.20
         version: 4.17.20
@@ -1088,6 +1094,9 @@ packages:
 
   '@tokenizer/token@0.3.0':
     resolution: {integrity: sha512-OvjF+z51L3ov0OyAU0duzsYuvO01PH7x4t6DJx+guahgTnBHkhJdG7soQeTSFLWN3efnHyibZ4Z8l2EuWwJN3A==}
+
+  '@types/async@3.2.25':
+    resolution: {integrity: sha512-O6Th/DI18XjrL9TX8LO9F/g26qAz5vynmQqlXt/qLGrskvzCKXKc5/tATz3G2N6lM8eOf3M8/StB14FncAmocg==}
 
   '@types/body-parser@1.19.6':
     resolution: {integrity: sha512-HLFeCYgz89uk22N5Qg3dvGvsv46B8GLvKKo1zKG4NybA8U2DiEO3w9lqGg29t/tfLRJpJ6iQxnVw4OnB7MoM9g==}
@@ -5446,6 +5455,8 @@ snapshots:
   '@standard-schema/utils@0.3.0': {}
 
   '@tokenizer/token@0.3.0': {}
+
+  '@types/async@3.2.25': {}
 
   '@types/body-parser@1.19.6':
     dependencies:
