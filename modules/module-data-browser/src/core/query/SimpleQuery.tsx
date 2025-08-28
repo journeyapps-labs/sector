@@ -1,5 +1,5 @@
 import { AbstractQuery, AbstractQueryEncoded } from './AbstractQuery';
-import { inject, TableColumn } from '@journeyapps-labs/reactor-mod';
+import { ActionSource, inject, TableColumn } from '@journeyapps-labs/reactor-mod';
 import { ConnectionStore } from '../../stores/ConnectionStore';
 import * as db from '@journeyapps/db';
 import { Promise } from '@journeyapps/db';
@@ -10,6 +10,7 @@ import * as React from 'react';
 import { observable } from 'mobx';
 import { CellDisplayWidget } from './widgets/CellDisplayWidget';
 import { BelongsToDisplayWidget } from './widgets/BelongsToDisplayWidget';
+import { EditSchemaModelAction } from '../../actions/schema-model/EditSchemaModelAction';
 
 export interface SimpleQueryOptions {
   definition?: SchemaModelDefinition;
@@ -96,7 +97,19 @@ export class SimpleQuery extends AbstractQuery<SimpleQueryEncoded> {
           noWrap: true,
           shrink: true,
           accessor: (cell, row: PageRow) => {
-            return <BelongsToDisplayWidget variable={a} connection={this.connection} id={row.model.model[a.name]} />;
+            return (
+              <BelongsToDisplayWidget
+                open={(object) => {
+                  EditSchemaModelAction.get().fireAction({
+                    source: ActionSource.BUTTON,
+                    targetEntity: object
+                  });
+                }}
+                variable={a}
+                connection={this.connection}
+                id={row.model.model[a.name]}
+              />
+            );
           }
         } as TableColumn;
       }),
