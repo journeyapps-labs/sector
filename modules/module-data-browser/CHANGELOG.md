@@ -1,5 +1,17 @@
 # @journeyapps-labs/reactor-mod-data-browser
 
+## 2.1.0
+
+### Minor Changes
+
+- 8cc96ec: - displays media directly inside Sector
+  - add media input fields to form editing
+  - status bar for schema model editing
+  - make query reload button show load status
+  - Add support for Locations
+  - Pull in Reactor changes: Version Packages reactor#36
+- bf70874: Add support for loading relationships with smart paralell limits
+
 ## 2.0.2
 
 ### Patch Changes
