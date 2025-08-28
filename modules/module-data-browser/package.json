@@ -1,6 +1,6 @@
 {
   "name": "@journeyapps-labs/reactor-mod-data-browser",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "main": "./dist/index.js",
   "typings": "./dist/@types/index",
   "publishConfig": {
@@ -34,7 +34,6 @@
     "async": "^3.2.6"
   },
   "devDependencies": {
-
     "@types/react": "^19.1.12",
     "@journeyapps-labs/lib-reactor-builder": "^1.0.4",
     "@types/lodash": "^4.17.20",
