@@ -46,6 +46,7 @@ export const TableControlsWidget: React.FC<TableControlsWidgetProps> = observer(
       />
       <PanelButtonWidget
         label="Page"
+        tooltip="Reload page"
         icon="refresh"
         action={() => {
           props.current_page.load();
@@ -53,9 +54,10 @@ export const TableControlsWidget: React.FC<TableControlsWidgetProps> = observer(
       />
       <PanelButtonWidget
         label="Query"
+        tooltip="Reload Query"
         icon="refresh"
-        action={() => {
-          props.query.load();
+        action={async (event, loading) => {
+          await props.query.load();
         }}
       />
     </S.Container>

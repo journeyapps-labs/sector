@@ -15,4 +15,7 @@ lib
 *.tsbuildinfo
 
 .pnpm-debug.log
+
 .hidden
+.pnpmfile.cjs
+pnpm-links.json
