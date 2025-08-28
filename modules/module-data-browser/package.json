@@ -21,8 +21,8 @@
     "@emotion/styled": "^11.14.1",
     "@journeyapps-labs/common-ioc": "^1.0.0",
     "@journeyapps-labs/common-utils": "^1.0.0",
-    "@journeyapps-labs/lib-reactor-data-layer": "^1.0.2",
-    "@journeyapps-labs/reactor-mod": "^1.2.0",
+    "@journeyapps-labs/lib-reactor-data-layer": "^1.0.3",
+    "@journeyapps-labs/reactor-mod": "^1.2.2",
     "@journeyapps/db": "^8.1.1",
     "@journeyapps/parser-schema": "^8.2.5",
     "@projectstorm/react-workspaces-core": "4.2.2",
@@ -34,8 +34,9 @@
     "async": "^3.2.6"
   },
   "devDependencies": {
-    "@types/async": "^3.2.25",
-    "@journeyapps-labs/lib-reactor-builder": "^1.0.3",
+
+    "@types/react": "^19.1.12",
+    "@journeyapps-labs/lib-reactor-builder": "^1.0.4",
     "@types/lodash": "^4.17.20",
     "@types/uuid": "^10.0.0"
   }

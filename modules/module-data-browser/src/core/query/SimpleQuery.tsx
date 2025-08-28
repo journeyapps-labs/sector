@@ -107,7 +107,7 @@ export class SimpleQuery extends AbstractQuery<SimpleQueryEncoded> {
           noWrap: true,
           shrink: true,
           accessor: (cell, row: PageRow) => {
-            return <CellDisplayWidget cell={cell} row={row} />;
+            return <CellDisplayWidget variable={a} cell={cell} row={row} />;
           }
         } as TableColumn;
       })

@@ -2,7 +2,10 @@ import {
   BooleanInput,
   DateInput,
   DateTimePickerType,
+  FileInput,
   FormModel,
+  ImageInput,
+  ImageMedia,
   SelectInput,
   TextInput
 } from '@journeyapps-labs/reactor-mod';
@@ -22,6 +25,7 @@ import {
   SingleChoiceType,
   TextType
 } from '@journeyapps/db';
+import { LocationInput } from './inputs/LocationInput';
 
 export interface SchemaModelFormOptions {
   definition: SchemaModelDefinition;
@@ -49,13 +53,25 @@ export class SchemaModelForm extends FormModel {
           type: DateTimePickerType.DATE
         });
       }
+      if (attribute.type instanceof SignatureType || attribute.type instanceof PhotoType) {
+        let media = new ImageInput({
+          name: attribute.name,
+          label: attribute.label
+        });
+
+        if (options.object) {
+          options.object.getMedia(attribute.name).then((m) => {
+            media.setValue(m as ImageMedia);
+          });
+        }
+        return media;
+      }
       if (attribute.type instanceof AttachmentType) {
-      }
-      if (attribute.type instanceof SignatureType) {
-        console.log(options.object?.model[attribute.name]);
-      }
-      if (attribute.type instanceof PhotoType) {
-        console.log(options.object?.model[attribute.name]);
+        return new FileInput({
+          name: attribute.name,
+          label: attribute.label,
+          value: options.object?.model[attribute.name] || null
+        });
       }
       if (attribute.type instanceof BooleanType) {
         return new BooleanInput({
@@ -65,10 +81,13 @@ export class SchemaModelForm extends FormModel {
         });
       }
       if (attribute.type instanceof LocationType) {
+        return new LocationInput({
+          name: attribute.name,
+          label: attribute.label,
+          value: options.object?.model[attribute.name]
+        });
       }
-      if (attribute.type instanceof SingleChoiceIntegerType) {
-      }
-      if (attribute.type instanceof SingleChoiceType) {
+      if (attribute.type instanceof SingleChoiceIntegerType || attribute.type instanceof SingleChoiceType) {
         return new SelectInput({
           name: attribute.name,
           label: attribute.label,

@@ -1,5 +1,11 @@
-import { CheckboxWidget, MetadataWidget, SmartDateDisplayWidget, styled } from '@journeyapps-labs/reactor-mod';
-import { Attachment, Day, Location } from '@journeyapps/db';
+import {
+  CheckboxWidget,
+  ImageMedia,
+  MetadataWidget,
+  SmartDateDisplayWidget,
+  styled
+} from '@journeyapps-labs/reactor-mod';
+import { Attachment, Day, Location, Variable } from '@journeyapps/db';
 import * as _ from 'lodash';
 import * as React from 'react';
 import { PageRow } from '../Page';
@@ -32,12 +38,13 @@ namespace S {
 export interface CellDisplayWidgetProps {
   row: PageRow;
   cell: any;
+  variable: Variable;
 }
 
 const MAX_NUMBER_OF_ARR_ITEMS_TO_DISPLAY = 3;
 
 export const CellDisplayWidget: React.FC<CellDisplayWidgetProps> = (props) => {
-  const { row, cell } = props;
+  const { row, cell, variable } = props;
   if (cell == null) {
     return <S.Empty>null</S.Empty>;
   }
@@ -88,7 +95,13 @@ export const CellDisplayWidget: React.FC<CellDisplayWidgetProps> = (props) => {
       return (
         <S.Preview
           onClick={() => {
-            window.open(cell.url(), '_blank');
+            row.model.getMedia(variable.name).then((media) => {
+              if (media instanceof ImageMedia) {
+                media.open();
+              } else {
+                window.open(cell.url(), '_blank');
+              }
+            });
           }}
           src={cell.urls['thumbnail']}
         />
