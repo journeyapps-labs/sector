@@ -1,21 +1,15 @@
 import { AbstractQuery, AbstractQueryEncoded } from './AbstractQuery';
-import {
-  CheckboxWidget,
-  ImageMedia,
-  inject,
-  MetadataWidget,
-  SmartDateDisplayWidget,
-  styled,
-  TableColumn
-} from '@journeyapps-labs/reactor-mod';
+import { inject, TableColumn } from '@journeyapps-labs/reactor-mod';
 import { ConnectionStore } from '../../stores/ConnectionStore';
 import * as db from '@journeyapps/db';
-import { Attachment, Day, Location, Promise, Variable } from '@journeyapps/db';
+import { Promise } from '@journeyapps/db';
 import { Page, PageRow } from './Page';
 import { SchemaModelDefinition } from '../SchemaModelDefinition';
 import * as _ from 'lodash';
 import * as React from 'react';
 import { observable } from 'mobx';
+import { CellDisplayWidget } from './widgets/CellDisplayWidget';
+import { BelongsToDisplayWidget } from './widgets/BelongsToDisplayWidget';
 
 export interface SimpleQueryOptions {
   definition?: SchemaModelDefinition;
@@ -95,6 +89,17 @@ export class SimpleQuery extends AbstractQuery<SimpleQueryEncoded> {
         noWrap: true,
         shrink: true
       },
+      ..._.map(this.options.definition.definition.belongsToIdVars, (a) => {
+        return {
+          key: a.name,
+          display: a.name,
+          noWrap: true,
+          shrink: true,
+          accessor: (cell, row: PageRow) => {
+            return <BelongsToDisplayWidget variable={a} connection={this.connection} id={row.model.model[a.name]} />;
+          }
+        } as TableColumn;
+      }),
       ..._.map(this.options.definition.definition.attributes, (a) => {
         return {
           key: a.name,
@@ -113,106 +118,3 @@ export class SimpleQuery extends AbstractQuery<SimpleQueryEncoded> {
     return `Query: ${this.options.definition.definition.label}`;
   }
 }
-
-namespace S {
-  export const Empty = styled.div`
-    opacity: 0.2;
-  `;
-
-  export const Preview = styled.img`
-    max-height: 40px;
-    max-width: 40px;
-    cursor: pointer;
-  `;
-
-  export const pill = styled.div`
-    padding: 2px 4px;
-    background: ${(p) => p.theme.table.pills};
-    border-radius: 3px;
-    font-size: 12px;
-  `;
-
-  export const Pills = styled.div`
-    display: flex;
-    column-gap: 2px;
-    row-gap: 2px;
-  `;
-}
-
-export interface CellDisplayWidgetProps {
-  row: PageRow;
-  cell: any;
-  variable: Variable;
-}
-
-const MAX_NUMBER_OF_ARR_ITEMS_TO_DISPLAY = 3;
-
-export const CellDisplayWidget: React.FC<CellDisplayWidgetProps> = (props) => {
-  const { row, cell, variable } = props;
-  if (cell == null) {
-    return <S.Empty>null</S.Empty>;
-  }
-  if (_.isString(cell)) {
-    if (cell.trim() === '') {
-      return <S.Empty>empty</S.Empty>;
-    }
-    return cell;
-  }
-  if (_.isNumber(cell)) {
-    return cell;
-  }
-  if (_.isArray(cell)) {
-    if (cell.length === 0) {
-      return <S.Empty>empty array</S.Empty>;
-    }
-
-    let items = _.slice(cell, 0, MAX_NUMBER_OF_ARR_ITEMS_TO_DISPLAY);
-
-    return (
-      <S.Pills>
-        {items.map((c) => {
-          return <S.pill key={c}>{c}</S.pill>;
-        })}
-        {items.length !== cell.length ? '...' : null}
-      </S.Pills>
-    );
-  }
-  if (cell instanceof Date) {
-    return <SmartDateDisplayWidget date={cell} />;
-  }
-  if (cell instanceof Day) {
-    return <SmartDateDisplayWidget date={cell.toDate()} />;
-  }
-  if (_.isBoolean(cell)) {
-    return <CheckboxWidget checked={cell} onChange={() => {}} />;
-  }
-  if (cell instanceof Location) {
-    return (
-      <>
-        <MetadataWidget label={'Lat'} value={`${cell.latitude}`} />
-        <MetadataWidget label={'Long'} value={`${cell.longitude}`} />
-      </>
-    );
-  }
-  if (cell instanceof Attachment) {
-    if (cell.uploaded()) {
-      return (
-        <S.Preview
-          onClick={() => {
-            row.model.getMedia(variable.name).then((media) => {
-              if (media instanceof ImageMedia) {
-                media.open();
-              } else {
-                window.open(cell.url(), '_blank');
-              }
-            });
-          }}
-          src={cell.urls['thumbnail']}
-        />
-      );
-    }
-    return <S.Empty>Not uploaded</S.Empty>;
-  }
-  console.log('unknown type', cell);
-  return null;
-};
