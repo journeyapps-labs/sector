@@ -49,6 +49,6 @@ export class DataBrowserModule extends AbstractReactorModule {
   }
 
   async init(ioc: Container): Promise<any> {
-    await ioc.get(ConnectionStore).init();
+    ioc.get(ConnectionStore).init();
   }
 }

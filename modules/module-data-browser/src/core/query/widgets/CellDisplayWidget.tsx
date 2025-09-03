@@ -33,6 +33,14 @@ namespace S {
     column-gap: 2px;
     row-gap: 2px;
   `;
+
+  export const Max = styled.div`
+    max-width: 500px;
+    white-space: pre;
+    display: inline;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  `;
 }
 
 export interface CellDisplayWidgetProps {
@@ -52,7 +60,7 @@ export const CellDisplayWidget: React.FC<CellDisplayWidgetProps> = (props) => {
     if (cell.trim() === '') {
       return <S.Empty>empty</S.Empty>;
     }
-    return cell;
+    return <S.Max>{cell}</S.Max>;
   }
   if (_.isNumber(cell)) {
     return cell;
