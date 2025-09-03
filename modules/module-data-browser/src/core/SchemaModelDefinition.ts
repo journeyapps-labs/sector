@@ -8,6 +8,7 @@ import { queue, QueueObject } from 'async';
 
 export interface SchemaModelDefinitionListener {
   resolved: (event: { object: SchemaModelObject }) => any;
+  failed: (event: { object_id: string }) => any;
 }
 
 export interface SchemaModelDefinitionOptions {
@@ -28,20 +29,27 @@ export class SchemaModelDefinition
     this.enqueued = new Set<string>();
     this.queue = queue(async (id) => {
       let collection = await this.getCollection();
-      let model = await collection.first(id);
-      if (model) {
-        let object = new SchemaModelObject({
-          model,
-          definition: this
-        });
-        this.cache.set(id, object);
-        this.enqueued.delete(id);
-        this.iterateListeners((cb) => cb.resolved?.({ object }));
+      try {
+        let model = await collection.first(id);
+        if (model) {
+          let object = new SchemaModelObject({
+            model,
+            definition: this
+          });
+          this.cache.set(id, object);
+          this.enqueued.delete(id);
+          this.iterateListeners((cb) => cb.resolved?.({ object }));
+        } else {
+          this.iterateListeners((cb) => cb.failed?.({ object_id: id }));
+        }
+      } catch (ex) {
+        this.iterateListeners((cb) => cb.failed?.({ object_id: id }));
+        throw ex;
       }
     }, 6);
   }
 
-  async resolve(id: string): Promise<SchemaModelObject> {
+  async resolve(id: string): Promise<SchemaModelObject | null> {
     if (this.cache.has(id)) {
       return this.cache.get(id);
     }
@@ -56,6 +64,12 @@ export class SchemaModelDefinition
           if (object.model.id === id) {
             l1();
             resolve(object);
+          }
+        },
+        failed: ({ object_id }) => {
+          if (object_id === id) {
+            l1();
+            resolve(null);
           }
         }
       });

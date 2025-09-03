@@ -37,7 +37,7 @@ export const BelongsToDisplayWidget: React.FC<BelongsToDisplayWidgetProps> = (pr
     return (
       <S.Warning
         tooltip="Copy ID"
-        label="object not found"
+        label={`${props.id} not found`}
         icon="warning"
         action={() => {
           copyTextToClipboard(props.id);
