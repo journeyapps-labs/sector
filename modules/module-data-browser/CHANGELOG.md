@@ -1,5 +1,18 @@
 # @journeyapps-labs/reactor-mod-data-browser
 
+## 2.2.0
+
+### Minor Changes
+
+- 12e5f6a: - Add support for filters
+  - Fix relationship belongs_to loading
+  - Display column headings with width based on heurestics
+
+### Patch Changes
+
+- 687468b: - Improve relationship loading
+  - Dont block kernel init with connection store
+
 ## 2.1.0
 
 ### Minor Changes
