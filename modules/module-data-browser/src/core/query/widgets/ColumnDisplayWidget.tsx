@@ -13,11 +13,15 @@ export const ColumnDisplayWidget: React.FC<ColumnDisplayWidgetProps> = (props) =
   if (parts.length >= 3) {
     return <S.Width length={80}>{props.label}</S.Width>;
   }
-  return props.label;
+  return <S.Span>{props.label}</S.Span>;
 };
 
 namespace S {
   export const Width = styled.div<{ length: number }>`
     min-width: ${(p) => p.length}px;
+  `;
+
+  export const Span = styled.div`
+    white-space: nowrap;
   `;
 }
