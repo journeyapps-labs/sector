@@ -5,9 +5,10 @@ import { SchemaModelObject } from '../../SchemaModelObject';
 import { AbstractConnection } from '../../AbstractConnection';
 import { IconWidget, TableButtonWidget } from '@journeyapps-labs/reactor-mod';
 import styled from '@emotion/styled';
+import { Relationship } from '@journeyapps/parser-schema';
 
 export interface BelongsToDisplayWidgetProps {
-  variable: Variable;
+  relationship: Relationship;
   id: string;
   connection: AbstractConnection;
   open: (object: SchemaModelObject) => any;
@@ -21,7 +22,7 @@ export const BelongsToDisplayWidget: React.FC<BelongsToDisplayWidgetProps> = (pr
       return;
     }
 
-    props.connection.waitForSchemaModelDefinitionByName(props.variable.relationship).then((conn) =>
+    props.connection.waitForSchemaModelDefinitionByName(props.relationship.foreignType.name).then((conn) =>
       conn.resolve(props.id).then((obj) => {
         setObject(obj);
         return obj.displayValue();

@@ -7,6 +7,7 @@ import { BorderLayoutWidget, LoadingPanelWidget } from '@journeyapps-labs/reacto
 import { Page } from '../../core/query/Page';
 import { PageResultsWidget } from './PageResultsWidget';
 import { TableControlsWidget } from './TableControlsWidget';
+import { autorun } from 'mobx';
 
 export interface QueryPanelWidgetProps {
   model: QueryPanelModel;
@@ -30,9 +31,11 @@ export const QueryPanelWidget: React.FC<QueryPanelWidgetProps> = observer((props
   }, [props.model.query]);
 
   useEffect(() => {
-    if (props.model.query) {
-      setPage(props.model.query.getPage(props.model.current_page));
-    }
+    return autorun(() => {
+      if (props.model.query) {
+        setPage(props.model.query.getPage(props.model.current_page));
+      }
+    });
   }, [props.model.query]);
 
   return (
