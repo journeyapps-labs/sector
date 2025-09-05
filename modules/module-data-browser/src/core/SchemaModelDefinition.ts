@@ -1,10 +1,11 @@
 import { AbstractConnection } from './AbstractConnection';
 import { ObjectType } from '@journeyapps/parser-schema';
-import { Collection } from '@journeyapps/db';
+import { Collection, DatabaseObject, JourneyAPIAdapter } from '@journeyapps/db';
 import { SchemaModelObject } from './SchemaModelObject';
 import { LifecycleModel } from '@journeyapps-labs/lib-reactor-data-layer';
 import { BaseObserver } from '@journeyapps-labs/common-utils';
 import { queue, QueueObject } from 'async';
+import { v4 } from 'uuid';
 
 export interface SchemaModelDefinitionListener {
   resolved: (event: { object: SchemaModelObject }) => any;
@@ -30,23 +31,46 @@ export class SchemaModelDefinition
     this.queue = queue(async (id) => {
       let collection = await this.getCollection();
       try {
-        let model = await collection.first(id);
-        if (model) {
+        let model = await collection.adapter.executeQuery(collection.where(`id = ?`, id));
+        if (model[0]) {
           let object = new SchemaModelObject({
-            model,
-            definition: this
+            model: model[0],
+            definition: this,
+            adapter: collection.adapter
           });
           this.cache.set(id, object);
           this.enqueued.delete(id);
           this.iterateListeners((cb) => cb.resolved?.({ object }));
         } else {
+          this.enqueued.delete(id);
           this.iterateListeners((cb) => cb.failed?.({ object_id: id }));
         }
       } catch (ex) {
+        this.enqueued.delete(id);
         this.iterateListeners((cb) => cb.failed?.({ object_id: id }));
         throw ex;
       }
     }, 6);
+  }
+
+  async search(text: string): Promise<SchemaModelObject[]> {
+    let collection = await this.getCollection();
+    let adapter = collection.adapter as JourneyAPIAdapter;
+    // @ts-ignore
+    let res = await adapter.apiPost(`${adapter.credentials.api4Url()}objects/${this.definition.name}/search.json`, {
+      query: text
+    });
+    return res.objects
+      .map((o) => {
+        return JourneyAPIAdapter.apiToInternalFormat(this.definition, o);
+      })
+      .map((o) => {
+        return new SchemaModelObject({
+          definition: this,
+          model: o,
+          adapter: collection.adapter
+        });
+      });
   }
 
   async resolve(id: string): Promise<SchemaModelObject | null> {
@@ -105,7 +129,13 @@ export class SchemaModelDefinition
     const collection = await this.getCollection();
     return new SchemaModelObject({
       definition: this,
-      model: collection.create()
+      adapter: collection.adapter,
+      model: {
+        id: v4(),
+        type: this.definition.name,
+        attributes: {},
+        belongs_to: {}
+      }
     });
   }
 }

@@ -44,11 +44,12 @@ export class Page {
       query = f.augment(query);
     });
 
-    let models = await query.limit(this.options.limit).skip(this.options.offset).toArray();
+    let models = await collection.adapter.executeQuery(query.limit(this.options.limit).skip(this.options.offset));
     this.models = models.map((m) => {
       return new SchemaModelObject({
         definition: this.options.definition,
-        model: m
+        model: m,
+        adapter: collection.adapter
       });
     });
     this.loading = false;

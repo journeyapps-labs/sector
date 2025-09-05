@@ -2,6 +2,7 @@ import {
   BooleanInput,
   DateInput,
   DateTimePickerType,
+  EntityInput,
   FileInput,
   FormModel,
   ImageInput,
@@ -17,6 +18,7 @@ import {
   BooleanType,
   DatetimeType,
   DateType,
+  Day,
   LocationType,
   MultipleChoiceType,
   PhotoType,
@@ -26,6 +28,7 @@ import {
   TextType
 } from '@journeyapps/db';
 import { LocationInput } from './inputs/LocationInput';
+import { DataBrowserEntities } from '../entities';
 
 export interface SchemaModelFormOptions {
   definition: SchemaModelDefinition;
@@ -36,21 +39,32 @@ export class SchemaModelForm extends FormModel {
   constructor(protected options: SchemaModelFormOptions) {
     super();
 
+    _.map(options.definition.definition.belongsTo, (relationship) => {
+      return new EntityInput({
+        name: relationship.name,
+        entityType: DataBrowserEntities.SCHEMA_MODEL_OBJECT,
+        parent: options.definition.connection.getSchemaModelDefinitionByName(relationship.foreignType.name),
+        label: relationship.name,
+        value: null
+      });
+    })
+      .filter((f) => !!f)
+      .forEach((a) => {
+        this.addInput(a);
+      });
+
     _.map(options.definition.definition.attributes, (attribute) => {
-      if (attribute.type instanceof DatetimeType) {
+      if (attribute.type instanceof DatetimeType || attribute.type instanceof DateType) {
+        let date = options.object?.model[attribute.name] || null;
+        if (date && date instanceof Day) {
+          date = date.toDate();
+        }
+
         return new DateInput({
           name: attribute.name,
           label: attribute.label,
-          value: options.object?.model[attribute.name] || null,
-          type: DateTimePickerType.DATETIME
-        });
-      }
-      if (attribute.type instanceof DateType) {
-        return new DateInput({
-          name: attribute.name,
-          label: attribute.label,
-          value: options.object?.model[attribute.name] || null,
-          type: DateTimePickerType.DATE
+          value: date,
+          type: attribute.type instanceof DatetimeType ? DateTimePickerType.DATETIME : DateTimePickerType.DATE
         });
       }
       if (attribute.type instanceof SignatureType || attribute.type instanceof PhotoType) {

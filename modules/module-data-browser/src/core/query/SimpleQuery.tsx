@@ -2,7 +2,7 @@ import { AbstractQuery, AbstractQueryEncoded } from './AbstractQuery';
 import { ActionSource, inject, TableColumn } from '@journeyapps-labs/reactor-mod';
 import { ConnectionStore } from '../../stores/ConnectionStore';
 import * as db from '@journeyapps/db';
-import { Promise, Type, Variable } from '@journeyapps/db';
+import { Promise, Variable } from '@journeyapps/db';
 import { Page, PageRow } from './Page';
 import { SchemaModelDefinition } from '../SchemaModelDefinition';
 import * as _ from 'lodash';
@@ -12,7 +12,7 @@ import { CellDisplayWidget } from './widgets/CellDisplayWidget';
 import { BelongsToDisplayWidget } from './widgets/BelongsToDisplayWidget';
 import { EditSchemaModelAction } from '../../actions/schema-model/EditSchemaModelAction';
 import { SmartColumnWidget } from './widgets/SmartColumnWidget';
-import { AbstractFilter, SimpleFilter } from './filters';
+import { SimpleFilter } from './filters';
 
 export interface SimpleQueryOptions {
   definition?: SchemaModelDefinition;
@@ -103,10 +103,25 @@ export class SimpleQuery extends AbstractQuery<SimpleQueryEncoded> {
         noWrap: true,
         shrink: true
       },
+      {
+        key: 'updated_at',
+        display: 'Updated at',
+        noWrap: true,
+        shrink: true,
+        accessor: (cell, row: PageRow) => {
+          return <CellDisplayWidget name="updated_at" cell={row.model.updated_at} row={row} />;
+        }
+      },
       ..._.map(this.options.definition.definition.belongsToIdVars, (a) => {
         return {
           key: a.name,
-          display: a.name,
+          display: (
+            <SmartColumnWidget
+              variable={this.options.definition.definition.belongsToVars[a.relationship]}
+              type={this.options.definition.definition.belongsTo[a.relationship].foreignType}
+              filterChanged={(filter) => {}}
+            />
+          ),
           noWrap: true,
           shrink: true,
           accessor: (cell, row: PageRow) => {
@@ -127,7 +142,6 @@ export class SimpleQuery extends AbstractQuery<SimpleQueryEncoded> {
         } as TableColumn;
       }),
       ..._.map(this.options.definition.definition.attributes, (a) => {
-        // @ts-ignore FIXME, remove when `display` supports JSX.Element as a type
         return {
           key: a.name,
           display: (
@@ -148,7 +162,7 @@ export class SimpleQuery extends AbstractQuery<SimpleQueryEncoded> {
           noWrap: true,
           shrink: true,
           accessor: (cell, row: PageRow) => {
-            return <CellDisplayWidget variable={a} cell={cell} row={row} />;
+            return <CellDisplayWidget name={a.name} cell={cell} row={row} />;
           }
         } as TableColumn;
       })
