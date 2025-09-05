@@ -60,6 +60,19 @@ export const TableControlsWidget: React.FC<TableControlsWidgetProps> = observer(
           await props.query.load();
         }}
       />
+      {props.current_page.dirty ? (
+        <>
+          <PanelButtonWidget
+            label="Reset changes"
+            highlight={true}
+            icon="warning"
+            action={async (event, loading) => {
+              props.current_page.reset();
+            }}
+          />
+          <PanelButtonWidget label="Save changes" highlight={true} icon="save" action={async (event, loading) => {}} />
+        </>
+      ) : null}
     </S.Container>
   );
 });

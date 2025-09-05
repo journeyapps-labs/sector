@@ -1,7 +1,7 @@
 import { SchemaModelObject } from '../SchemaModelObject';
 import { TableRow } from '@journeyapps-labs/reactor-mod';
 import { Collection, DatabaseObject } from '@journeyapps/db';
-import { observable } from 'mobx';
+import { computed, observable } from 'mobx';
 import { SchemaModelDefinition } from '../SchemaModelDefinition';
 import { AbstractFilter } from './filters';
 
@@ -35,6 +35,16 @@ export class Page {
     return this.options.index;
   }
 
+  reset() {
+    this.models.forEach((m) => {
+      m.patch.clear();
+    });
+  }
+
+  @computed get dirty() {
+    return this.models.find((m) => m.patch.size > 0);
+  }
+
   async load() {
     this.loading = true;
     let collection = await this.options.collection();
@@ -44,11 +54,12 @@ export class Page {
       query = f.augment(query);
     });
 
-    let models = await query.limit(this.options.limit).skip(this.options.offset).toArray();
+    let models = await collection.adapter.executeQuery(query.limit(this.options.limit).skip(this.options.offset));
     this.models = models.map((m) => {
       return new SchemaModelObject({
         definition: this.options.definition,
-        model: m
+        model: m,
+        adapter: collection.adapter
       });
     });
     this.loading = false;

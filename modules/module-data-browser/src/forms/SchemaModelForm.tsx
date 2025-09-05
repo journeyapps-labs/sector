@@ -2,6 +2,7 @@ import {
   BooleanInput,
   DateInput,
   DateTimePickerType,
+  EntityInput,
   FileInput,
   FormModel,
   ImageInput,
@@ -17,6 +18,7 @@ import {
   BooleanType,
   DatetimeType,
   DateType,
+  Day,
   LocationType,
   MultipleChoiceType,
   PhotoType,
@@ -26,6 +28,8 @@ import {
   TextType
 } from '@journeyapps/db';
 import { LocationInput } from './inputs/LocationInput';
+import { DataBrowserEntities } from '../entities';
+import { DirtyWrapperInput } from './inputs/DirtyWrapperInput';
 
 export interface SchemaModelFormOptions {
   definition: SchemaModelDefinition;
@@ -36,21 +40,43 @@ export class SchemaModelForm extends FormModel {
   constructor(protected options: SchemaModelFormOptions) {
     super();
 
-    _.map(options.definition.definition.attributes, (attribute) => {
-      if (attribute.type instanceof DatetimeType) {
-        return new DateInput({
-          name: attribute.name,
-          label: attribute.label,
-          value: options.object?.model[attribute.name] || null,
-          type: DateTimePickerType.DATETIME
+    _.map(options.definition.definition.belongsTo, (relationship) => {
+      const definition = options.definition.connection.getSchemaModelDefinitionByName(relationship.foreignType.name);
+
+      let entity = new EntityInput({
+        name: relationship.name,
+        entityType: DataBrowserEntities.SCHEMA_MODEL_OBJECT,
+        parent: definition,
+        label: relationship.name,
+        value: null
+      });
+
+      if (options.object?.data.belongs_to[relationship.name]) {
+        definition.resolve(options.object?.data.belongs_to[relationship.name]).then((resolved) => {
+          if (resolved) {
+            entity.setValue(resolved);
+          }
         });
       }
-      if (attribute.type instanceof DateType) {
+      return entity;
+    })
+      .filter((f) => !!f)
+      .forEach((a) => {
+        this.addInput(new DirtyWrapperInput(a));
+      });
+
+    _.map(options.definition.definition.attributes, (attribute) => {
+      if (attribute.type instanceof DatetimeType || attribute.type instanceof DateType) {
+        let date = options.object?.model[attribute.name] || null;
+        if (date && date instanceof Day) {
+          date = date.toDate();
+        }
+
         return new DateInput({
           name: attribute.name,
           label: attribute.label,
-          value: options.object?.model[attribute.name] || null,
-          type: DateTimePickerType.DATE
+          value: date,
+          type: attribute.type instanceof DatetimeType ? DateTimePickerType.DATETIME : DateTimePickerType.DATE
         });
       }
       if (attribute.type instanceof SignatureType || attribute.type instanceof PhotoType) {
@@ -110,7 +136,12 @@ export class SchemaModelForm extends FormModel {
     })
       .filter((f) => !!f)
       .forEach((a) => {
-        this.addInput(a);
+        a.registerListener({
+          valueChanged: () => {
+            options.object.set(a.name, a.value);
+          }
+        });
+        this.addInput(new DirtyWrapperInput(a, options.object));
       });
   }
 }
