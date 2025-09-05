@@ -40,13 +40,24 @@ export class SchemaModelForm extends FormModel {
     super();
 
     _.map(options.definition.definition.belongsTo, (relationship) => {
-      return new EntityInput({
+      const definition = options.definition.connection.getSchemaModelDefinitionByName(relationship.foreignType.name);
+
+      let entity = new EntityInput({
         name: relationship.name,
         entityType: DataBrowserEntities.SCHEMA_MODEL_OBJECT,
-        parent: options.definition.connection.getSchemaModelDefinitionByName(relationship.foreignType.name),
+        parent: definition,
         label: relationship.name,
         value: null
       });
+
+      if (options.object?.data.belongs_to[relationship.name]) {
+        definition.resolve(options.object?.data.belongs_to[relationship.name]).then((resolved) => {
+          if (resolved) {
+            entity.setValue(resolved);
+          }
+        });
+      }
+      return entity;
     })
       .filter((f) => !!f)
       .forEach((a) => {
