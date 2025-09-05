@@ -13,6 +13,7 @@ import { BelongsToDisplayWidget } from './widgets/BelongsToDisplayWidget';
 import { EditSchemaModelAction } from '../../actions/schema-model/EditSchemaModelAction';
 import { SmartColumnWidget } from './widgets/SmartColumnWidget';
 import { SimpleFilter } from './filters';
+import { SmartCellDisplayWidget } from './widgets/SmartCellDisplayWidget';
 
 export interface SimpleQueryOptions {
   definition?: SchemaModelDefinition;
@@ -162,7 +163,7 @@ export class SimpleQuery extends AbstractQuery<SimpleQueryEncoded> {
           noWrap: true,
           shrink: true,
           accessor: (cell, row: PageRow) => {
-            return <CellDisplayWidget name={a.name} cell={cell} row={row} />;
+            return <SmartCellDisplayWidget name={a.name} cell={cell} row={row} />;
           }
         } as TableColumn;
       })

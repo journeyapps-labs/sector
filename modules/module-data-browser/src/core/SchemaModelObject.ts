@@ -1,6 +1,15 @@
-import { ApiObjectData, Attachment as JAttachment, DatabaseAdapter, DatabaseObject } from '@journeyapps/db';
+import {
+  ApiObjectData,
+  Attachment as JAttachment,
+  DatabaseAdapter,
+  DatabaseObject,
+  DatetimeType,
+  DateType,
+  Day
+} from '@journeyapps/db';
 import { SchemaModelDefinition } from './SchemaModelDefinition';
 import { AbstractMedia, inject, MediaEngine } from '@journeyapps-labs/reactor-mod';
+import { observable } from 'mobx';
 
 export interface SchemaModelObjectOptions {
   definition: SchemaModelDefinition;
@@ -17,6 +26,9 @@ export class SchemaModelObject {
   model: DatabaseObject;
   updated_at: Date;
 
+  @observable
+  accessor patch: Map<string, any>;
+
   constructor(public options: SchemaModelObjectOptions) {
     this._mediaCache = new Map();
     if (options.model) {
@@ -24,6 +36,15 @@ export class SchemaModelObject {
       // @ts-ignore
       this.model.resolve(options.model);
       this.updated_at = new Date(options.model._updated_at);
+    }
+    this.patch = new Map<string, any>();
+  }
+
+  set(field: string, value: any) {
+    if (this.model?.[field] === value) {
+      this.patch.delete(field);
+    } else {
+      this.patch.set(field, value);
     }
   }
 

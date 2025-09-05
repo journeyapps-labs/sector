@@ -29,6 +29,7 @@ import {
 } from '@journeyapps/db';
 import { LocationInput } from './inputs/LocationInput';
 import { DataBrowserEntities } from '../entities';
+import { DirtyWrapperInput } from './inputs/DirtyWrapperInput';
 
 export interface SchemaModelFormOptions {
   definition: SchemaModelDefinition;
@@ -61,7 +62,7 @@ export class SchemaModelForm extends FormModel {
     })
       .filter((f) => !!f)
       .forEach((a) => {
-        this.addInput(a);
+        this.addInput(new DirtyWrapperInput(a));
       });
 
     _.map(options.definition.definition.attributes, (attribute) => {
@@ -135,7 +136,12 @@ export class SchemaModelForm extends FormModel {
     })
       .filter((f) => !!f)
       .forEach((a) => {
-        this.addInput(a);
+        a.registerListener({
+          valueChanged: () => {
+            options.object.set(a.name, a.value);
+          }
+        });
+        this.addInput(new DirtyWrapperInput(a, options.object));
       });
   }
 }

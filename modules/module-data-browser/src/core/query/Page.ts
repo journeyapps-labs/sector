@@ -1,7 +1,7 @@
 import { SchemaModelObject } from '../SchemaModelObject';
 import { TableRow } from '@journeyapps-labs/reactor-mod';
 import { Collection, DatabaseObject } from '@journeyapps/db';
-import { observable } from 'mobx';
+import { computed, observable } from 'mobx';
 import { SchemaModelDefinition } from '../SchemaModelDefinition';
 import { AbstractFilter } from './filters';
 
@@ -33,6 +33,16 @@ export class Page {
 
   get index() {
     return this.options.index;
+  }
+
+  reset() {
+    this.models.forEach((m) => {
+      m.patch.clear();
+    });
+  }
+
+  @computed get dirty() {
+    return this.models.find((m) => m.patch.size > 0);
   }
 
   async load() {
