@@ -1,4 +1,4 @@
-import { Database, ObjectType } from '@journeyapps/db';
+import { Database, ObjectType, Query } from '@journeyapps/db';
 import { Schema } from '@journeyapps/parser-schema';
 import { AbstractConnectionFactory } from './AbstractConnectionFactory';
 import * as _ from 'lodash';

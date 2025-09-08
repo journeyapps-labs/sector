@@ -84,13 +84,7 @@ export class SchemaModelObjectEntityDefinition extends EntityDefinition<SchemaMo
         decode: async (entity) => {
           let connection = await this.connectionStore.waitForReadyForConnection(entity.connection_id);
           let definition = await connection.waitForSchemaModelDefinitionByName(entity.type);
-          let db = await definition.getCollection();
-          let model = await db.adapter.executeQuery(db.where('id = ?', entity.id));
-          return new SchemaModelObject({
-            model: model[0],
-            definition,
-            adapter: db.adapter
-          });
+          return await definition.resolve(entity.id);
         }
       })
     );

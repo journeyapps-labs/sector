@@ -1,6 +1,6 @@
 import { AbstractConnection } from './AbstractConnection';
 import { ObjectType } from '@journeyapps/parser-schema';
-import { Collection, DatabaseObject, JourneyAPIAdapter } from '@journeyapps/db';
+import { Collection, JourneyAPIAdapter, Query } from '@journeyapps/db';
 import { SchemaModelObject } from './SchemaModelObject';
 import { LifecycleModel } from '@journeyapps-labs/lib-reactor-data-layer';
 import { BaseObserver } from '@journeyapps-labs/common-utils';
@@ -31,16 +31,11 @@ export class SchemaModelDefinition
     this.queue = queue(async (id) => {
       let collection = await this.getCollection();
       try {
-        let model = await collection.adapter.executeQuery(collection.where(`id = ?`, id));
-        if (model[0]) {
-          let object = new SchemaModelObject({
-            model: model[0],
-            definition: this,
-            adapter: collection.adapter
-          });
-          this.cache.set(id, object);
+        let models = await this.executeQuery(collection.where(`id = ?`, id));
+        if (models[0]) {
+          this.cache.set(id, models[0]);
           this.enqueued.delete(id);
-          this.iterateListeners((cb) => cb.resolved?.({ object }));
+          this.iterateListeners((cb) => cb.resolved?.({ object: models[0] }));
         } else {
           this.enqueued.delete(id);
           this.iterateListeners((cb) => cb.failed?.({ object_id: id }));
@@ -118,6 +113,26 @@ export class SchemaModelDefinition
 
   get definition() {
     return this.options.definition;
+  }
+
+  async executeQuery(query: Query) {
+    let collection = await this.getCollection();
+    let results = await collection.adapter.executeQuery(query);
+    return results.map((m) => {
+      if (!this.cache.has(m.id)) {
+        const model = new SchemaModelObject({
+          definition: this,
+          model: m,
+          adapter: collection.adapter
+        });
+        this.cache.set(m.id, model);
+        return model;
+      }
+
+      let model = this.cache.get(m.id);
+      model.setData(m);
+      return model;
+    });
   }
 
   async getCollection() {

@@ -1,15 +1,7 @@
-import {
-  ApiObjectData,
-  Attachment as JAttachment,
-  DatabaseAdapter,
-  DatabaseObject,
-  DatetimeType,
-  DateType,
-  Day
-} from '@journeyapps/db';
+import { ApiObjectData, Attachment as JAttachment, DatabaseAdapter, DatabaseObject } from '@journeyapps/db';
 import { SchemaModelDefinition } from './SchemaModelDefinition';
 import { AbstractMedia, inject, MediaEngine } from '@journeyapps-labs/reactor-mod';
-import { observable } from 'mobx';
+import { action, observable } from 'mobx';
 
 export interface SchemaModelObjectOptions {
   definition: SchemaModelDefinition;
@@ -23,7 +15,13 @@ export class SchemaModelObject {
 
   private _mediaCache: Map<string, AbstractMedia>;
 
-  model: DatabaseObject;
+  @observable
+  accessor data: ApiObjectData;
+
+  @observable
+  accessor model: DatabaseObject;
+
+  @observable
   updated_at: Date;
 
   @observable
@@ -32,10 +30,7 @@ export class SchemaModelObject {
   constructor(public options: SchemaModelObjectOptions) {
     this._mediaCache = new Map();
     if (options.model) {
-      this.model = new DatabaseObject(options.adapter, options.definition.definition, options.model.id);
-      // @ts-ignore
-      this.model.resolve(options.model);
-      this.updated_at = new Date(options.model._updated_at);
+      this.setData(options.model);
     }
     this.patch = new Map<string, any>();
   }
@@ -48,12 +43,20 @@ export class SchemaModelObject {
     }
   }
 
+  @action setData(data: ApiObjectData) {
+    this.data = data;
+    this.model = new DatabaseObject(this.options.adapter, this.definition.definition, data.id);
+    // @ts-ignore
+    this.model.resolve(data);
+    this.updated_at = new Date(data._updated_at);
+  }
+
   get definition(): SchemaModelDefinition {
     return this.options.definition;
   }
 
-  get data() {
-    return this.options.model;
+  get id() {
+    return this.data.id;
   }
 
   async getMedia(field: string) {

@@ -1,7 +1,6 @@
 import { AbstractQuery, AbstractQueryEncoded } from './AbstractQuery';
 import { ActionSource, inject, TableColumn } from '@journeyapps-labs/reactor-mod';
 import { ConnectionStore } from '../../stores/ConnectionStore';
-import * as db from '@journeyapps/db';
 import { Promise, Variable } from '@journeyapps/db';
 import { Page, PageRow } from './Page';
 import { SchemaModelDefinition } from '../SchemaModelDefinition';
@@ -44,20 +43,13 @@ export class SimpleQuery extends AbstractQuery<SimpleQueryEncoded> {
     this.simple_filters = new Map();
   }
 
-  async getCollection() {
-    let connection = await this.connection.getConnection();
-    return connection[this.options.definition.definition.name] as db.Collection;
-  }
-
   @action async load() {
     this._pages = [];
-    let collection = await this.getCollection();
-
+    let collection = await this.options.definition.getCollection();
     let query = collection.all();
     this.simple_filters.forEach((f) => {
       query = f.augment(query);
     });
-
     let results = await (collection.adapter as any).doApiQuery(query);
     this._totalPages = Math.ceil(results.total / this.options.limit);
   }
@@ -67,7 +59,6 @@ export class SimpleQuery extends AbstractQuery<SimpleQueryEncoded> {
       let page = new Page({
         offset: number * this.options.limit,
         limit: this.options.limit,
-        collection: () => this.getCollection(),
         definition: this.options.definition,
         index: number,
         filters: Array.from(this.simple_filters.values())
