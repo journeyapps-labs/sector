@@ -1,45 +1,80 @@
-import {
-  BooleanInput,
-  DateInput,
-  DateTimePickerType,
-  EntityInput,
-  FileInput,
-  FormModel,
-  ImageInput,
-  ImageMedia,
-  SelectInput,
-  TextInput
-} from '@journeyapps-labs/reactor-mod';
+import { EntityInput, FormInput, FormModel, inject } from '@journeyapps-labs/reactor-mod';
 import { SchemaModelDefinition } from '../core/SchemaModelDefinition';
 import { SchemaModelObject } from '../core/SchemaModelObject';
 import * as _ from 'lodash';
-import {
-  AttachmentType,
-  BooleanType,
-  DatetimeType,
-  DateType,
-  Day,
-  LocationType,
-  MultipleChoiceType,
-  PhotoType,
-  SignatureType,
-  SingleChoiceIntegerType,
-  SingleChoiceType,
-  TextType
-} from '@journeyapps/db';
-import { LocationInput } from './inputs/LocationInput';
 import { DataBrowserEntities } from '../entities';
 import { DirtyWrapperInput } from './inputs/DirtyWrapperInput';
+import { TypeEngine } from './TypeEngine';
+import { autorun, IReactionDisposer } from 'mobx';
+import { Variable } from '@journeyapps/db';
 
 export interface SchemaModelFormOptions {
   definition: SchemaModelDefinition;
   object?: SchemaModelObject;
 }
 
+export interface BindingOption {
+  input: FormInput;
+  variable: Variable;
+  model: SchemaModelObject;
+}
+
+export class Binding {
+  @inject(TypeEngine)
+  accessor typeEngine: TypeEngine;
+
+  setting_value_via_autorun: boolean;
+
+  private listener1: IReactionDisposer;
+  private listener2: () => any;
+
+  constructor(protected options: BindingOption) {
+    const { input, model, variable } = options;
+    this.setting_value_via_autorun = false;
+    let handler = this.typeEngine.getHandler(variable.type);
+    this.listener2 = input.registerListener({
+      valueChanged: async () => {
+        if (this.setting_value_via_autorun) {
+          return;
+        }
+        model.set(input.name, await handler.encode(input.value));
+      }
+    });
+    this.listener1 = autorun(async () => {
+      let value = model.patch.get(variable.name);
+      if (value == null) {
+        value = model?.model[variable.name];
+      }
+      this.setting_value_via_autorun = true;
+      if (value == null) {
+        input.setValue(null);
+      } else {
+        let decoded = await handler.decode(value);
+        input.setValue(decoded);
+      }
+      this.setting_value_via_autorun = false;
+    });
+  }
+
+  get input() {
+    return this.options.input;
+  }
+
+  dispose() {
+    this.listener1();
+    this.listener2();
+  }
+}
+
 export class SchemaModelForm extends FormModel {
+  @inject(TypeEngine)
+  accessor typeEngine: TypeEngine;
+
+  bindings: Set<Binding>;
+
   constructor(protected options: SchemaModelFormOptions) {
     super();
-
+    this.bindings = new Set<Binding>();
     _.map(options.definition.definition.belongsTo, (relationship) => {
       const definition = options.definition.connection.getSchemaModelDefinitionByName(relationship.foreignType.name);
 
@@ -62,80 +97,6 @@ export class SchemaModelForm extends FormModel {
     })
       .filter((f) => !!f)
       .forEach((a) => {
-        this.addInput(new DirtyWrapperInput(a));
-      });
-
-    _.map(options.definition.definition.attributes, (attribute) => {
-      if (attribute.type instanceof DatetimeType || attribute.type instanceof DateType) {
-        let date = options.object?.model[attribute.name] || null;
-        if (date && date instanceof Day) {
-          date = date.toDate();
-        }
-
-        return new DateInput({
-          name: attribute.name,
-          label: attribute.label,
-          value: date,
-          type: attribute.type instanceof DatetimeType ? DateTimePickerType.DATETIME : DateTimePickerType.DATE
-        });
-      }
-      if (attribute.type instanceof SignatureType || attribute.type instanceof PhotoType) {
-        let media = new ImageInput({
-          name: attribute.name,
-          label: attribute.label
-        });
-
-        if (options.object) {
-          options.object.getMedia(attribute.name).then((m) => {
-            media.setValue(m as ImageMedia);
-          });
-        }
-        return media;
-      }
-      if (attribute.type instanceof AttachmentType) {
-        return new FileInput({
-          name: attribute.name,
-          label: attribute.label,
-          value: options.object?.model[attribute.name] || null
-        });
-      }
-      if (attribute.type instanceof BooleanType) {
-        return new BooleanInput({
-          name: attribute.name,
-          label: attribute.label,
-          value: options.object?.model[attribute.name]
-        });
-      }
-      if (attribute.type instanceof LocationType) {
-        return new LocationInput({
-          name: attribute.name,
-          label: attribute.label,
-          value: options.object?.model[attribute.name]
-        });
-      }
-      if (attribute.type instanceof SingleChoiceIntegerType || attribute.type instanceof SingleChoiceType) {
-        return new SelectInput({
-          name: attribute.name,
-          label: attribute.label,
-          value: options.object?.model[attribute.name],
-          options: _.mapValues(attribute.type.options, (option) => {
-            return `${option.value}`;
-          })
-        });
-      }
-      if (attribute.type instanceof MultipleChoiceType) {
-      }
-      if (attribute.type instanceof TextType) {
-        return new TextInput({
-          name: attribute.name,
-          label: attribute.label,
-          value: options.object?.model[attribute.name]
-        });
-      }
-      return null;
-    })
-      .filter((f) => !!f)
-      .forEach((a) => {
         a.registerListener({
           valueChanged: () => {
             options.object.set(a.name, a.value);
@@ -143,5 +104,33 @@ export class SchemaModelForm extends FormModel {
         });
         this.addInput(new DirtyWrapperInput(a, options.object));
       });
+
+    _.map(options.definition.definition.attributes, (attribute) => {
+      let field = this.typeEngine.getHandler(attribute.type)?.generateField({
+        name: attribute.name,
+        label: attribute.label,
+        type: attribute.type
+      });
+      if (!field) {
+        return;
+      }
+
+      return new Binding({
+        variable: attribute,
+        model: this.options.object,
+        input: field
+      });
+    })
+      .filter((binding) => !!binding)
+      .forEach((binding) => {
+        this.bindings.add(binding);
+        this.addInput(new DirtyWrapperInput(binding.input, options.object));
+      });
+  }
+
+  dispose() {
+    this.bindings.forEach((b) => {
+      b.dispose();
+    });
   }
 }

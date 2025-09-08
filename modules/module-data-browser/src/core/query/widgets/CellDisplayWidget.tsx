@@ -69,9 +69,7 @@ export const CellDisplayWidget: React.FC<CellDisplayWidgetProps> = (props) => {
     if (cell.length === 0) {
       return <S.Empty>empty array</S.Empty>;
     }
-
     let items = _.slice(cell, 0, MAX_NUMBER_OF_ARR_ITEMS_TO_DISPLAY);
-
     return (
       <S.Pills>
         {items.map((c) => {

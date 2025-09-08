@@ -6,6 +6,8 @@ import {
   BorderLayoutWidget,
   LoadingPanelWidget,
   PANEL_CONTENT_PADDING,
+  PanelButtonMode,
+  PanelButtonWidget,
   PanelToolbarWidget,
   ScrollableDivCss
 } from '@journeyapps-labs/reactor-mod';
@@ -23,6 +25,13 @@ namespace S {
     padding: ${PANEL_CONTENT_PADDING}px;
     ${ScrollableDivCss};
   `;
+
+  export const Buttons = styled.div`
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+    padding: 5px;
+  `;
 }
 
 export const ModelPanelWidget: React.FC<QueryPanelWidgetProps> = observer((props) => {
@@ -32,12 +41,14 @@ export const ModelPanelWidget: React.FC<QueryPanelWidgetProps> = observer((props
     if (!props.model.definition) {
       return;
     }
-    setForm(
-      new SchemaModelForm({
-        object: props.model.model,
-        definition: props.model.definition
-      })
-    );
+    let _form = new SchemaModelForm({
+      object: props.model.model,
+      definition: props.model.definition
+    });
+    setForm(_form);
+    return () => {
+      _form.dispose();
+    };
   }, [props.model.model, props.model.definition]);
 
   let top = null;
@@ -66,7 +77,28 @@ export const ModelPanelWidget: React.FC<QueryPanelWidgetProps> = observer((props
     <LoadingPanelWidget loading={!form}>
       {() => {
         return (
-          <BorderLayoutWidget top={top}>
+          <BorderLayoutWidget
+            top={top}
+            bottom={
+              <S.Buttons>
+                <PanelButtonWidget
+                  disabled={props.model.model.patch.size === 0}
+                  label="save"
+                  icon="save"
+                  mode={PanelButtonMode.PRIMARY}
+                  action={() => {}}
+                />
+                <PanelButtonWidget
+                  disabled={props.model.model.patch.size === 0}
+                  label="discard edits"
+                  icon="save"
+                  action={() => {
+                    props.model.model.clearEdits();
+                  }}
+                />
+              </S.Buttons>
+            }
+          >
             <S.Container>{form.render()}</S.Container>
           </BorderLayoutWidget>
         );

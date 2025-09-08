@@ -35,6 +35,14 @@ export class SchemaModelObject {
     this.patch = new Map<string, any>();
   }
 
+  clearEdits() {
+    this.patch.clear();
+  }
+
+  revert(field: string) {
+    this.patch.delete(field);
+  }
+
   set(field: string, value: any) {
     if (this.model?.[field] === value) {
       this.patch.delete(field);

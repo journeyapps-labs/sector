@@ -14,6 +14,7 @@ import { ModelPanelFactory } from './panels/model/ModelPanelFactory';
 import { CreateModelAction } from './actions/schema-definitions/CreateModelAction';
 import { SchemaModelObjectEntityDefinition } from './entities/SchemaModelObjectEntityDefinition';
 import { EditSchemaModelAction } from './actions/schema-model/EditSchemaModelAction';
+import { TypeEngine } from './forms/TypeEngine';
 
 export class DataBrowserModule extends AbstractReactorModule {
   constructor() {
@@ -27,6 +28,7 @@ export class DataBrowserModule extends AbstractReactorModule {
     const workspaceStore = ioc.get(WorkspaceStore);
 
     let connectionStore = new ConnectionStore();
+    ioc.bind(TypeEngine).toConstantValue(new TypeEngine());
 
     connectionStore.registerConnectionFactory(new ManualConnectionFactory());
 

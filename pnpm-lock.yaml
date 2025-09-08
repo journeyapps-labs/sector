@@ -32,6 +32,9 @@ importers:
       '@emotion/styled':
         specifier: ^11.14.1
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.1.12)(react@19.1.1))(@types/react@19.1.12)(react@19.1.1)
+      '@fortawesome/react-fontawesome':
+        specifier: ^3.0.2
+        version: 3.0.2(@fortawesome/fontawesome-svg-core@7.0.1)(react@19.1.1)
       '@journeyapps-labs/common-ioc':
         specifier: ^1.0.0
         version: 1.0.0
