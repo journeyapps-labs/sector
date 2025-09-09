@@ -12,6 +12,7 @@ export interface BelongsToDisplayWidgetProps {
   id: string;
   connection: AbstractConnection;
   open: (object: SchemaModelObject) => any;
+  className?: any;
 }
 
 export const BelongsToDisplayWidget: React.FC<BelongsToDisplayWidgetProps> = observer((props) => {
@@ -56,7 +57,7 @@ export const BelongsToDisplayWidget: React.FC<BelongsToDisplayWidgetProps> = obs
   }
 
   return (
-    <S.Container>
+    <S.Container className={props.className}>
       {object.data.display}
       <TableButtonWidget
         icon="arrow-right"

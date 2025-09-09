@@ -59,13 +59,15 @@ export class ModelPanelFactory extends ReactorPanelFactory<ModelPanelModel> {
   }
 
   getSimpleName(model: ModelPanelModel) {
-    if (!model.definition) {
+    let _model = model.model;
+    let _definition = model.definition;
+    if (!_definition) {
       return super.getSimpleName(model);
     }
-    if (model.model) {
-      return `${model.definition.definition.label}: ${model.model.model.toString()}`;
+    if (_model) {
+      return `${_definition.definition.label}: ${_model.data.display}`;
     }
-    return `${model.definition.definition.label}`;
+    return `${_definition.definition.label}`;
   }
 
   _generateModel(): ModelPanelModel {

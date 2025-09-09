@@ -4,14 +4,15 @@ import { observer } from 'mobx-react';
 import styled from '@emotion/styled';
 import {
   BorderLayoutWidget,
+  ioc,
   LoadingPanelWidget,
   PANEL_CONTENT_PADDING,
-  PanelButtonMode,
   PanelButtonWidget,
   PanelToolbarWidget,
-  ScrollableDivCss
+  ScrollableDivCss,
+  theme,
+  ThemeStore
 } from '@journeyapps-labs/reactor-mod';
-
 import { SchemaModelForm } from '../../forms/SchemaModelForm';
 import { ModelPanelModel } from './ModelPanelFactory';
 
@@ -36,6 +37,7 @@ namespace S {
 
 export const ModelPanelWidget: React.FC<QueryPanelWidgetProps> = observer((props) => {
   const [form, setForm] = useState<SchemaModelForm>(null);
+  const _theme = ioc.get(ThemeStore).getCurrentTheme(theme);
 
   useEffect(() => {
     if (!props.model.definition) {
@@ -83,15 +85,15 @@ export const ModelPanelWidget: React.FC<QueryPanelWidgetProps> = observer((props
               <S.Buttons>
                 <PanelButtonWidget
                   disabled={props.model.model.patch.size === 0}
-                  label="save"
+                  label="Save"
                   icon="save"
-                  mode={PanelButtonMode.PRIMARY}
+                  iconColor={_theme.status.success}
                   action={() => {}}
                 />
                 <PanelButtonWidget
                   disabled={props.model.model.patch.size === 0}
-                  label="discard edits"
-                  icon="save"
+                  label="Discard edits"
+                  icon="arrow-rotate-back"
                   action={() => {
                     props.model.model.clearEdits();
                   }}

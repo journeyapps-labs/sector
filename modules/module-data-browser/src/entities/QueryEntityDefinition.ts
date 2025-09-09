@@ -1,10 +1,10 @@
 import { EntityDefinition, inject, InlineEntityEncoderComponent } from '@journeyapps-labs/reactor-mod';
 import { DataBrowserEntities } from '../entities';
 import { ConnectionStore } from '../stores/ConnectionStore';
-import { AbstractQuery, AbstractQueryEncoded } from '../core/query/AbstractQuery';
 import { SimpleQuery } from '../core/query/SimpleQuery';
+import { AbstractQueryEncoded, AbstractSerializableQuery } from '../core/query/AbstractSerializableQuery';
 
-export class QueryEntityDefinition extends EntityDefinition<AbstractQuery> {
+export class QueryEntityDefinition extends EntityDefinition<AbstractSerializableQuery> {
   @inject(ConnectionStore)
   accessor connectionStore: ConnectionStore;
 
@@ -18,7 +18,7 @@ export class QueryEntityDefinition extends EntityDefinition<AbstractQuery> {
     });
 
     this.registerComponent(
-      new InlineEntityEncoderComponent<AbstractQuery, AbstractQueryEncoded>({
+      new InlineEntityEncoderComponent<AbstractSerializableQuery, AbstractQueryEncoded>({
         version: 1,
         encode: (e) => {
           return e.serialize();
@@ -35,12 +35,12 @@ export class QueryEntityDefinition extends EntityDefinition<AbstractQuery> {
   }
 
   matchEntity(t: any): boolean {
-    if (t instanceof AbstractQuery) {
+    if (t instanceof AbstractSerializableQuery) {
       return true;
     }
   }
 
-  getEntityUID(t: AbstractQuery) {
+  getEntityUID(t: AbstractSerializableQuery) {
     return t.id;
   }
 }

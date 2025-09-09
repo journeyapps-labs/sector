@@ -22,7 +22,7 @@ export class SchemaModelObject {
   accessor model: DatabaseObject;
 
   @observable
-  updated_at: Date;
+  accessor updated_at: Date;
 
   @observable
   accessor patch: Map<string, any>;

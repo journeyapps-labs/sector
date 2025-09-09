@@ -1,8 +1,7 @@
 import { SchemaModelObject } from '../SchemaModelObject';
 import { TableRow } from '@journeyapps-labs/reactor-mod';
-import { computed, observable } from 'mobx';
+import { observable } from 'mobx';
 import { SchemaModelDefinition } from '../SchemaModelDefinition';
-import { AbstractFilter } from './filters';
 
 export interface PageRow extends TableRow {
   model: SchemaModelObject;
@@ -10,11 +9,8 @@ export interface PageRow extends TableRow {
 }
 
 export interface PageOptions {
-  offset: number;
-  limit: number;
   definition: SchemaModelDefinition;
   index: number;
-  filters: AbstractFilter[];
 }
 
 export class Page {
@@ -39,21 +35,8 @@ export class Page {
     });
   }
 
-  @computed get dirty() {
-    return this.models.find((m) => m.patch.size > 0);
-  }
-
-  async load() {
-    this.loading = true;
-    let collection = await this.options.definition.getCollection();
-    let query = collection.all();
-
-    this.options.filters.forEach((f) => {
-      query = f.augment(query);
-    });
-
-    this.models = await this.options.definition.executeQuery(query.limit(this.options.limit).skip(this.options.offset));
-    this.loading = false;
+  getDirtyObjects() {
+    return this.models.filter((m) => m.patch.size > 0);
   }
 
   asRows(): PageRow[] {

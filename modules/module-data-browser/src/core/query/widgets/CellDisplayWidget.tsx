@@ -86,7 +86,14 @@ export const CellDisplayWidget: React.FC<CellDisplayWidgetProps> = (props) => {
     return <SmartDateDisplayWidget date={cell.toDate()} />;
   }
   if (_.isBoolean(cell)) {
-    return <CheckboxWidget checked={cell} onChange={() => {}} />;
+    return (
+      <CheckboxWidget
+        checked={cell}
+        onChange={(checked) => {
+          row.model.set(name, checked);
+        }}
+      />
+    );
   }
   if (cell instanceof Location) {
     return (
