@@ -16,10 +16,10 @@ import { observer } from 'mobx-react';
 import * as _ from 'lodash';
 import { Page } from '../../core/query/Page';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { SimplePage } from '../../core/query/SimplePage';
+import { SimplePage } from '../../core/query/query-simple/SimplePage';
 import { QueryPanelModel } from './QueryPanelFactory';
-import { ChangedModelQuery } from '../../core/query/ChangedModelQuery';
-import { SimpleQuery } from '../../core/query/SimpleQuery';
+import { ChangedModelQuery } from '../../core/query/query-changed/ChangedModelQuery';
+import { SimpleQuery } from '../../core/query/query-simple/SimpleQuery';
 
 export interface TableControlsWidgetProps {
   current_page: Page;

@@ -5,7 +5,7 @@ export * from './core/SchemaModelDefinition';
 export * from './core/SchemaModelObject';
 export * from './core/AbstractConnection';
 export * from './core/AbstractConnectionFactory';
-export * from './core/query/SimpleQuery';
+export * from './core/query/query-simple/SimpleQuery';
 export * from './core/query/AbstractQuery';
 export * from './core/query/Page';
 export * from './core/types/ManualConnectionFactory';

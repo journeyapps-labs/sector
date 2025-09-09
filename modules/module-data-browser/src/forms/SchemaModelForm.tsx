@@ -4,7 +4,7 @@ import { SchemaModelObject } from '../core/SchemaModelObject';
 import * as _ from 'lodash';
 import { DataBrowserEntities } from '../entities';
 import { DirtyWrapperInput } from './inputs/DirtyWrapperInput';
-import { TypeEngine } from './TypeEngine';
+import { TypeEngine, TypeHandler } from './TypeEngine';
 import { autorun, IReactionDisposer } from 'mobx';
 import { Variable } from '@journeyapps/db';
 
@@ -15,8 +15,9 @@ export interface SchemaModelFormOptions {
 
 export interface BindingOption {
   input: FormInput;
-  variable: Variable;
+  name: string;
   model: SchemaModelObject;
+  resolve: () => Promise<any>;
 }
 
 export class Binding {
@@ -29,31 +30,38 @@ export class Binding {
   private listener2: () => any;
 
   constructor(protected options: BindingOption) {
-    const { input, model, variable } = options;
+    const { input, model, name } = options;
     this.setting_value_via_autorun = false;
-    let handler = this.typeEngine.getHandler(variable.type);
     this.listener2 = input.registerListener({
       valueChanged: async () => {
         if (this.setting_value_via_autorun) {
           return;
         }
-        model.set(input.name, await handler.encode(input.value));
+        model.set(input.name, await this.encode(input.value));
       }
     });
     this.listener1 = autorun(async () => {
-      let value = model.patch.get(variable.name);
+      let value = model.patch.get(name);
       if (value == null) {
-        value = model?.model[variable.name];
+        value = await options.resolve();
       }
       this.setting_value_via_autorun = true;
       if (value == null) {
         input.setValue(null);
       } else {
-        let decoded = await handler.decode(value);
+        let decoded = await this.decode(value);
         input.setValue(decoded);
       }
       this.setting_value_via_autorun = false;
     });
+  }
+
+  async encode(value) {
+    return value;
+  }
+
+  async decode(value) {
+    return value;
   }
 
   get input() {
@@ -63,6 +71,27 @@ export class Binding {
   dispose() {
     this.listener1();
     this.listener2();
+  }
+}
+
+export class TypedBinding extends Binding {
+  handler: TypeHandler;
+  constructor(options: Omit<BindingOption & { variable: Variable }, 'resolve'>) {
+    super({
+      ...options,
+      resolve: async () => {
+        return options.model?.model[options.name];
+      }
+    });
+    this.handler = this.typeEngine.getHandler(options.variable.type);
+  }
+
+  async encode(value) {
+    return await this.handler.encode(value);
+  }
+
+  async decode(value) {
+    return await this.handler.decode(value);
   }
 }
 
@@ -86,23 +115,29 @@ export class SchemaModelForm extends FormModel {
         value: null
       });
 
-      if (options.object?.data.belongs_to[relationship.name]) {
-        definition.resolve(options.object?.data.belongs_to[relationship.name]).then((resolved) => {
-          if (resolved) {
-            entity.setValue(resolved);
+      // if (options.object?.data.belongs_to[relationship.name]) {
+      //   definition.resolve(options.object?.data.belongs_to[relationship.name]).then((resolved) => {
+      //     if (resolved) {
+      //       entity.setValue(resolved);
+      //     }
+      //   });
+      // }
+      return new Binding({
+        name: relationship.name,
+        model: this.options.object,
+        input: entity,
+        resolve: () => {
+          if (!options.object.data.belongs_to[relationship.name]) {
+            return null;
           }
-        });
-      }
-      return entity;
+          return definition.resolve(options.object.data.belongs_to[relationship.name]);
+        }
+      });
     })
       .filter((f) => !!f)
-      .forEach((a) => {
-        a.registerListener({
-          valueChanged: () => {
-            options.object.set(a.name, a.value);
-          }
-        });
-        this.addInput(new DirtyWrapperInput(a, options.object));
+      .forEach((binding) => {
+        this.bindings.add(binding);
+        this.addInput(new DirtyWrapperInput(binding.input, options.object));
       });
 
     _.map(options.definition.definition.attributes, (attribute) => {
@@ -115,10 +150,11 @@ export class SchemaModelForm extends FormModel {
         return;
       }
 
-      return new Binding({
+      return new TypedBinding({
         variable: attribute,
         model: this.options.object,
-        input: field
+        input: field,
+        name: attribute.name
       });
     })
       .filter((binding) => !!binding)

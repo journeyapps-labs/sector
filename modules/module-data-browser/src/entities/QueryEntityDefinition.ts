@@ -1,7 +1,7 @@
 import { EntityDefinition, inject, InlineEntityEncoderComponent } from '@journeyapps-labs/reactor-mod';
 import { DataBrowserEntities } from '../entities';
 import { ConnectionStore } from '../stores/ConnectionStore';
-import { SimpleQuery } from '../core/query/SimpleQuery';
+import { SimpleQuery } from '../core/query/query-simple/SimpleQuery';
 import { AbstractQueryEncoded, AbstractSerializableQuery } from '../core/query/AbstractSerializableQuery';
 
 export class QueryEntityDefinition extends EntityDefinition<AbstractSerializableQuery> {

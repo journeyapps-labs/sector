@@ -1,5 +1,5 @@
-import { Page, PageOptions } from './Page';
-import { AbstractFilter } from './filters';
+import { Page, PageOptions } from '../Page';
+import { AbstractFilter } from '../filters';
 
 export interface SimplePageOptions extends PageOptions {
   offset: number;

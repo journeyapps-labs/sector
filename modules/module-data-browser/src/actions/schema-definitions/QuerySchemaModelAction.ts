@@ -2,7 +2,7 @@ import { EntityAction, EntityActionEvent, inject, ioc, System, WorkspaceStore } 
 import { DataBrowserEntities } from '../../entities';
 import { SchemaModelDefinition } from '../../core/SchemaModelDefinition';
 import { QueryPanelModel } from '../../panels/query/QueryPanelFactory';
-import { SimpleQuery } from '../../core/query/SimpleQuery';
+import { SimpleQuery } from '../../core/query/query-simple/SimpleQuery';
 
 export class QuerySchemaModelAction extends EntityAction<SchemaModelDefinition> {
   static ID = 'QUERY_SCHEMA_MODEL';

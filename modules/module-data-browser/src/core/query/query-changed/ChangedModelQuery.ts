@@ -1,8 +1,8 @@
 import { TableColumn } from '@journeyapps-labs/reactor-mod';
-import { SchemaModelObject } from '../SchemaModelObject';
-import { AbstractQuery } from './AbstractQuery';
-import { Page } from './Page';
-import { SimpleQuery } from './SimpleQuery';
+import { SchemaModelObject } from '../../SchemaModelObject';
+import { AbstractQuery } from '../AbstractQuery';
+import { Page } from '../Page';
+import { SimpleQuery } from '../query-simple/SimpleQuery';
 
 export class ChangedModelQuery extends AbstractQuery {
   constructor(protected query: SimpleQuery) {

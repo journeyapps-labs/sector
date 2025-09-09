@@ -1,19 +1,19 @@
 import { inject, TableColumn } from '@journeyapps-labs/reactor-mod';
-import { ConnectionStore } from '../../stores/ConnectionStore';
+import { ConnectionStore } from '../../../stores/ConnectionStore';
 import { Promise, Variable } from '@journeyapps/db';
-import { Page, PageRow } from './Page';
-import { SchemaModelDefinition } from '../SchemaModelDefinition';
+import { Page, PageRow } from '../Page';
+import { SchemaModelDefinition } from '../../SchemaModelDefinition';
 import * as _ from 'lodash';
 import * as React from 'react';
 import { action, observable } from 'mobx';
-import { CellDisplayWidget } from './widgets/CellDisplayWidget';
-import { SmartColumnWidget } from './widgets/SmartColumnWidget';
-import { SimpleFilter } from './filters';
-import { SmartCellDisplayWidget } from './widgets/SmartCellDisplayWidget';
-import { SchemaModelObject } from '../SchemaModelObject';
+import { CellDisplayWidget } from '../widgets/CellDisplayWidget';
+import { SmartColumnWidget } from '../widgets/SmartColumnWidget';
+import { SimpleFilter } from '../filters';
+import { SmartCellDisplayWidget } from '../widgets/SmartCellDisplayWidget';
+import { SchemaModelObject } from '../../SchemaModelObject';
 import { SimplePage } from './SimplePage';
-import { AbstractQueryEncoded, AbstractSerializableQuery } from './AbstractSerializableQuery';
-import { SmartBelongsToDisplayWidget } from './widgets/SmartBelongsToDisplayWidget';
+import { AbstractQueryEncoded, AbstractSerializableQuery } from '../AbstractSerializableQuery';
+import { SmartBelongsToDisplayWidget } from '../widgets/SmartBelongsToDisplayWidget';
 
 export interface SimpleQueryOptions {
   definition?: SchemaModelDefinition;
