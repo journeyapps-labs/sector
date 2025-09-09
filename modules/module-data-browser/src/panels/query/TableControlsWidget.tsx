@@ -85,7 +85,9 @@ export const TableControlsWidget: React.FC<TableControlsWidgetProps> = observer(
             label={`Save all [${dirtyObjects.length}]`}
             icon="save"
             iconColor={_theme.status.success}
-            action={async (event, loading) => {}}
+            action={async (event, loading) => {
+              props.query.batchSave();
+            }}
           />
           <span
             {...setupTooltipProps({

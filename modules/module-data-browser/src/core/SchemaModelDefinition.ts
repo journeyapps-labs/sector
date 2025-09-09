@@ -68,10 +68,7 @@ export class SchemaModelDefinition
       });
   }
 
-  async resolve(id: string): Promise<SchemaModelObject | null> {
-    if (this.cache.has(id)) {
-      return this.cache.get(id);
-    }
+  async load(id: string) {
     if (!this.enqueued.has(id)) {
       this.enqueued.add(id);
       this.queue.push(id);
@@ -93,6 +90,13 @@ export class SchemaModelDefinition
         }
       });
     });
+  }
+
+  async resolve(id: string): Promise<SchemaModelObject | null> {
+    if (this.cache.has(id)) {
+      return this.cache.get(id);
+    }
+    return this.load(id);
   }
 
   get key() {
@@ -144,13 +148,7 @@ export class SchemaModelDefinition
     const collection = await this.getCollection();
     return new SchemaModelObject({
       definition: this,
-      adapter: collection.adapter,
-      model: {
-        id: v4(),
-        type: this.definition.name,
-        attributes: {},
-        belongs_to: {}
-      }
+      adapter: collection.adapter
     });
   }
 }

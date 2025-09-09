@@ -143,7 +143,7 @@ export class SimpleQuery extends AbstractSerializableQuery<SimpleQueryEncoded> {
           noWrap: true,
           shrink: true,
           accessor: (cell, row: PageRow) => {
-            return <SmartCellDisplayWidget name={a.name} cell={cell} row={row} />;
+            return <SmartCellDisplayWidget name={a.name} row={row} />;
           }
         } as TableColumn;
       })

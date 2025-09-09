@@ -1,14 +1,16 @@
 import {
   CheckboxWidget,
   ImageMedia,
+  ioc,
   MetadataWidget,
   SmartDateDisplayWidget,
   styled
 } from '@journeyapps-labs/reactor-mod';
-import { Attachment, Day, Location, Variable } from '@journeyapps/db';
+import { Attachment, Day, Location } from '@journeyapps/db';
 import * as _ from 'lodash';
 import * as React from 'react';
 import { PageRow } from '../Page';
+import { TypeEngine } from '../../../forms/TypeEngine';
 
 namespace S {
   export const Empty = styled.div`
@@ -108,13 +110,17 @@ export const CellDisplayWidget: React.FC<CellDisplayWidgetProps> = (props) => {
       return (
         <S.Preview
           onClick={() => {
-            row.model.getMedia(name).then((media) => {
-              if (media instanceof ImageMedia) {
-                media.open();
-              } else {
-                window.open(cell.url(), '_blank');
-              }
-            });
+            ioc
+              .get(TypeEngine)
+              .getHandler(row.definition.definition.attributes[name].type)
+              .decode(cell)
+              .then((media: ImageMedia) => {
+                if (media instanceof ImageMedia) {
+                  media.open();
+                } else {
+                  window.open(cell.url(), '_blank');
+                }
+              });
           }}
           src={cell.urls['thumbnail']}
         />

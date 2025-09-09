@@ -6,12 +6,11 @@ import { styled } from '@journeyapps-labs/reactor-mod';
 
 export interface SmartCellDisplayWidgetProps {
   row: PageRow;
-  cell: any;
   name: string;
 }
 
 export const SmartCellDisplayWidget: React.FC<SmartCellDisplayWidgetProps> = observer((props) => {
-  let value = props.cell;
+  let value = props.row.model.model[props.name];
   if (props.row.model.patch.has(props.name)) {
     value = props.row.model.patch.get(props.name);
   }

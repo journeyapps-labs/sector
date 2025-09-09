@@ -1,6 +1,5 @@
-import { ApiObjectData, Attachment as JAttachment, DatabaseAdapter, DatabaseObject } from '@journeyapps/db';
+import { ApiObjectData, DatabaseAdapter, DatabaseObject } from '@journeyapps/db';
 import { SchemaModelDefinition } from './SchemaModelDefinition';
-import { AbstractMedia, inject, MediaEngine } from '@journeyapps-labs/reactor-mod';
 import { action, observable } from 'mobx';
 
 export interface SchemaModelObjectOptions {
@@ -10,11 +9,6 @@ export interface SchemaModelObjectOptions {
 }
 
 export class SchemaModelObject {
-  @inject(MediaEngine)
-  accessor mediaEngine: MediaEngine;
-
-  private _mediaCache: Map<string, AbstractMedia>;
-
   @observable
   accessor data: ApiObjectData;
 
@@ -28,11 +22,29 @@ export class SchemaModelObject {
   accessor patch: Map<string, any>;
 
   constructor(public options: SchemaModelObjectOptions) {
-    this._mediaCache = new Map();
     if (options.model) {
       this.setData(options.model);
     }
     this.patch = new Map<string, any>();
+  }
+
+  async applyPatches() {
+    if (!this.model) {
+      const collection = await this.definition.getCollection();
+      this.model = collection.create();
+    }
+    for (let entry of this.patch.entries()) {
+      if (this.definition.definition.belongsTo[entry[0]]) {
+        this.model[entry[0]](entry[1].model);
+      } else {
+        this.model[entry[0]] = entry[1];
+      }
+    }
+    this.patch.clear();
+  }
+
+  async save() {
+    await this.definition.connection.batchSave([this]);
   }
 
   clearEdits() {
@@ -59,30 +71,15 @@ export class SchemaModelObject {
     this.updated_at = new Date(data._updated_at);
   }
 
+  async reload() {
+    await this.definition.load(this.id);
+  }
+
   get definition(): SchemaModelDefinition {
     return this.options.definition;
   }
 
   get id() {
     return this.data.id;
-  }
-
-  async getMedia(field: string) {
-    if (this._mediaCache.has(field)) {
-      return this._mediaCache.get(field);
-    }
-    let media = this.model[field] as JAttachment;
-    if (!media?.uploaded()) {
-      return null;
-    }
-    let url = new URL(media.url());
-    let mediaObject = this.mediaEngine.getMediaTypeForPath(url.pathname).generateMedia({
-      content: await media.toArrayBuffer(),
-      name: media.id,
-      uid: media.id
-    });
-
-    this._mediaCache.set(field, mediaObject);
-    return mediaObject;
   }
 }

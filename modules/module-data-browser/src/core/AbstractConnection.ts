@@ -8,6 +8,7 @@ import { BaseObserver } from '@journeyapps-labs/common-utils';
 import { Collection, LifecycleCollection } from '@journeyapps-labs/lib-reactor-data-layer';
 import { when } from 'mobx';
 import { EntityDescription } from '@journeyapps-labs/reactor-mod';
+import { SchemaModelObject } from './SchemaModelObject';
 
 export interface AbstractConnectionSerialized {
   factory: string;
@@ -41,6 +42,22 @@ export abstract class AbstractConnection extends BaseObserver<AbstractConnection
         return o.name;
       }
     });
+  }
+
+  async batchSave(models: SchemaModelObject[]) {
+    if (models.length === 0) {
+      return;
+    }
+    const database = await this.getConnection();
+    let batch = new database.Batch();
+    for (let model of models) {
+      await model.applyPatches();
+      batch.save(model.model);
+    }
+    await batch.execute();
+    for (let model of models) {
+      model.reload();
+    }
   }
 
   getSchemaModelDefinitionByName(name: string) {

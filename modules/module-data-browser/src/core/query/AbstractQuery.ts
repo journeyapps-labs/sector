@@ -14,6 +14,10 @@ export abstract class AbstractQuery {
     this.id = v4();
   }
 
+  async batchSave() {
+    await this.connection.batchSave(this.getDirtyObjects());
+  }
+
   abstract getDirtyObjects(): SchemaModelObject[];
 
   abstract getSimpleName(): string;

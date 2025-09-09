@@ -88,7 +88,9 @@ export const ModelPanelWidget: React.FC<QueryPanelWidgetProps> = observer((props
                   label="Save"
                   icon="save"
                   iconColor={_theme.status.success}
-                  action={() => {}}
+                  action={() => {
+                    props.model.model.save();
+                  }}
                 />
                 <PanelButtonWidget
                   disabled={props.model.model.patch.size === 0}

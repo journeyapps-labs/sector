@@ -75,8 +75,7 @@ export class TypeEngine {
         if (this._mediaCache.has(value.id)) {
           return this._mediaCache.get(value.id);
         }
-        let url = new URL(value.url());
-        let media = this.mediaEngine.getMediaTypeForPath(url.pathname).generateMedia({
+        let media = this.mediaEngine.getMediaTypeForPath('.jpg').generateMedia({
           content: await value.toArrayBuffer(),
           name: value.id,
           uid: value.id
