@@ -115,13 +115,6 @@ export class SchemaModelForm extends FormModel {
         value: null
       });
 
-      // if (options.object?.data.belongs_to[relationship.name]) {
-      //   definition.resolve(options.object?.data.belongs_to[relationship.name]).then((resolved) => {
-      //     if (resolved) {
-      //       entity.setValue(resolved);
-      //     }
-      //   });
-      // }
       return new Binding({
         name: relationship.name,
         model: this.options.object,
