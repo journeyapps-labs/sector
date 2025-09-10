@@ -1,69 +1,85 @@
-import { Attachment as JAttachment, DatabaseObject } from '@journeyapps/db';
+import { ApiObjectData, DatabaseAdapter, DatabaseObject } from '@journeyapps/db';
 import { SchemaModelDefinition } from './SchemaModelDefinition';
-import { AbstractMedia, inject, MediaEngine } from '@journeyapps-labs/reactor-mod';
+import { action, observable } from 'mobx';
 
 export interface SchemaModelObjectOptions {
   definition: SchemaModelDefinition;
-  model?: DatabaseObject;
+  adapter: DatabaseAdapter;
+  model?: ApiObjectData;
 }
 
 export class SchemaModelObject {
-  @inject(MediaEngine)
-  accessor mediaEngine: MediaEngine;
+  @observable
+  accessor data: ApiObjectData;
 
-  private _mediaCache: Map<string, AbstractMedia>;
+  @observable
+  accessor model: DatabaseObject;
+
+  @observable
+  accessor updated_at: Date;
+
+  @observable
+  accessor patch: Map<string, any>;
 
   constructor(public options: SchemaModelObjectOptions) {
-    this._mediaCache = new Map();
+    if (options.model) {
+      this.setData(options.model);
+    }
+    this.patch = new Map<string, any>();
+  }
+
+  async applyPatches() {
+    if (!this.model) {
+      const collection = await this.definition.getCollection();
+      this.model = collection.create();
+    }
+    for (let entry of this.patch.entries()) {
+      if (this.definition.definition.belongsTo[entry[0]]) {
+        this.model[entry[0]](entry[1].model);
+      } else {
+        this.model[entry[0]] = entry[1];
+      }
+    }
+    this.patch.clear();
+  }
+
+  async save() {
+    await this.definition.connection.batchSave([this]);
+  }
+
+  clearEdits() {
+    this.patch.clear();
+  }
+
+  revert(field: string) {
+    this.patch.delete(field);
+  }
+
+  set(field: string, value: any) {
+    if (this.model?.[field] === value) {
+      this.patch.delete(field);
+    } else {
+      this.patch.set(field, value);
+    }
+  }
+
+  @action setData(data: ApiObjectData) {
+    this.data = data;
+    this.model = new DatabaseObject(this.options.adapter, this.definition.definition, data.id);
+    // @ts-ignore
+    this.model.resolve(data);
+    this.updated_at = new Date(data._updated_at);
+  }
+
+  async reload() {
+    await this.definition.load(this.id);
   }
 
   get definition(): SchemaModelDefinition {
     return this.options.definition;
   }
 
-  get model() {
-    return this.options.model;
-  }
-
-  async displayValue(): Promise<string> {
-    if (!this.model) {
-      return null;
-    }
-    let val = this.model.toString();
-    if (val) {
-      return val;
-    }
-    /*
-      there are scenarios where the FormatStringScope has not yet completed setting up its state +
-      parsing the format string directive. We therefore poll for a bit until we get the value. Ideally
-      we need a better way to determine when the scope is ready, but could not find one yet.
-     */
-    for (let i = 0; i < 10; i++) {
-      await new Promise((resolve) => setTimeout(resolve, 40));
-      let val = this.model.toString();
-      if (val) {
-        return val;
-      }
-    }
-    return null;
-  }
-
-  async getMedia(field: string) {
-    if (this._mediaCache.has(field)) {
-      return this._mediaCache.get(field);
-    }
-    let media = this.model[field] as JAttachment;
-    if (!media?.uploaded()) {
-      return null;
-    }
-    let url = new URL(media.url());
-    let mediaObject = this.mediaEngine.getMediaTypeForPath(url.pathname).generateMedia({
-      content: await media.toArrayBuffer(),
-      name: media.id,
-      uid: media.id
-    });
-
-    this._mediaCache.set(field, mediaObject);
-    return mediaObject;
+  get id() {
+    return this.data.id;
   }
 }

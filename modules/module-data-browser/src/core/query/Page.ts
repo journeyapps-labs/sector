@@ -1,9 +1,7 @@
 import { SchemaModelObject } from '../SchemaModelObject';
 import { TableRow } from '@journeyapps-labs/reactor-mod';
-import { Collection, DatabaseObject } from '@journeyapps/db';
 import { observable } from 'mobx';
 import { SchemaModelDefinition } from '../SchemaModelDefinition';
-import { AbstractFilter } from './filters';
 
 export interface PageRow extends TableRow {
   model: SchemaModelObject;
@@ -11,12 +9,8 @@ export interface PageRow extends TableRow {
 }
 
 export interface PageOptions {
-  collection: () => Promise<Collection<DatabaseObject>>;
-  offset: number;
-  limit: number;
   definition: SchemaModelDefinition;
   index: number;
-  filters: AbstractFilter[];
 }
 
 export class Page {
@@ -35,23 +29,14 @@ export class Page {
     return this.options.index;
   }
 
-  async load() {
-    this.loading = true;
-    let collection = await this.options.collection();
-    let query = collection.all();
-
-    this.options.filters.forEach((f) => {
-      query = f.augment(query);
+  reset() {
+    this.models.forEach((m) => {
+      m.patch.clear();
     });
+  }
 
-    let models = await query.limit(this.options.limit).skip(this.options.offset).toArray();
-    this.models = models.map((m) => {
-      return new SchemaModelObject({
-        definition: this.options.definition,
-        model: m
-      });
-    });
-    this.loading = false;
+  getDirtyObjects() {
+    return this.models.filter((m) => m.patch.size > 0);
   }
 
   asRows(): PageRow[] {

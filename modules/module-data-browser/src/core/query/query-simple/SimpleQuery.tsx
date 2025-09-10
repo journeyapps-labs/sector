@@ -1,18 +1,19 @@
-import { AbstractQuery, AbstractQueryEncoded } from './AbstractQuery';
-import { ActionSource, inject, TableColumn } from '@journeyapps-labs/reactor-mod';
-import { ConnectionStore } from '../../stores/ConnectionStore';
-import * as db from '@journeyapps/db';
-import { Promise, Type, Variable } from '@journeyapps/db';
-import { Page, PageRow } from './Page';
-import { SchemaModelDefinition } from '../SchemaModelDefinition';
+import { inject, TableColumn } from '@journeyapps-labs/reactor-mod';
+import { ConnectionStore } from '../../../stores/ConnectionStore';
+import { Promise, Variable } from '@journeyapps/db';
+import { Page, PageRow } from '../Page';
+import { SchemaModelDefinition } from '../../SchemaModelDefinition';
 import * as _ from 'lodash';
 import * as React from 'react';
 import { action, observable } from 'mobx';
-import { CellDisplayWidget } from './widgets/CellDisplayWidget';
-import { BelongsToDisplayWidget } from './widgets/BelongsToDisplayWidget';
-import { EditSchemaModelAction } from '../../actions/schema-model/EditSchemaModelAction';
-import { SmartColumnWidget } from './widgets/SmartColumnWidget';
-import { AbstractFilter, SimpleFilter } from './filters';
+import { CellDisplayWidget } from '../widgets/CellDisplayWidget';
+import { SmartColumnWidget } from '../widgets/SmartColumnWidget';
+import { SimpleFilter } from '../filters';
+import { SmartCellDisplayWidget } from '../widgets/SmartCellDisplayWidget';
+import { SchemaModelObject } from '../../SchemaModelObject';
+import { SimplePage } from './SimplePage';
+import { AbstractQueryEncoded, AbstractSerializableQuery } from '../AbstractSerializableQuery';
+import { SmartBelongsToDisplayWidget } from '../widgets/SmartBelongsToDisplayWidget';
 
 export interface SimpleQueryOptions {
   definition?: SchemaModelDefinition;
@@ -24,7 +25,7 @@ export interface SimpleQueryEncoded extends AbstractQueryEncoded {
   definition: string;
 }
 
-export class SimpleQuery extends AbstractQuery<SimpleQueryEncoded> {
+export class SimpleQuery extends AbstractSerializableQuery<SimpleQueryEncoded> {
   @inject(ConnectionStore)
   accessor connStore: ConnectionStore;
 
@@ -43,30 +44,22 @@ export class SimpleQuery extends AbstractQuery<SimpleQueryEncoded> {
     this.simple_filters = new Map();
   }
 
-  async getCollection() {
-    let connection = await this.connection.getConnection();
-    return connection[this.options.definition.definition.name] as db.Collection;
-  }
-
   @action async load() {
     this._pages = [];
-    let collection = await this.getCollection();
-
+    let collection = await this.options.definition.getCollection();
     let query = collection.all();
     this.simple_filters.forEach((f) => {
       query = f.augment(query);
     });
-
     let results = await (collection.adapter as any).doApiQuery(query);
     this._totalPages = Math.ceil(results.total / this.options.limit);
   }
 
   getPage(number: number): Page {
     if (!this._pages[number]) {
-      let page = new Page({
+      let page = new SimplePage({
         offset: number * this.options.limit,
         limit: this.options.limit,
-        collection: () => this.getCollection(),
         definition: this.options.definition,
         index: number,
         filters: Array.from(this.simple_filters.values())
@@ -103,31 +96,33 @@ export class SimpleQuery extends AbstractQuery<SimpleQueryEncoded> {
         noWrap: true,
         shrink: true
       },
+      {
+        key: 'updated_at',
+        display: 'Updated at',
+        noWrap: true,
+        shrink: true,
+        accessor: (cell, row: PageRow) => {
+          return <CellDisplayWidget name="updated_at" cell={row.model.updated_at} row={row} />;
+        }
+      },
       ..._.map(this.options.definition.definition.belongsToIdVars, (a) => {
         return {
           key: a.name,
-          display: a.name,
+          display: (
+            <SmartColumnWidget
+              variable={this.options.definition.definition.belongsToVars[a.relationship]}
+              type={this.options.definition.definition.belongsTo[a.relationship].foreignType}
+              filterChanged={(filter) => {}}
+            />
+          ),
           noWrap: true,
           shrink: true,
           accessor: (cell, row: PageRow) => {
-            return (
-              <BelongsToDisplayWidget
-                open={(object) => {
-                  EditSchemaModelAction.get().fireAction({
-                    source: ActionSource.BUTTON,
-                    targetEntity: object
-                  });
-                }}
-                relationship={row.model.definition.definition.belongsTo[a.relationship]}
-                connection={this.connection}
-                id={row.model.model[a.name]}
-              />
-            );
+            return <SmartBelongsToDisplayWidget variable_id={a} row={row} connection={this.connection} />;
           }
         } as TableColumn;
       }),
       ..._.map(this.options.definition.definition.attributes, (a) => {
-        // @ts-ignore FIXME, remove when `display` supports JSX.Element as a type
         return {
           key: a.name,
           display: (
@@ -148,7 +143,7 @@ export class SimpleQuery extends AbstractQuery<SimpleQueryEncoded> {
           noWrap: true,
           shrink: true,
           accessor: (cell, row: PageRow) => {
-            return <CellDisplayWidget variable={a} cell={cell} row={row} />;
+            return <SmartCellDisplayWidget name={a.name} row={row} />;
           }
         } as TableColumn;
       })
@@ -157,5 +152,12 @@ export class SimpleQuery extends AbstractQuery<SimpleQueryEncoded> {
 
   getSimpleName(): string {
     return `Query: ${this.options.definition.definition.label}`;
+  }
+
+  getDirtyObjects(): SchemaModelObject[] {
+    return _.flatMap(
+      this._pages.filter((p) => !!p),
+      (page) => page.getDirtyObjects()
+    );
   }
 }

@@ -21,7 +21,8 @@ export class CreateModelAction extends EntityAction<SchemaModelDefinition> {
   async fireEvent(event: EntityActionEvent<SchemaModelDefinition>): Promise<any> {
     this.workspaceStore.addModel(
       new ModelPanelModel({
-        definition: event.targetEntity
+        definition: event.targetEntity,
+        model: await event.targetEntity.generateNewModelObject()
       })
     );
   }

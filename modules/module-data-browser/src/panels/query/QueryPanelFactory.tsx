@@ -5,6 +5,7 @@ import { AbstractQuery } from '../../core/query/AbstractQuery';
 import { ConnectionStore } from '../../stores/ConnectionStore';
 import { observable } from 'mobx';
 import { WorkspaceModelFactoryEvent } from '@projectstorm/react-workspaces-core';
+import { AbstractSerializableQuery } from '../../core/query/AbstractSerializableQuery';
 
 export class QueryPanelModel extends ReactorPanelModel {
   @inject(ConnectionStore)
@@ -21,6 +22,10 @@ export class QueryPanelModel extends ReactorPanelModel {
     this.setExpand(true, true);
     this.query = query;
     this.current_page = 0;
+  }
+
+  isSerializable() {
+    return this.query instanceof AbstractSerializableQuery;
   }
 
   toArray() {

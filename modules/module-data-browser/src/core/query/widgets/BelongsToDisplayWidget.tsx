@@ -5,15 +5,17 @@ import { AbstractConnection } from '../../AbstractConnection';
 import { IconWidget, styled, TableButtonWidget } from '@journeyapps-labs/reactor-mod';
 import { copyTextToClipboard } from '@journeyapps-labs/lib-reactor-utils';
 import { Relationship } from '@journeyapps/parser-schema';
+import { observer } from 'mobx-react';
 
 export interface BelongsToDisplayWidgetProps {
   relationship: Relationship;
   id: string;
   connection: AbstractConnection;
   open: (object: SchemaModelObject) => any;
+  className?: any;
 }
 
-export const BelongsToDisplayWidget: React.FC<BelongsToDisplayWidgetProps> = (props) => {
+export const BelongsToDisplayWidget: React.FC<BelongsToDisplayWidgetProps> = observer((props) => {
   const [object, setObject] = useState<SchemaModelObject>(null);
   const [broken, setBroken] = useState(false);
 
@@ -55,8 +57,8 @@ export const BelongsToDisplayWidget: React.FC<BelongsToDisplayWidgetProps> = (pr
   }
 
   return (
-    <S.Container>
-      <BelongsToStringWidget model={object} />
+    <S.Container className={props.className}>
+      {object.data.display}
       <TableButtonWidget
         icon="arrow-right"
         action={() => {
@@ -65,22 +67,7 @@ export const BelongsToDisplayWidget: React.FC<BelongsToDisplayWidgetProps> = (pr
       />
     </S.Container>
   );
-};
-
-export const BelongsToStringWidget: React.FC<{ model: SchemaModelObject }> = ({ model }) => {
-  const [display, setDisplay] = useState<string>();
-  useEffect(() => {
-    model.displayValue().then((value) => {
-      setDisplay(value);
-    });
-  }, []);
-
-  if (!display) {
-    return <S.Spinner spin={true} icon="spinner" />;
-  }
-
-  return <span>{display}</span>;
-};
+});
 
 namespace S {
   export const Warning = styled(TableButtonWidget)`

@@ -1,14 +1,16 @@
 import {
   CheckboxWidget,
   ImageMedia,
+  ioc,
   MetadataWidget,
   SmartDateDisplayWidget,
   styled
 } from '@journeyapps-labs/reactor-mod';
-import { Attachment, Day, Location, Variable } from '@journeyapps/db';
+import { Attachment, Day, Location } from '@journeyapps/db';
 import * as _ from 'lodash';
 import * as React from 'react';
 import { PageRow } from '../Page';
+import { TypeEngine } from '../../../forms/TypeEngine';
 
 namespace S {
   export const Empty = styled.div`
@@ -46,13 +48,13 @@ namespace S {
 export interface CellDisplayWidgetProps {
   row: PageRow;
   cell: any;
-  variable: Variable;
+  name: string;
 }
 
 const MAX_NUMBER_OF_ARR_ITEMS_TO_DISPLAY = 3;
 
 export const CellDisplayWidget: React.FC<CellDisplayWidgetProps> = (props) => {
-  const { row, cell, variable } = props;
+  const { row, cell, name } = props;
   if (cell == null) {
     return <S.Empty>null</S.Empty>;
   }
@@ -69,9 +71,7 @@ export const CellDisplayWidget: React.FC<CellDisplayWidgetProps> = (props) => {
     if (cell.length === 0) {
       return <S.Empty>empty array</S.Empty>;
     }
-
     let items = _.slice(cell, 0, MAX_NUMBER_OF_ARR_ITEMS_TO_DISPLAY);
-
     return (
       <S.Pills>
         {items.map((c) => {
@@ -88,7 +88,14 @@ export const CellDisplayWidget: React.FC<CellDisplayWidgetProps> = (props) => {
     return <SmartDateDisplayWidget date={cell.toDate()} />;
   }
   if (_.isBoolean(cell)) {
-    return <CheckboxWidget checked={cell} onChange={() => {}} />;
+    return (
+      <CheckboxWidget
+        checked={cell}
+        onChange={(checked) => {
+          row.model.set(name, checked);
+        }}
+      />
+    );
   }
   if (cell instanceof Location) {
     return (
@@ -103,13 +110,17 @@ export const CellDisplayWidget: React.FC<CellDisplayWidgetProps> = (props) => {
       return (
         <S.Preview
           onClick={() => {
-            row.model.getMedia(variable.name).then((media) => {
-              if (media instanceof ImageMedia) {
-                media.open();
-              } else {
-                window.open(cell.url(), '_blank');
-              }
-            });
+            ioc
+              .get(TypeEngine)
+              .getHandler(row.definition.definition.attributes[name].type)
+              .decode(cell)
+              .then((media: ImageMedia) => {
+                if (media instanceof ImageMedia) {
+                  media.open();
+                } else {
+                  window.open(cell.url(), '_blank');
+                }
+              });
           }}
           src={cell.urls['thumbnail']}
         />

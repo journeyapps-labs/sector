@@ -4,12 +4,15 @@ import { observer } from 'mobx-react';
 import styled from '@emotion/styled';
 import {
   BorderLayoutWidget,
+  ioc,
   LoadingPanelWidget,
   PANEL_CONTENT_PADDING,
+  PanelButtonWidget,
   PanelToolbarWidget,
-  ScrollableDivCss
+  ScrollableDivCss,
+  theme,
+  ThemeStore
 } from '@journeyapps-labs/reactor-mod';
-
 import { SchemaModelForm } from '../../forms/SchemaModelForm';
 import { ModelPanelModel } from './ModelPanelFactory';
 
@@ -23,21 +26,31 @@ namespace S {
     padding: ${PANEL_CONTENT_PADDING}px;
     ${ScrollableDivCss};
   `;
+
+  export const Buttons = styled.div`
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+    padding: 5px;
+  `;
 }
 
 export const ModelPanelWidget: React.FC<QueryPanelWidgetProps> = observer((props) => {
   const [form, setForm] = useState<SchemaModelForm>(null);
+  const _theme = ioc.get(ThemeStore).getCurrentTheme(theme);
 
   useEffect(() => {
     if (!props.model.definition) {
       return;
     }
-    setForm(
-      new SchemaModelForm({
-        object: props.model.model,
-        definition: props.model.definition
-      })
-    );
+    let _form = new SchemaModelForm({
+      object: props.model.model,
+      definition: props.model.definition
+    });
+    setForm(_form);
+    return () => {
+      _form.dispose();
+    };
   }, [props.model.model, props.model.definition]);
 
   let top = null;
@@ -66,7 +79,30 @@ export const ModelPanelWidget: React.FC<QueryPanelWidgetProps> = observer((props
     <LoadingPanelWidget loading={!form}>
       {() => {
         return (
-          <BorderLayoutWidget top={top}>
+          <BorderLayoutWidget
+            top={top}
+            bottom={
+              <S.Buttons>
+                <PanelButtonWidget
+                  disabled={props.model.model.patch.size === 0}
+                  label="Save"
+                  icon="save"
+                  iconColor={_theme.status.success}
+                  action={() => {
+                    props.model.model.save();
+                  }}
+                />
+                <PanelButtonWidget
+                  disabled={props.model.model.patch.size === 0}
+                  label="Discard edits"
+                  icon="arrow-rotate-back"
+                  action={() => {
+                    props.model.model.clearEdits();
+                  }}
+                />
+              </S.Buttons>
+            }
+          >
             <S.Container>{form.render()}</S.Container>
           </BorderLayoutWidget>
         );
