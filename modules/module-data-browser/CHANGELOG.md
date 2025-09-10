@@ -1,5 +1,11 @@
 # @journeyapps-labs/reactor-mod-data-browser
 
+## 2.3.0
+
+### Minor Changes
+
+- bb7000e: Rewrite the data engine
+
 ## 2.2.0
 
 ### Minor Changes
