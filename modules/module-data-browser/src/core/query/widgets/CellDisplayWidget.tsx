@@ -8,19 +8,6 @@ namespace S {
   export const Empty = styled.div`
     opacity: 0.2;
   `;
-
-  export const pill = styled.div`
-    padding: 2px 4px;
-    background: ${(p) => p.theme.table.pills};
-    border-radius: 3px;
-    font-size: 12px;
-  `;
-
-  export const Pills = styled.div`
-    display: flex;
-    column-gap: 2px;
-    row-gap: 2px;
-  `;
 }
 
 export interface CellDisplayWidgetProps {
@@ -28,8 +15,6 @@ export interface CellDisplayWidgetProps {
   cell: any;
   name: string;
 }
-
-const MAX_NUMBER_OF_ARR_ITEMS_TO_DISPLAY = 3;
 
 export const CellDisplayWidget: React.FC<CellDisplayWidgetProps> = (props) => {
   const { row, cell, name } = props;
@@ -52,21 +37,6 @@ export const CellDisplayWidget: React.FC<CellDisplayWidgetProps> = (props) => {
     return display;
   }
 
-  if (_.isArray(cell)) {
-    if (cell.length === 0) {
-      return <S.Empty>empty array</S.Empty>;
-    }
-    let items = _.slice(cell, 0, MAX_NUMBER_OF_ARR_ITEMS_TO_DISPLAY);
-    return (
-      <S.Pills>
-        {items.map((c) => {
-          return <S.pill key={c}>{c}</S.pill>;
-        })}
-        {items.length !== cell.length ? '...' : null}
-      </S.Pills>
-    );
-  }
-
-  console.log('unknown type', cell);
+  console.log('unknown type', cell, row.definition.definition.attributes[name].type);
   return null;
 };

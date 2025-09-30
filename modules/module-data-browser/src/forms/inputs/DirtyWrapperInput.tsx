@@ -29,6 +29,12 @@ export class DirtyWrapperInput extends FormInput {
     }
   }
 
+  clear() {
+    if (this.object) {
+      this.object.set(this.input.name, null);
+    }
+  }
+
   @computed get dirty() {
     return this.object?.patch.has(this.input.name);
   }
@@ -54,6 +60,14 @@ export const Wrapper: React.FC<React.PropsWithChildren<WrapperProps>> = observer
           }}
         />
       ) : null}
+      {props.input.value != null ? (
+        <S.ClearButton
+          icon="close"
+          onClick={() => {
+            props.input.clear();
+          }}
+        />
+      ) : null}
     </S.Container>
   );
 });
@@ -68,6 +82,12 @@ namespace S {
 
   export const RevertButton = styled(FontAwesomeIcon)`
     color: ${(p) => p.theme.status.success};
+    font-size: 12px;
+    padding: 5px;
+    cursor: pointer;
+  `;
+  export const ClearButton = styled(FontAwesomeIcon)`
+    color: ${(p) => p.theme.text.secondary};
     font-size: 12px;
     padding: 5px;
     cursor: pointer;

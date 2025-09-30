@@ -7,10 +7,13 @@ import {
   Day,
   Location,
   LocationType,
+  MultipleChoiceIntegerType,
+  MultipleChoiceType,
   NumberType,
   PhotoType,
   SignatureType,
   SingleChoiceIntegerType,
+  SingleChoiceType,
   TextType,
   Type
 } from '@journeyapps/db';
@@ -28,19 +31,23 @@ import {
   MediaEngine,
   MetadataWidget,
   NumberInput,
+  PanelButtonWidget,
   SelectInput,
   SmartDateDisplayWidget,
   styled,
   TableButtonWidget,
   TextAreaInput,
   TextInput,
-  TextInputType
+  TextInputType,
+  MultiSelectInput
 } from '@journeyapps-labs/reactor-mod';
 import { LocationInput } from './inputs/LocationInput';
 import * as React from 'react';
 import { JSX } from 'react';
 import { SchemaModelObject } from '../core/SchemaModelObject';
 import * as _ from 'lodash';
+
+const MAX_NUMBER_OF_ARR_ITEMS_TO_DISPLAY = 3;
 
 export interface TypeHandler<T extends Type = Type, ENCODED = any, DECODED = any> {
   matches: (type: Type) => boolean;
@@ -157,8 +164,15 @@ export class TypeEngine {
           label
         });
       },
-      generateDisplay: ({ value, type }) => {
-        return null;
+      generateDisplay: ({ value }) => {
+        return (
+          <TableButtonWidget
+            icon="download"
+            action={() => {
+              window.open(value.url(), '_blank');
+            }}
+          />
+        );
       }
     });
     this.register({
@@ -237,7 +251,8 @@ export class TypeEngine {
           if ((value.startsWith('[') && value.endsWith(']')) || (value.startsWith('{') && value.endsWith('}'))) {
             try {
               let parsed = JSON.parse(value);
-              return 'JSON Data {}';
+
+              return <TableButtonWidget icon="code" label="JSON" action={() => {}} />;
             } catch (ex) {}
           }
         }
@@ -269,7 +284,7 @@ export class TypeEngine {
           label
         });
       },
-      generateDisplay: ({ value, type, name, model }) => {
+      generateDisplay: ({ value }) => {
         return (
           <>
             <MetadataWidget label={'Lat'} value={`${value.latitude}`} />
@@ -294,6 +309,69 @@ export class TypeEngine {
         return `${value}`;
       }
     });
+
+    this.register({
+      matches: (type) => type instanceof SingleChoiceType,
+      encode: async (value: string) => value,
+      decode: async (value: string) => value,
+      generateField: ({ label, name, type }) => {
+        return new SelectInput({
+          name,
+          label,
+          options: _.mapValues(type.options, (o) => `${o.value}`)
+        });
+      },
+      generateDisplay: ({ value }) => {
+        return value;
+      }
+    });
+
+    this.register({
+      matches: (type) => type instanceof MultipleChoiceType,
+      encode: async (value: string[]) => value,
+      decode: async (value: string[]) => value,
+      generateField: ({ label, name, type }) => {
+        return new MultiSelectInput({
+          name,
+          label,
+          options: _.mapValues(type.options, (o) => `${o.value}`)
+        });
+      },
+      generateDisplay: ({ value }) => {
+        return this.displayArray(value);
+      }
+    });
+
+    this.register({
+      matches: (type) => type instanceof MultipleChoiceIntegerType,
+      encode: async (value: string[]) => value.map((v) => parseInt(v)),
+      decode: async (value: number[]) => value.map((v) => `${v}`),
+      generateField: ({ label, name, type }) => {
+        return new MultiSelectInput({
+          name,
+          label,
+          options: _.mapValues(type.options, (o) => `${o.value}`)
+        });
+      },
+      generateDisplay: ({ value }) => {
+        return this.displayArray(value);
+      }
+    });
+  }
+
+  displayArray(value: any[]) {
+    if (value.length === 0) {
+      return <S.Empty>empty array</S.Empty>;
+    }
+    let items = _.slice(value, 0, MAX_NUMBER_OF_ARR_ITEMS_TO_DISPLAY);
+    return (
+      <S.Pills>
+        {items.map((c) => {
+          return <S.pill key={c}>{c}</S.pill>;
+        })}
+        {items.length !== value.length ? '...' : null}
+      </S.Pills>
+    );
   }
 
   getHandler(type: Type) {
@@ -336,5 +414,18 @@ namespace S {
     align-items: center;
     justify-content: space-between;
     flex-grow: 1;
+  `;
+
+  export const pill = styled.div`
+    padding: 2px 4px;
+    background: ${(p) => p.theme.table.pills};
+    border-radius: 3px;
+    font-size: 12px;
+  `;
+
+  export const Pills = styled.div`
+    display: flex;
+    column-gap: 2px;
+    row-gap: 2px;
   `;
 }

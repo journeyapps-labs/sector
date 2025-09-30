@@ -42,7 +42,7 @@ export class Binding {
     });
     this.listener1 = autorun(async () => {
       let value = model.patch.get(name);
-      if (value == null) {
+      if (!model.patch.has(name)) {
         value = await options.resolve();
       }
       this.setting_value_via_autorun = true;
