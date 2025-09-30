@@ -45,8 +45,8 @@ importers:
         specifier: ^1.0.5
         version: 1.0.5
       '@journeyapps-labs/reactor-mod':
-        specifier: 2.1.0
-        version: 2.1.0(@babel/runtime@7.28.3)(@types/react@19.1.16)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)
+        specifier: 2.1.1
+        version: 2.1.1(@babel/runtime@7.28.3)(@types/react@19.1.16)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)
       '@journeyapps/db':
         specifier: ^8.1.1
         version: 8.1.1(fp-ts@2.16.10)
@@ -103,8 +103,8 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0
       '@journeyapps-labs/reactor-mod':
-        specifier: 2.1.0
-        version: 2.1.0(@babel/runtime@7.28.3)(@types/react@19.1.16)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)
+        specifier: 2.1.1
+        version: 2.1.1(@babel/runtime@7.28.3)(@types/react@19.1.16)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)
       '@journeyapps-labs/reactor-mod-data-browser':
         specifier: workspace:^
         version: link:../module-data-browser
@@ -131,8 +131,8 @@ importers:
         specifier: ^1.1.6
         version: 1.1.6
       '@journeyapps-labs/reactor-mod':
-        specifier: 2.1.0
-        version: 2.1.0(@babel/runtime@7.28.3)(@types/react@19.1.16)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)
+        specifier: 2.1.1
+        version: 2.1.1(@babel/runtime@7.28.3)(@types/react@19.1.16)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)
       '@journeyapps-labs/reactor-mod-data-browser':
         specifier: workspace:^
         version: link:../modules/module-data-browser
@@ -1026,8 +1026,8 @@ packages:
   '@journeyapps-labs/lib-reactor-utils@2.0.4':
     resolution: {integrity: sha512-AGuKM2PPwYdSUPpp+sE2E1Y3x8RiOHMfPb24eVVIdAyKUoJIOThQOposW3MrfnL3cRL7LSueFbJ3ZfpMJvSbKA==}
 
-  '@journeyapps-labs/reactor-mod@2.1.0':
-    resolution: {integrity: sha512-kpQyaxYZpXSYeHu0ZFPvy6mqiaDPYAXM/5wrehVtiumktx/lXXfzzeyVMWI+pDPGK3xWGrcl2nRAR58u3ujmyQ==}
+  '@journeyapps-labs/reactor-mod@2.1.1':
+    resolution: {integrity: sha512-0JPrvsjFp78cgoUU7XyN+ZQJlnwcorEd2a8u8FawDVSJzzJWCqB+dmJ0Wza2VclYIZqLrey+YA1Zx/PtFEgaYA==}
 
   '@journeyapps/core-date@5.3.2':
     resolution: {integrity: sha512-xRTEe7Ur0/lGfmYvVfJpknfDZxb+lHfV4TRjmi+Zj8ZTwlXbl94muFlvQ6h12swzLlYi6dU7xyCpRWZjnZEIgA==}
@@ -5205,7 +5205,7 @@ snapshots:
       minimatch: 10.0.3
       mobx: 6.15.0
 
-  '@journeyapps-labs/reactor-mod@2.1.0(@babel/runtime@7.28.3)(@types/react@19.1.16)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)':
+  '@journeyapps-labs/reactor-mod@2.1.1(@babel/runtime@7.28.3)(@types/react@19.1.16)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)':
     dependencies:
       '@emotion/is-prop-valid': 1.4.0
       '@emotion/react': 11.14.0(@types/react@19.1.16)(react@19.1.1)

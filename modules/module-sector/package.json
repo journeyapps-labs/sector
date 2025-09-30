@@ -13,7 +13,7 @@
     "@emotion/styled": "^11.14.1",
     "@journeyapps-labs/common-utils": "^1.0.0",
     "@journeyapps-labs/common-ioc": "^1.0.0",
-    "@journeyapps-labs/reactor-mod": "2.1.0",
+    "@journeyapps-labs/reactor-mod": "2.1.1",
     "@journeyapps-labs/reactor-mod-data-browser": "workspace:^",
     "react": "19.1.1",
     "uuid": "^13.0.0",

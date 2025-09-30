@@ -6,7 +6,7 @@
     "watch": "nodemon --watch src --ext ts --ignore dist --exec 'pnpm start'"
   },
   "dependencies": {
-    "@journeyapps-labs/reactor-mod": "2.1.0",
+    "@journeyapps-labs/reactor-mod": "2.1.1",
     "@journeyapps-labs/reactor-mod-data-browser": "workspace:^",
     "@journeyapps-labs/reactor-mod-sector": "workspace:^",
     "@journeyapps-labs/lib-reactor-server": "^1.1.6",
