@@ -39,13 +39,16 @@ import {
   TextAreaInput,
   TextInput,
   TextInputType,
-  MultiSelectInput
+  MultiSelectInput,
+  WorkspaceStore
 } from '@journeyapps-labs/reactor-mod';
+import {} from '@journeyapps-labs/reactor-mod-editor';
 import { LocationInput } from './inputs/LocationInput';
 import * as React from 'react';
 import { JSX } from 'react';
 import { SchemaModelObject } from '../core/SchemaModelObject';
 import * as _ from 'lodash';
+import { ModelJsonPanelModel } from '../panels/model-json/ModelJsonPanelFactory';
 
 const MAX_NUMBER_OF_ARR_ITEMS_TO_DISPLAY = 3;
 
@@ -68,6 +71,9 @@ export class TypeEngine {
 
   @inject(MediaEngine)
   accessor mediaEngine: MediaEngine;
+
+  @inject(WorkspaceStore)
+  accessor workspaceStore: WorkspaceStore;
 
   private _mediaCache: Map<string, AbstractMedia>;
 
@@ -252,7 +258,21 @@ export class TypeEngine {
             try {
               let parsed = JSON.parse(value);
 
-              return <TableButtonWidget icon="code" label="JSON" action={() => {}} />;
+              return (
+                <TableButtonWidget
+                  icon="code"
+                  label="JSON"
+                  action={() => {
+                    this.workspaceStore.addModel(
+                      new ModelJsonPanelModel({
+                        definition: model.definition,
+                        model: model,
+                        field: name
+                      })
+                    );
+                  }}
+                />
+              );
             } catch (ex) {}
           }
         }

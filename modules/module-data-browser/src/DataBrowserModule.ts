@@ -15,6 +15,8 @@ import { CreateModelAction } from './actions/schema-definitions/CreateModelActio
 import { SchemaModelObjectEntityDefinition } from './entities/SchemaModelObjectEntityDefinition';
 import { EditSchemaModelAction } from './actions/schema-model/EditSchemaModelAction';
 import { TypeEngine } from './forms/TypeEngine';
+import { ViewSchemaModelAsJsonAction } from './actions/schema-model/ViewSchemaModelAsJsonAction';
+import { ModelJsonPanelFactory } from './panels/model-json/ModelJsonPanelFactory';
 
 export class DataBrowserModule extends AbstractReactorModule {
   constructor() {
@@ -37,6 +39,7 @@ export class DataBrowserModule extends AbstractReactorModule {
     system.registerAction(new QuerySchemaModelAction());
     system.registerAction(new CreateModelAction());
     system.registerAction(new EditSchemaModelAction());
+    system.registerAction(new ViewSchemaModelAsJsonAction());
 
     system.addStore(ConnectionStore, connectionStore);
 
@@ -48,6 +51,7 @@ export class DataBrowserModule extends AbstractReactorModule {
 
     workspaceStore.registerFactory(new QueryPanelFactory());
     workspaceStore.registerFactory(new ModelPanelFactory());
+    workspaceStore.registerFactory(new ModelJsonPanelFactory());
   }
 
   async init(ioc: Container): Promise<any> {

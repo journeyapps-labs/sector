@@ -24,6 +24,7 @@
     "@journeyapps-labs/common-utils": "^1.0.0",
     "@journeyapps-labs/lib-reactor-data-layer": "^1.0.5",
     "@journeyapps-labs/reactor-mod": "2.1.1",
+    "@journeyapps-labs/reactor-mod-editor": "^1.1.7",
     "@journeyapps/db": "^8.1.1",
     "@journeyapps/parser-schema": "^8.2.5",
     "@projectstorm/react-workspaces-core": "4.2.2",
