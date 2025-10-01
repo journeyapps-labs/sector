@@ -1,4 +1,5 @@
 import {
+  EntityActionHandlerComponent,
   EntityDefinition,
   EntityDescriberComponent,
   inject,
@@ -10,6 +11,7 @@ import { DataBrowserEntities } from '../entities';
 import { ConnectionStore } from '../stores/ConnectionStore';
 import { AbstractConnection } from '../core/AbstractConnection';
 import { SchemaModelDefinition } from '../core/SchemaModelDefinition';
+import { QuerySchemaModelAction } from '../actions/schema-definitions/QuerySchemaModelAction';
 
 export interface SchemaModelDefinitionEntityDefinitionEncoded {
   connection_id: string;
@@ -68,6 +70,8 @@ export class SchemaModelDefinitionEntityDefinition extends EntityDefinition<Sche
         }
       })
     );
+
+    this.registerComponent(new EntityActionHandlerComponent(QuerySchemaModelAction.ID));
   }
 
   matchEntity(t: any): boolean {

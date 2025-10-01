@@ -50,6 +50,11 @@ export class ConnectionEntityDefinition extends EntityDefinition<AbstractConnect
         descendantType: DataBrowserEntities.SCHEMA_MODEL_DEFINITION,
         generateOptions: (parent) => {
           return {
+            category: {
+              label: 'Models',
+              icon: 'cube',
+              openDefault: true
+            },
             descendants: parent.schema_models.items
           };
         }
