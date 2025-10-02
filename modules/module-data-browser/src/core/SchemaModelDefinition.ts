@@ -31,7 +31,7 @@ export class SchemaModelDefinition
     this.queue = queue(async (id) => {
       let collection = await this.getCollection();
       try {
-        let models = await this.executeQuery(collection.where(`id = ?`, id));
+        let models = await this.executeQuery(collection.where(`id = ?`, id).limit(1));
         if (models[0]) {
           this.cache.set(id, models[0]);
           this.enqueued.delete(id);
