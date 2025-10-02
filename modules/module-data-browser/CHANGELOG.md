@@ -1,5 +1,16 @@
 # @journeyapps-labs/reactor-mod-data-browser
 
+## 2.4.0
+
+### Minor Changes
+
+- 98c2c03: Add editor module allowing for various JSON utilities such as viewing JSON and downloading as JSON
+- bcd307e: Support for new multi types and the ability to clear values in the forms
+
+### Patch Changes
+
+- a8f7424: Fix location input
+
 ## 2.3.0
 
 ### Minor Changes
