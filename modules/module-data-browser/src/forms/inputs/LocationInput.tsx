@@ -21,12 +21,12 @@ export class LocationInput extends FormInput<FormInputGenerics & { VALUE: Locati
     this.latitude = new NumberInput({
       name: 'latitude',
       label: 'Latitude',
-      value: options.value?.latitude
+      value: options.value?.latitude || null
     });
     this.longitude = new NumberInput({
       name: 'longitude',
       label: 'Longitude',
-      value: options.value?.longitude
+      value: options.value?.longitude || null
     });
 
     this.update();
@@ -42,19 +42,26 @@ export class LocationInput extends FormInput<FormInputGenerics & { VALUE: Locati
 
   setValue(value: Location) {
     super.setValue(value);
-    if (this.latitude.value !== value?.latitude) {
-      this.latitude.setValue(value?.latitude);
+
+    let lat = value?.latitude || null;
+    let lon = value?.longitude || null;
+
+    if (this.latitude.value !== lat) {
+      this.latitude.setValue(lat);
     }
-    if (this.longitude.value !== value?.longitude) {
-      this.longitude.setValue(value?.longitude);
+    if (this.longitude.value !== lon) {
+      this.longitude.setValue(lon);
     }
   }
 
   update() {
     let lat = this.latitude.value;
     let long = this.longitude.value;
-    if (lat == null || long === null) {
+    if (lat == null && long === null) {
       this.setValue(null);
+      this.setError(null);
+    } else if (lat == null || long === null) {
+      this.setError('Invalid location');
     } else {
       this.setValue(
         new Location({
