@@ -1,4 +1,4 @@
-import { Database, ObjectType, Query } from '@journeyapps/db';
+import { Database, ObjectType } from '@journeyapps/db';
 import { Schema } from '@journeyapps/parser-schema';
 import { AbstractConnectionFactory } from './AbstractConnectionFactory';
 import * as _ from 'lodash';
@@ -8,6 +8,7 @@ import { BaseObserver } from '@journeyapps-labs/common-utils';
 import { Collection, LifecycleCollection } from '@journeyapps-labs/lib-reactor-data-layer';
 import { when } from 'mobx';
 import { EntityDescription } from '@journeyapps-labs/reactor-mod';
+import { V4BackendClient, V4Index, V4Indexes } from '@journeyapps-labs/client-backend-v4';
 import { SchemaModelObject } from './SchemaModelObject';
 
 export interface AbstractConnectionSerialized {
@@ -25,6 +26,7 @@ export abstract class AbstractConnection extends BaseObserver<AbstractConnection
 
   schema_models_collection: Collection<ObjectType>;
   schema_models: LifecycleCollection<ObjectType, SchemaModelDefinition>;
+  private fetch_indexes_promise: Promise<V4Indexes['models']>;
 
   constructor(public factory: AbstractConnectionFactory) {
     super();
@@ -33,15 +35,32 @@ export abstract class AbstractConnection extends BaseObserver<AbstractConnection
     this.schema_models = new LifecycleCollection({
       collection: this.schema_models_collection,
       generateModel: (o) => {
-        return new SchemaModelDefinition({
+        let model = new SchemaModelDefinition({
           definition: o,
           connection: this
         });
+
+        model.init();
+        return model;
       },
       getKeyForSerialized: (o) => {
         return o.name;
       }
     });
+  }
+
+  abstract getBackendClient(): V4BackendClient;
+
+  async getIndexes() {
+    if (!this.fetch_indexes_promise) {
+      this.fetch_indexes_promise = this.getBackendClient()
+        .getIndexes()
+        .then((res) => res.models)
+        .finally(() => {
+          this.fetch_indexes_promise = null;
+        });
+    }
+    return this.fetch_indexes_promise;
   }
 
   async batchSave(models: SchemaModelObject[]) {

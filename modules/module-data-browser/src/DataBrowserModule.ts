@@ -17,6 +17,7 @@ import { EditSchemaModelAction } from './actions/schema-model/EditSchemaModelAct
 import { TypeEngine } from './forms/TypeEngine';
 import { ViewSchemaModelAsJsonAction } from './actions/schema-model/ViewSchemaModelAsJsonAction';
 import { ModelJsonPanelFactory } from './panels/model-json/ModelJsonPanelFactory';
+import { SchemaModelIndexDefinition } from './entities/SchemaModelIndexDefinition';
 
 export class DataBrowserModule extends AbstractReactorModule {
   constructor() {
@@ -47,6 +48,7 @@ export class DataBrowserModule extends AbstractReactorModule {
     system.registerDefinition(new ConnectionFactoryEntityDefinition());
     system.registerDefinition(new SchemaModelDefinitionEntityDefinition());
     system.registerDefinition(new SchemaModelObjectEntityDefinition());
+    system.registerDefinition(new SchemaModelIndexDefinition());
     system.registerDefinition(new QueryEntityDefinition());
 
     workspaceStore.registerFactory(new QueryPanelFactory());

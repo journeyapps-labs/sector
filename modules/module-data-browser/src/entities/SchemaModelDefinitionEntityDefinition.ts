@@ -1,4 +1,5 @@
 import {
+  DescendantEntityProviderComponent,
   EntityActionHandlerComponent,
   EntityDefinition,
   EntityDescriberComponent,
@@ -12,6 +13,8 @@ import { ConnectionStore } from '../stores/ConnectionStore';
 import { AbstractConnection } from '../core/AbstractConnection';
 import { SchemaModelDefinition } from '../core/SchemaModelDefinition';
 import { QuerySchemaModelAction } from '../actions/schema-definitions/QuerySchemaModelAction';
+import { V4Index } from '@journeyapps-labs/client-backend-v4';
+import { IndexModel } from '../core/IndexModel';
 
 export interface SchemaModelDefinitionEntityDefinitionEncoded {
   connection_id: string;
@@ -38,6 +41,22 @@ export class SchemaModelDefinitionEntityDefinition extends EntityDefinition<Sche
           return {
             simpleName: entity.definition.label,
             complexName: entity.definition.name
+          };
+        }
+      })
+    );
+
+    this.registerComponent(
+      new DescendantEntityProviderComponent<SchemaModelDefinition, IndexModel>({
+        descendantType: DataBrowserEntities.SCHEMA_MODEL_INDEX,
+        generateOptions: (parent) => {
+          return {
+            category: {
+              label: 'Indexes',
+              icon: 'search',
+              openDefault: false
+            },
+            descendants: parent.indexes
           };
         }
       })
