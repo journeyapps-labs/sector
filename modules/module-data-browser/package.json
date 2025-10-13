@@ -20,7 +20,9 @@
   "dependencies": {
     "@emotion/styled": "^11.14.1",
     "@fortawesome/react-fontawesome": "^3.0.2",
+    "@journeyapps-labs/client-backend-v4": "0.0.0-dev-20251013170933",
     "@journeyapps-labs/common-ioc": "^1.0.0",
+    "@journeyapps-labs/common-sdk": "^1.0.2",
     "@journeyapps-labs/common-utils": "^1.0.0",
     "@journeyapps-labs/lib-reactor-data-layer": "^1.0.5",
     "@journeyapps-labs/reactor-mod": "2.1.1",

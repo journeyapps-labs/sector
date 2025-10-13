@@ -6,6 +6,9 @@ import { LifecycleModel } from '@journeyapps-labs/lib-reactor-data-layer';
 import { BaseObserver } from '@journeyapps-labs/common-utils';
 import { queue, QueueObject } from 'async';
 import { v4 } from 'uuid';
+import { V4Index } from '@journeyapps-labs/client-backend-v4';
+import { action, observable } from 'mobx';
+import { IndexModel } from './IndexModel';
 
 export interface SchemaModelDefinitionListener {
   resolved: (event: { object: SchemaModelObject }) => any;
@@ -24,10 +27,14 @@ export class SchemaModelDefinition
   queue: QueueObject<string>;
   enqueued: Set<string>;
 
+  @observable
+  accessor indexes: IndexModel[];
+
   constructor(protected options: SchemaModelDefinitionOptions) {
     super();
     this.cache = new Map<string, SchemaModelObject>();
     this.enqueued = new Set<string>();
+    this.indexes = [];
     this.queue = queue(async (id) => {
       let collection = await this.getCollection();
       try {
@@ -46,6 +53,17 @@ export class SchemaModelDefinition
         throw ex;
       }
     }, 6);
+  }
+
+  async loadIndexes() {
+    let indexes = await this.connection.getIndexes();
+    this.indexes = (indexes[this.definition.name]?.indexes || []).map(
+      (i) => new IndexModel({ definition: this, index: i })
+    );
+  }
+
+  async init() {
+    await this.loadIndexes();
   }
 
   async search(text: string): Promise<SchemaModelObject[]> {
