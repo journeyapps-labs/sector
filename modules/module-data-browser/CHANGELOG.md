@@ -1,5 +1,11 @@
 # @journeyapps-labs/reactor-mod-data-browser
 
+## 3.0.0
+
+### Major Changes
+
+- c0d7e9d: Abstract connections now need to generate a V4BackendClient as we now show indexes
+
 ## 2.4.0
 
 ### Minor Changes
