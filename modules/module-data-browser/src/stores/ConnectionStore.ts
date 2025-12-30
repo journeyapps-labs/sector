@@ -67,7 +67,7 @@ export class ConnectionStore extends AbstractStore<ConnectionStoreSerialized> {
       connections.forEach((c) => {
         this.addConnection(c);
       });
-    })
+    });
   }
 
   registerConnectionFactory(factory: AbstractConnectionFactory) {
