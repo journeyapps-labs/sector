@@ -58,6 +58,7 @@ export class ConnectionStore extends AbstractStore<ConnectionStoreSerialized> {
 
   @action
   protected async deserialize(data: ConnectionStoreSerialized) {
+    this._connections.clear();
     let connections = await Promise.all(
       data.connections.map((connSer) => {
         return this.deserializeConnection(connSer);
