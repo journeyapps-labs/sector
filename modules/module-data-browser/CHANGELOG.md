@@ -1,5 +1,11 @@
 # @journeyapps-labs/reactor-mod-data-browser
 
+## 3.0.1
+
+### Patch Changes
+
+- e539ae2: Make sure to clear connection array when deserializing since we are able to also swap out deserializers
+
 ## 3.0.0
 
 ### Major Changes
