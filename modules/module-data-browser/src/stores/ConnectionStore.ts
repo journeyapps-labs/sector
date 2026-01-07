@@ -1,6 +1,6 @@
 import { AbstractStore, LocalStorageSerializer } from '@journeyapps-labs/reactor-mod';
 import { AbstractConnection, AbstractConnectionSerialized } from '../core/AbstractConnection';
-import { action, computed, observable, when } from 'mobx';
+import { action, computed, observable, runInAction, when } from 'mobx';
 import { AbstractConnectionFactory } from '../core/AbstractConnectionFactory';
 
 export interface ConnectionStoreSerialized {
@@ -56,15 +56,17 @@ export class ConnectionStore extends AbstractStore<ConnectionStoreSerialized> {
     return conn;
   }
 
-  @action
   protected async deserialize(data: ConnectionStoreSerialized) {
-    let connections = await Promise.all(
-      data.connections.map((connSer) => {
-        return this.deserializeConnection(connSer);
-      })
-    );
-    connections.forEach((c) => {
-      this.addConnection(c);
+    await runInAction(async () => {
+      this._connections.clear();
+      let connections = await Promise.all(
+        data.connections.map((connSer) => {
+          return this.deserializeConnection(connSer);
+        })
+      );
+      connections.forEach((c) => {
+        this.addConnection(c);
+      });
     });
   }
 
