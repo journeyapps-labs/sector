@@ -13,14 +13,14 @@
     "@emotion/styled": "^11.14.1",
     "@journeyapps-labs/common-utils": "^1.0.1",
     "@journeyapps-labs/common-ioc": "^1.0.0",
-    "@journeyapps-labs/reactor-mod": "4.0.0",
+    "@journeyapps-labs/reactor-mod": "4.0.1",
     "@journeyapps-labs/reactor-mod-data-browser": "workspace:^",
     "react": "19.2.4",
     "uuid": "^13.0.0",
     "mobx": "^6.15.0"
   },
   "devDependencies": {
-    "@journeyapps-labs/lib-reactor-builder": "^2.0.2",
+    "@journeyapps-labs/lib-reactor-builder": "^2.0.3",
     "@types/uuid": "^11.0.0"
   }
 }
