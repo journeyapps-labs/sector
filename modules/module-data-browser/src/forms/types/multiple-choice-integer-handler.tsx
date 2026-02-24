@@ -8,6 +8,21 @@ export const multipleChoiceIntegerHandler = (context: TypeHandlerContext): TypeH
     matches: (type) => type instanceof MultipleChoiceIntegerType,
     encode: async (value: string[]) => value.map((v) => parseInt(v)),
     decode: async (value: number[]) => value.map((v) => `${v}`),
+    encodeToScalar: async (value: string[]) => JSON.stringify(value || []),
+    decodeFromScalar: async (value) => {
+      if (typeof value !== 'string') {
+        return [];
+      }
+      try {
+        const parsed = JSON.parse(value);
+        return Array.isArray(parsed) ? parsed.map((v) => `${v}`) : [];
+      } catch (error) {
+        return value
+          .split(',')
+          .map((v) => v.trim())
+          .filter((v) => v !== '');
+      }
+    },
     generateField: ({ label, name, type }) => {
       return new MultiSelectInput({
         name,

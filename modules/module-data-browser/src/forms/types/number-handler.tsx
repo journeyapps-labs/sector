@@ -70,6 +70,8 @@ export const numberHandler: TypeHandler = {
   matches: (type) => type instanceof NumberType,
   encode: async (value: number) => value,
   decode: async (value: number) => value,
+  encodeToScalar: async (value: number) => value,
+  decodeFromScalar: async (value) => toNumericValue(value) || 0,
   generateField: ({ label, name }) => {
     return new NumberInput({
       name,

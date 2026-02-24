@@ -13,7 +13,7 @@ import { Page } from '../../../core/query/Page';
 import { ChangedModelQuery } from '../../../core/query/query-changed/ChangedModelQuery';
 import { SimpleQuery } from '../../../core/query/query-simple/SimpleQuery';
 import { QueryPanelModel } from '../QueryPanelFactory';
-import {observer} from "mobx-react";
+import { observer } from 'mobx-react';
 
 export interface ChangesControlsWidgetProps {
   query: AbstractQuery;

@@ -8,6 +8,8 @@ export const singleChoiceHandler: TypeHandler = {
   matches: (type) => type instanceof SingleChoiceType,
   encode: async (value: string) => value,
   decode: async (value: string) => value,
+  encodeToScalar: async (value: string) => value,
+  decodeFromScalar: async (value) => (value == null ? '' : `${value}`),
   generateField: ({ label, name, type }) => {
     return new SelectInput({
       name,

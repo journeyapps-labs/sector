@@ -1,13 +1,12 @@
 import * as React from 'react';
 import { styled } from '@journeyapps-labs/reactor-mod';
 import * as _ from 'lodash';
+import { EmptyValueWidget } from '../../../widgets/EmptyValueWidget';
 
 export const MAX_NUMBER_OF_ARR_ITEMS_TO_DISPLAY = 3;
 
 namespace S {
-  export const Empty = styled.div`
-    opacity: 0.2;
-  `;
+  export const Empty = styled(EmptyValueWidget)``;
 
   export const Pills = styled.div`
     display: flex;

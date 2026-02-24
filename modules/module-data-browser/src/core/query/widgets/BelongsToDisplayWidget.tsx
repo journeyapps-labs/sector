@@ -6,6 +6,8 @@ import { IconWidget, styled, TableButtonWidget } from '@journeyapps-labs/reactor
 import { copyTextToClipboard } from '@journeyapps-labs/lib-reactor-utils';
 import { Relationship } from '@journeyapps/parser-schema';
 import { observer } from 'mobx-react';
+import { PeekRelationshipButton } from './PeekRelationshipButton';
+import { EmptyValueWidget } from '../../../widgets/EmptyValueWidget';
 
 export interface BelongsToDisplayWidgetProps {
   relationship: Relationship;
@@ -49,7 +51,7 @@ export const BelongsToDisplayWidget: React.FC<BelongsToDisplayWidgetProps> = obs
   }
 
   if (!props.id) {
-    return <S.Empty>Not set</S.Empty>;
+    return <EmptyValueWidget>Not set</EmptyValueWidget>;
   }
 
   if (!object) {
@@ -59,12 +61,15 @@ export const BelongsToDisplayWidget: React.FC<BelongsToDisplayWidgetProps> = obs
   return (
     <S.Container className={props.className}>
       {object.data.display}
-      <TableButtonWidget
-        icon="arrow-right"
-        action={() => {
-          props.open(object);
-        }}
-      />
+      <S.Actions>
+        <PeekRelationshipButton object={object} open={props.open} />
+        <TableButtonWidget
+          icon="arrow-right"
+          action={() => {
+            props.open(object);
+          }}
+        />
+      </S.Actions>
     </S.Container>
   );
 });
@@ -73,10 +78,6 @@ namespace S {
   export const Warning = styled(TableButtonWidget)`
     display: flex;
     flex-direction: row;
-  `;
-
-  export const Empty = styled.div`
-    opacity: 0.2;
   `;
 
   export const Spinner = styled(IconWidget)`
@@ -90,5 +91,12 @@ namespace S {
     align-items: center;
     justify-content: space-between;
     flex-grow: 1;
+  `;
+
+  export const Actions = styled.div`
+    display: flex;
+    flex-direction: row;
+    column-gap: 3px;
+    align-items: center;
   `;
 }

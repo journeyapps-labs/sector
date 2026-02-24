@@ -1,10 +1,19 @@
 import { Attachment, PhotoType, SignatureType } from '@journeyapps/db';
 import { ImageInput, ImageMedia, styled } from '@journeyapps-labs/reactor-mod';
-import * as React from 'react';
 import { TypeHandler, TypeHandlerContext } from './shared/type-handler';
 import { TypeUI } from './shared/ui';
+import * as React from 'react';
 
 export const imageHandler = (context: TypeHandlerContext): TypeHandler => {
+  const toRawBase64 = (value: string): string => {
+    const marker = 'base64,';
+    const index = value.indexOf(marker);
+    if (index === -1) {
+      return value;
+    }
+    return value.substring(index + marker.length);
+  };
+
   const decode = async (value: Attachment) => {
     if (context.mediaCache.has(value.id)) {
       return context.mediaCache.get(value.id);
@@ -27,6 +36,23 @@ export const imageHandler = (context: TypeHandlerContext): TypeHandler => {
       });
     },
     decode,
+    encodeToScalar: async (value: ImageMedia) => {
+      if (!value) {
+        return null;
+      }
+      const base64 = await value.toBase64();
+      return toRawBase64(base64);
+    },
+    decodeFromScalar: async (value) => {
+      if (typeof value !== 'string' || value.trim() === '') {
+        return null;
+      }
+      return context.mediaEngine.getMediaTypeForPath('.jpg').generateMedia({
+        content: toRawBase64(value),
+        name: 'imported-image',
+        uid: 'imported-image'
+      });
+    },
     generateField: ({ label, name }) => {
       return new ImageInput({
         name,

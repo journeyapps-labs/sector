@@ -8,6 +8,21 @@ export const multipleChoiceHandler = (context: TypeHandlerContext): TypeHandler 
     matches: (type) => type instanceof MultipleChoiceType,
     encode: async (value: string[]) => value,
     decode: async (value: string[]) => value,
+    encodeToScalar: async (value: string[]) => JSON.stringify(value || []),
+    decodeFromScalar: async (value) => {
+      if (typeof value !== 'string') {
+        return [];
+      }
+      try {
+        const parsed = JSON.parse(value);
+        return Array.isArray(parsed) ? parsed.map((v) => `${v}`) : [];
+      } catch (error) {
+        return value
+          .split(',')
+          .map((v) => v.trim())
+          .filter((v) => v !== '');
+      }
+    },
     generateField: ({ label, name, type }) => {
       return new MultiSelectInput({
         name,

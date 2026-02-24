@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {
   ComboBoxItem,
+  IconWidget,
   InputContainerWidget,
   PanelButtonWidget,
   PanelDropdownWidget,
@@ -9,6 +10,7 @@ import {
 import * as _ from 'lodash';
 import { AbstractQuery } from '../../../core/query/AbstractQuery';
 import { Page } from '../../../core/query/Page';
+import { observer } from 'mobx-react';
 
 export interface PageControlsWidgetProps {
   query: AbstractQuery;
@@ -16,7 +18,7 @@ export interface PageControlsWidgetProps {
   goToPage?: (index: number) => any;
 }
 
-export const PageControlsWidget: React.FC<PageControlsWidgetProps> = (props) => {
+export const PageControlsWidget: React.FC<PageControlsWidgetProps> = observer((props) => {
   return (
     <InputContainerWidget label="Page">
       <S.Group>
@@ -47,12 +49,14 @@ export const PageControlsWidget: React.FC<PageControlsWidgetProps> = (props) => 
               } as ComboBoxItem;
             })}
           />
-          <S.TotalPages>/ {props.query.totalPages}</S.TotalPages>
+          <S.TotalPages>
+            / {props.query.totalPages === 0 ? <S.Spinner icon="spinner" spin={true} /> : props.query.totalPages}
+          </S.TotalPages>
         </S.PageSelector>
       </S.Group>
     </InputContainerWidget>
   );
-};
+});
 
 namespace S {
   export const Group = styled.div`
@@ -73,5 +77,12 @@ namespace S {
   export const TotalPages = styled.div`
     color: ${(p) => p.theme.text.primary};
     padding-left: 5px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  `;
+
+  export const Spinner = styled(IconWidget)`
+    color: ${(p) => p.theme.text.secondary};
   `;
 }

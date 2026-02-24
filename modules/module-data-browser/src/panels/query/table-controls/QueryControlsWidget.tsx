@@ -11,6 +11,7 @@ import {
 } from '@journeyapps-labs/reactor-mod';
 import { SavedQueryStore } from '../../../stores/SavedQueryStore';
 import { SimpleQuery } from '../../../core/query/query-simple/SimpleQuery';
+import { observer } from 'mobx-react';
 
 export interface QueryControlsWidgetProps {
   query: { load: () => Promise<any> | any };
@@ -19,7 +20,7 @@ export interface QueryControlsWidgetProps {
   onLoadSavedQuery?: (id: string) => Promise<any> | any;
 }
 
-export const QueryControlsWidget: React.FC<QueryControlsWidgetProps> = (props) => {
+export const QueryControlsWidget: React.FC<QueryControlsWidgetProps> = observer((props) => {
   const savedQueryStore = ioc.get(SavedQueryStore);
   const savedQueries = props.simpleQuery ? savedQueryStore.getSavedForQuery(props.simpleQuery) : [];
 
@@ -112,7 +113,7 @@ export const QueryControlsWidget: React.FC<QueryControlsWidgetProps> = (props) =
       </S.Group>
     </InputContainerWidget>
   );
-};
+});
 
 namespace S {
   export const Group = styled.div`

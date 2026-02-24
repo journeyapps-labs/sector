@@ -7,6 +7,8 @@ export const booleanHandler: TypeHandler = {
   matches: (type) => type instanceof BooleanType,
   encode: async (value: boolean) => value,
   decode: async (value: boolean) => value,
+  encodeToScalar: async (value: boolean) => value,
+  decodeFromScalar: async (value) => value === true || value === 'true',
   generateField: ({ label, name }) => {
     return new BooleanInput({
       name,

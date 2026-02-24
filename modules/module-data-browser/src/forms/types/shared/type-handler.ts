@@ -5,6 +5,8 @@ import { SchemaModelObject } from '../../../core/SchemaModelObject';
 import { AbstractMedia, MediaEngine, WorkspaceStore } from '@journeyapps-labs/reactor-mod';
 import { SimpleFilter } from '../../../core/query/filters';
 
+export type ScalarValue = string | number | boolean | null;
+
 export interface TypeHandler<T extends Type = Type, ENCODED = any, DECODED = any> {
   matches: (type: Type) => boolean;
   generateField: (event: { label: string; name: string; type: T }) => FormInput;
@@ -17,6 +19,8 @@ export interface TypeHandler<T extends Type = Type, ENCODED = any, DECODED = any
   }) => JSX.Element | string;
   decode: (value: ENCODED) => Promise<DECODED>;
   encode: (value: DECODED) => Promise<ENCODED>;
+  encodeToScalar?: (value: DECODED) => Promise<ScalarValue>;
+  decodeFromScalar?: (value: ScalarValue) => Promise<DECODED>;
   setupFilter?: (event: {
     variable: Variable;
     filter?: SimpleFilter;

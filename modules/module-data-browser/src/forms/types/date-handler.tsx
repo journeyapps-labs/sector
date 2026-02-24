@@ -88,6 +88,8 @@ export const dateHandler: TypeHandler = {
   matches: (type) => type instanceof DatetimeType || type instanceof DateType,
   encode: async (value: Date) => new Day(value),
   decode: async (value: Day | Date) => toDateValue(value),
+  encodeToScalar: async (value: Date) => value?.toISOString() || null,
+  decodeFromScalar: async (value) => toDateValue(value),
   generateField: ({ label, name, type }) => {
     return new DateInput({
       name,

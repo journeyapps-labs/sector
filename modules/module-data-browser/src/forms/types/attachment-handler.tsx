@@ -14,6 +14,8 @@ export const attachmentHandler: TypeHandler = {
   decode: async (value: Attachment) => {
     return new File([await value.toArrayBuffer()], value.id);
   },
+  encodeToScalar: async (value: File) => value?.name || '',
+  decodeFromScalar: async (value) => new File([], value == null ? '' : `${value}`),
   generateField: ({ label, name }) => {
     return new FileInput({
       name,
