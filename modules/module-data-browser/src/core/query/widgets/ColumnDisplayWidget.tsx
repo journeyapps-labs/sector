@@ -8,25 +8,18 @@ export interface ColumnDisplayWidgetProps {
 }
 
 export const ColumnDisplayWidget: React.FC<ColumnDisplayWidgetProps> = (props) => {
-  let parts = (props.label || '').split(' ');
-  if (parts.length >= 5) {
-    return (
-      <S.Width className={props.className} length={150} clickable={!!props.onClick} onClick={props.onClick}>
-        {props.label}
-      </S.Width>
-    );
-  }
-  if (parts.length >= 3) {
-    return (
-      <S.Width className={props.className} length={80} clickable={!!props.onClick} onClick={props.onClick}>
-        {props.label}
-      </S.Width>
-    );
-  }
+  const parts = (props.label || '').split(' ');
+  const minWidth = parts.length >= 5 ? 150 : parts.length >= 3 ? 80 : undefined;
   return (
-    <S.Span className={props.className} clickable={!!props.onClick} onClick={props.onClick}>
+    <S.Label
+      className={props.className}
+      minWidth={minWidth}
+      clickable={!!props.onClick}
+      nowrap={!minWidth}
+      onClick={props.onClick}
+    >
       {props.label}
-    </S.Span>
+    </S.Label>
   );
 };
 
@@ -39,13 +32,9 @@ namespace S {
     }
   `;
 
-  export const Width = styled.div<{ length: number; clickable: boolean }>`
-    min-width: ${(p) => p.length}px;
-    ${(p) => (p.clickable ? clickableStyle : '')};
-  `;
-
-  export const Span = styled.div<{ clickable: boolean }>`
-    white-space: nowrap;
+  export const Label = styled.div<{ minWidth?: number; clickable: boolean; nowrap: boolean }>`
+    ${(p) => (p.minWidth ? `min-width: ${p.minWidth}px;` : '')};
+    ${(p) => (p.nowrap ? 'white-space: nowrap;' : '')};
     ${(p) => (p.clickable ? clickableStyle : '')};
   `;
 }

@@ -12,6 +12,7 @@ import { AbstractConnection } from '../../AbstractConnection';
 import { SimpleQuerySort, SortDirection } from './SimpleQueryTypes';
 import { SimpleQuerySortState } from './SimpleQuerySortState';
 import { SimpleQueryFilterState } from './SimpleQueryFilterState';
+import { STANDARD_MODEL_FIELD_LABELS, StandardModelFields } from '../StandardModelFields';
 
 export interface BuildSimpleQueryColumnsOptions {
   definition: SchemaModelDefinition;
@@ -31,14 +32,14 @@ export const buildSimpleQueryColumns = (options: BuildSimpleQueryColumnsOptions)
 
   return [
     {
-      key: 'id',
+      key: StandardModelFields.ID,
       display: (
         <ColumnDisplayWidget
-          label={getSortLabel('id', 'ID')}
+          label={getSortLabel(StandardModelFields.ID, STANDARD_MODEL_FIELD_LABELS[StandardModelFields.ID])}
           onClick={async () => {
-            const sort = options.sortState.getSort('id');
+            const sort = options.sortState.getSort(StandardModelFields.ID);
             if (!sort) {
-              options.sortState.addSort(SimpleQuerySort.create('id'));
+              options.sortState.addSort(SimpleQuerySort.create(StandardModelFields.ID));
               return;
             }
             sort.toggle();
@@ -49,14 +50,17 @@ export const buildSimpleQueryColumns = (options: BuildSimpleQueryColumnsOptions)
       shrink: true
     },
     {
-      key: 'updated_at',
+      key: StandardModelFields.UPDATED_AT,
       display: (
         <ColumnDisplayWidget
-          label={getSortLabel('updated_at', 'Updated at')}
+          label={getSortLabel(
+            StandardModelFields.UPDATED_AT,
+            STANDARD_MODEL_FIELD_LABELS[StandardModelFields.UPDATED_AT]
+          )}
           onClick={async () => {
-            const sort = options.sortState.getSort('updated_at');
+            const sort = options.sortState.getSort(StandardModelFields.UPDATED_AT);
             if (!sort) {
-              options.sortState.addSort(SimpleQuerySort.create('updated_at'));
+              options.sortState.addSort(SimpleQuerySort.create(StandardModelFields.UPDATED_AT));
               return;
             }
             sort.toggle();
@@ -66,7 +70,7 @@ export const buildSimpleQueryColumns = (options: BuildSimpleQueryColumnsOptions)
       noWrap: true,
       shrink: true,
       accessor: (cell, row: PageRow) => {
-        return <CellDisplayWidget name="updated_at" cell={row.model.updated_at} row={row} />;
+        return <CellDisplayWidget name={StandardModelFields.UPDATED_AT} cell={row.model.updated_at} row={row} />;
       }
     },
     ..._.map(options.definition.definition.belongsToIdVars, (a) => {

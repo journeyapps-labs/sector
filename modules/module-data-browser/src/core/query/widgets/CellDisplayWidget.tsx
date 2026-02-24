@@ -3,6 +3,7 @@ import * as React from 'react';
 import { PageRow } from '../Page';
 import { TypeEngine } from '../../../forms/TypeEngine';
 import { EmptyValueWidget } from '../../../widgets/EmptyValueWidget';
+import { StandardModelFields } from '../StandardModelFields';
 
 export interface CellDisplayWidgetProps {
   row: PageRow;
@@ -16,7 +17,7 @@ export const CellDisplayWidget: React.FC<CellDisplayWidgetProps> = (props) => {
     return <EmptyValueWidget />;
   }
 
-  if (name === 'updated_at') {
+  if (name === StandardModelFields.UPDATED_AT) {
     return <SmartDateDisplayWidget date={cell} />;
   }
 

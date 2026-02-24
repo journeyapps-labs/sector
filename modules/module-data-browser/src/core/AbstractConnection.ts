@@ -7,14 +7,17 @@ import { v4 } from 'uuid';
 import { BaseObserver } from '@journeyapps-labs/common-utils';
 import { Collection, LifecycleCollection } from '@journeyapps-labs/lib-reactor-data-layer';
 import { when } from 'mobx';
+import { observable } from 'mobx';
 import { EntityDescription } from '@journeyapps-labs/reactor-mod';
 import { V4BackendClient, V4Index, V4Indexes } from '@journeyapps-labs/client-backend-v4';
 import { SchemaModelObject } from './SchemaModelObject';
+import { getDefaultConnectionColor } from './connection-colors';
 
 export interface AbstractConnectionSerialized {
   factory: string;
   id: string;
   payload: any;
+  color?: string;
 }
 
 export interface AbstractConnectionListener {
@@ -23,6 +26,7 @@ export interface AbstractConnectionListener {
 
 export abstract class AbstractConnection extends BaseObserver<AbstractConnectionListener> {
   id: string;
+  @observable accessor color: string;
 
   schema_models_collection: Collection<ObjectType>;
   schema_models: LifecycleCollection<ObjectType, SchemaModelDefinition>;
@@ -31,6 +35,7 @@ export abstract class AbstractConnection extends BaseObserver<AbstractConnection
   constructor(public factory: AbstractConnectionFactory) {
     super();
     this.id = v4();
+    this.color = getDefaultConnectionColor(this.id);
     this.schema_models_collection = new Collection();
     this.schema_models = new LifecycleCollection({
       collection: this.schema_models_collection,
@@ -124,7 +129,8 @@ export abstract class AbstractConnection extends BaseObserver<AbstractConnection
     return {
       id: this.id,
       factory: this.factory.options.key,
-      payload: this._serialize()
+      payload: this._serialize(),
+      color: this.color
     };
   }
 

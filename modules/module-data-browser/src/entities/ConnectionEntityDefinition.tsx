@@ -34,7 +34,10 @@ export class ConnectionEntityDefinition extends EntityDefinition<AbstractConnect
       new EntityDescriberComponent<AbstractConnection>({
         label: 'Simple',
         describe: (entity: AbstractConnection) => {
-          return entity.name;
+          return {
+            ...entity.name,
+            iconColor: entity.color
+          };
         }
       })
     );

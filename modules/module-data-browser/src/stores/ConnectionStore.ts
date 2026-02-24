@@ -2,6 +2,7 @@ import { AbstractStore, LocalStorageSerializer } from '@journeyapps-labs/reactor
 import { AbstractConnection, AbstractConnectionSerialized } from '../core/AbstractConnection';
 import { action, computed, observable, runInAction, when } from 'mobx';
 import { AbstractConnectionFactory } from '../core/AbstractConnectionFactory';
+import { getDefaultConnectionColor } from '../core/connection-colors';
 
 export interface ConnectionStoreSerialized {
   connections: AbstractConnectionSerialized[];
@@ -53,6 +54,7 @@ export class ConnectionStore extends AbstractStore<ConnectionStoreSerialized> {
     let conn = this._connectionFactories.get(data.factory).generateConnection();
     conn.id = data.id;
     await conn._deSerialize(data.payload);
+    conn.color = data.color || getDefaultConnectionColor(conn.id);
     return conn;
   }
 

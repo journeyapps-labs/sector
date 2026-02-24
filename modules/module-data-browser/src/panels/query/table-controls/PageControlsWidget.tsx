@@ -19,21 +19,30 @@ export interface PageControlsWidgetProps {
 }
 
 export const PageControlsWidget: React.FC<PageControlsWidgetProps> = observer((props) => {
+  const hasCurrentPage = !!props.currentPage;
+  const currentPageIndex = props.currentPage?.index ?? 0;
+
   return (
     <InputContainerWidget label="Page">
       <S.Group>
         <PanelButtonWidget
-          disabled={props.currentPage?.index === 0}
+          disabled={!hasCurrentPage || currentPageIndex === 0}
           label="Prev"
           action={() => {
-            props.goToPage?.(props.currentPage.index - 1);
+            if (!hasCurrentPage) {
+              return;
+            }
+            props.goToPage?.(currentPageIndex - 1);
           }}
         />
         <PanelButtonWidget
-          disabled={props.query.totalPages === props.currentPage.index + 1}
+          disabled={!hasCurrentPage || props.query.totalPages === currentPageIndex + 1}
           label="Next"
           action={() => {
-            props.goToPage?.(props.currentPage.index + 1);
+            if (!hasCurrentPage) {
+              return;
+            }
+            props.goToPage?.(currentPageIndex + 1);
           }}
         />
         <S.PageSelector>
@@ -41,7 +50,7 @@ export const PageControlsWidget: React.FC<PageControlsWidgetProps> = observer((p
             onChange={({ key }) => {
               props.goToPage?.(parseInt(key));
             }}
-            selected={`${props.currentPage.index}`}
+            selected={`${currentPageIndex}`}
             items={_.range(0, props.query.totalPages).map((r) => {
               return {
                 title: `${r + 1}`,

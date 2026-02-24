@@ -230,7 +230,7 @@ namespace S {
   export const Max = styled.div`
     max-width: 500px;
     white-space: pre;
-    display: inline;
+    display: inline-block;
     overflow: hidden;
     text-overflow: ellipsis;
   `;

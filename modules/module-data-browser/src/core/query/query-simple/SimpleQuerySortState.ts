@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import { BaseObserver } from '@journeyapps-labs/common-utils';
 import { SchemaModelDefinition } from '../../SchemaModelDefinition';
 import { SerializedSimpleQuerySort, SimpleQuerySort, SortDirection } from './SimpleQueryTypes';
+import { STANDARD_MODEL_FIELD_LABELS, StandardModelFields } from '../StandardModelFields';
 
 export interface SimpleQuerySortStateListener {
   changed: () => any;
@@ -104,7 +105,14 @@ export class SimpleQuerySortState extends BaseObserver<SimpleQuerySortStateListe
         label: attribute.label || attribute.name
       };
     });
-    return [{ key: 'id', label: 'ID' }, { key: 'updated_at', label: 'Updated at' }, ...dynamic];
+    return [
+      { key: StandardModelFields.ID, label: STANDARD_MODEL_FIELD_LABELS[StandardModelFields.ID] },
+      {
+        key: StandardModelFields.UPDATED_AT,
+        label: STANDARD_MODEL_FIELD_LABELS[StandardModelFields.UPDATED_AT]
+      },
+      ...dynamic
+    ];
   }
 
   private normalizeSorts(sorts: SimpleQuerySort[]): SimpleQuerySort[] {

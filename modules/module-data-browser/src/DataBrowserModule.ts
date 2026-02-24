@@ -6,6 +6,7 @@ import { ManualConnectionFactory } from './core/types/ManualConnectionFactory';
 import { ConnectionFactoryEntityDefinition } from './entities/ConnectionFactoryEntityDefinition';
 import { AddConnectionAction } from './actions/connections/AddConnectionAction';
 import { RemoveConnectionAction } from './actions/connections/RemoveConnectionAction';
+import { SetConnectionColorAction } from './actions/connections/SetConnectionColorAction';
 import { SchemaModelDefinitionEntityDefinition } from './entities/SchemaModelDefinitionEntityDefinition';
 import { QueryPanelFactory } from './panels/query/QueryPanelFactory';
 import { QuerySchemaModelAction } from './actions/schema-definitions/QuerySchemaModelAction';
@@ -43,6 +44,7 @@ export class DataBrowserModule extends AbstractReactorModule {
 
     actionStore.registerAction(new AddConnectionAction());
     actionStore.registerAction(new RemoveConnectionAction());
+    actionStore.registerAction(new SetConnectionColorAction());
     actionStore.registerAction(new QuerySchemaModelAction());
     actionStore.registerAction(new CreateModelAction());
     actionStore.registerAction(new EditSchemaModelAction());

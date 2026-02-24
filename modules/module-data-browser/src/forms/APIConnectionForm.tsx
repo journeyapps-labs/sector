@@ -1,11 +1,13 @@
-import { FormModel, TextInput, TextInputType } from '@journeyapps-labs/reactor-mod';
+import { FormModel, SelectInput, TextInput, TextInputType } from '@journeyapps-labs/reactor-mod';
 import { ManualConnection } from '../core/types/ManualConnection';
 import { ManualConnectionFactory } from '../core/types/ManualConnectionFactory';
+import { DEFAULT_CONNECTION_COLOR, getConnectionColorSetOptions } from '../core/connection-colors';
 
 export interface APIConnectionFormValue {
   name: string;
   base_url: string;
   api_token: string;
+  color: string;
 }
 
 export class APIConnectionForm extends FormModel<APIConnectionFormValue> {
@@ -36,13 +38,24 @@ export class APIConnectionForm extends FormModel<APIConnectionFormValue> {
         value: value?.api_token
       })
     );
+
+    this.addInput(
+      new SelectInput({
+        name: 'color',
+        label: 'Color',
+        value: value?.color || DEFAULT_CONNECTION_COLOR,
+        options: getConnectionColorSetOptions()
+      })
+    );
   }
 
   generateConnection(factory: ManualConnectionFactory) {
-    return new ManualConnection(factory, {
+    const connection = new ManualConnection(factory, {
       baseUrl: this.value().base_url,
       token: this.value().api_token,
       name: this.value().name
     });
+    connection.color = this.value().color;
+    return connection;
   }
 }

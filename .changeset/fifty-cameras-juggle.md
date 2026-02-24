@@ -25,5 +25,10 @@ Highlights:
 - Add new user preferences under `Query Controls`:
   - Show sort controls.
   - Show filter controls.
+- Add connection color coding across Data Browser:
+  - Persist a per-connection color with sensible defaults for new/existing connections.
+  - Add a `Set connection color` action using the new ComboBox2 flow.
+  - Add connection color selection to the manual connection form via a set input.
+  - Render connection color indicators in panel tabs and connection entity presentation.
 
 Also includes internal refactors for cleaner handler-owned filter setup, filter serialization typing, and modularized table-control widgets.
