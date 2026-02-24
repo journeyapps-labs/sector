@@ -87,12 +87,7 @@ const toDateValue = (value: unknown): Date | undefined => {
 export const dateHandler: TypeHandler = {
   matches: (type) => type instanceof DatetimeType || type instanceof DateType,
   encode: async (value: Date) => new Day(value),
-  decode: async (value: Day | Date) => {
-    if (value instanceof Day) {
-      return value.toDate();
-    }
-    return value;
-  },
+  decode: async (value: Day | Date) => toDateValue(value),
   generateField: ({ label, name, type }) => {
     return new DateInput({
       name,
