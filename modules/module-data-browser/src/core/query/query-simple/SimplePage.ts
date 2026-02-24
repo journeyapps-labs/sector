@@ -1,6 +1,7 @@
 import { Page, PageOptions } from '../Page';
 import { AbstractFilter } from '../filters';
-import { SimpleQuerySort, SortDirection } from './SimpleQuery';
+import { SimpleQuerySort } from './SimpleQueryTypes';
+import { applyFiltersAndSorts } from './SimpleQueryPlanner';
 
 export interface SimplePageOptions extends PageOptions {
   offset: number;
@@ -17,18 +18,7 @@ export class SimplePage extends Page {
   async load() {
     this.loading = true;
     let collection = await this.options.definition.getCollection();
-    let query = collection.all();
-
-    this.options2.filters.forEach((f) => {
-      query = f.augment(query);
-    });
-    if ((this.options2.sorts || []).length > 0) {
-      query = query.orderBy(
-        ...this.options2.sorts.map((sort) => {
-          return sort.direction === SortDirection.DESC ? `-${sort.field}` : sort.field;
-        })
-      );
-    }
+    let query = applyFiltersAndSorts(collection.all(), this.options2.filters, this.options2.sorts || []);
 
     this.models = await this.options.definition.executeQuery(
       query.limit(this.options2.limit).skip(this.options2.offset)

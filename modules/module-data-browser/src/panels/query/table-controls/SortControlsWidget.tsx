@@ -8,7 +8,7 @@ import {
   SimpleComboBoxDirective,
   styled
 } from '@journeyapps-labs/reactor-mod';
-import { SimpleQuery } from '../../../core/query/query-simple/SimpleQuery';
+import { SimpleQuery, SimpleQuerySort } from '../../../core/query/query-simple/SimpleQuery';
 import { SortChipWidget } from './SortChipWidget';
 
 export interface SortControlsWidgetProps {
@@ -18,8 +18,8 @@ export interface SortControlsWidgetProps {
 
 export const SortControlsWidget: React.FC<SortControlsWidgetProps> = (props) => {
   const showAddSortMenu = async (event: React.MouseEvent<any>) => {
-    const used = new Set(props.simpleQuery.sorts.map((sort) => sort.field));
-    const fields = props.simpleQuery.getSortableFields().filter((field) => !used.has(field.key));
+    const used = new Set(props.simpleQuery.sortState.sorts.map((sort) => sort.field));
+    const fields = props.simpleQuery.sortState.getSortableFields().filter((field) => !used.has(field.key));
     if (fields.length === 0) {
       return;
     }
@@ -32,7 +32,7 @@ export const SortControlsWidget: React.FC<SortControlsWidgetProps> = (props) => 
             key: field.key,
             title: field.label,
             action: async () => {
-              await props.simpleQuery.addSort(field.key);
+              props.simpleQuery.sortState.addSort(SimpleQuerySort.create(field.key));
               props.goToPage?.(0);
             }
           } as ComboBoxItem;
@@ -43,7 +43,7 @@ export const SortControlsWidget: React.FC<SortControlsWidgetProps> = (props) => 
   };
 
   const getSortLabel = (field: string) => {
-    const resolved = props.simpleQuery.getSortableFields().find((entry) => entry.key === field);
+    const resolved = props.simpleQuery.sortState.getSortableFields().find((entry) => entry.key === field);
     return resolved?.label || field;
   };
 
@@ -57,22 +57,22 @@ export const SortControlsWidget: React.FC<SortControlsWidgetProps> = (props) => 
             await showAddSortMenu(event as any);
           }}
         />
-        {props.simpleQuery.sorts.map((sort) => {
+        {props.simpleQuery.sortState.sorts.map((sort) => {
           return (
             <SortChipWidget
               key={sort.field}
               sort={sort}
               label={getSortLabel(sort.field)}
               onToggle={async () => {
-                await props.simpleQuery.toggleSort(sort.field);
+                sort.toggle();
                 props.goToPage?.(0);
               }}
               onRemove={async () => {
-                await props.simpleQuery.removeSort(sort.field);
+                sort.remove();
                 props.goToPage?.(0);
               }}
               onDropBefore={async (sourceField) => {
-                await props.simpleQuery.reorderSort(sourceField, sort.field);
+                props.simpleQuery.sortState.moveSortBefore(sourceField, sort.field);
                 props.goToPage?.(0);
               }}
             />

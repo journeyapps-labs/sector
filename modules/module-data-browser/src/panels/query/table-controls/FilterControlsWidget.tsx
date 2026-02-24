@@ -19,7 +19,7 @@ export interface FilterControlsWidgetProps {
 
 export const FilterControlsWidget: React.FC<FilterControlsWidgetProps> = (props) => {
   const showAddFilterMenu = async (event: React.MouseEvent<any>) => {
-    const fields = props.simpleQuery.getFilterableFields();
+    const fields = props.simpleQuery.filterState.getFilterableFields();
     if (fields.length === 0) {
       return;
     }
@@ -32,7 +32,7 @@ export const FilterControlsWidget: React.FC<FilterControlsWidgetProps> = (props)
             key: field.key,
             title: field.label,
             action: async () => {
-              await props.simpleQuery.setupFilterForField(field.key, event.nativeEvent as any);
+              await props.simpleQuery.filterState.setupFilterForField(field.key, event.nativeEvent as any);
               props.goToPage?.(0);
             }
           } as ComboBoxItem;
@@ -42,7 +42,7 @@ export const FilterControlsWidget: React.FC<FilterControlsWidgetProps> = (props)
     directive.getSelectedItem();
   };
 
-  const filters = props.simpleQuery.getActiveFilters();
+  const filters = props.simpleQuery.filterState.getActiveFilters();
 
   return (
     <InputContainerWidget label="Filters">
@@ -66,7 +66,7 @@ export const FilterControlsWidget: React.FC<FilterControlsWidgetProps> = (props)
                 icon="close"
                 tooltip={`Clear ${entry.label} filter`}
                 action={async () => {
-                  await props.simpleQuery.removeFilter(entry.key);
+                  props.simpleQuery.filterState.removeFilter(entry.key);
                   props.goToPage?.(0);
                 }}
               />
