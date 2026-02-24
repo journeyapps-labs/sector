@@ -13,13 +13,14 @@ import { Page } from '../../../core/query/Page';
 import { ChangedModelQuery } from '../../../core/query/query-changed/ChangedModelQuery';
 import { SimpleQuery } from '../../../core/query/query-simple/SimpleQuery';
 import { QueryPanelModel } from '../QueryPanelFactory';
+import {observer} from "mobx-react";
 
 export interface ChangesControlsWidgetProps {
   query: AbstractQuery;
   currentPage: Page;
 }
 
-export const ChangesControlsWidget: React.FC<ChangesControlsWidgetProps> = (props) => {
+export const ChangesControlsWidget: React.FC<ChangesControlsWidgetProps> = observer((props) => {
   const _theme = ioc.get(ThemeStore).getCurrentTheme(theme);
   const dirtyObjects = props.query.getDirtyObjects();
 
@@ -57,7 +58,7 @@ export const ChangesControlsWidget: React.FC<ChangesControlsWidgetProps> = (prop
       </S.Group>
     </InputContainerWidget>
   );
-};
+});
 
 namespace S {
   export const Group = styled.div`
