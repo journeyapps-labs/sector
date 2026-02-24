@@ -38,8 +38,10 @@ export const QueryPanelWidget: React.FC<QueryPanelWidgetProps> = observer((props
     });
   }, [props.model.query]);
 
+  const activePage = page || (props.model.query ? props.model.query.getPage(props.model.current_page) : null);
+
   return (
-    <LoadingPanelWidget loading={!props.model.query || !page}>
+    <LoadingPanelWidget loading={!props.model.query || !activePage}>
       {() => {
         return (
           <S.Container>
@@ -47,7 +49,7 @@ export const QueryPanelWidget: React.FC<QueryPanelWidgetProps> = observer((props
               top={
                 <TableControlsWidget
                   query={props.model.query}
-                  current_page={page}
+                  current_page={activePage}
                   onLoadSavedQuery={async (id) => {
                     await props.model.loadSavedQuery(id);
                     setPage(props.model.query.getPage(0));
@@ -61,7 +63,7 @@ export const QueryPanelWidget: React.FC<QueryPanelWidgetProps> = observer((props
               bottom={
                 <TableControlsWidget
                   query={props.model.query}
-                  current_page={page}
+                  current_page={activePage}
                   onLoadSavedQuery={async (id) => {
                     await props.model.loadSavedQuery(id);
                     setPage(props.model.query.getPage(0));
@@ -73,7 +75,7 @@ export const QueryPanelWidget: React.FC<QueryPanelWidgetProps> = observer((props
                 />
               }
             >
-              <PageResultsWidget query={props.model.query} page={page} />
+              <PageResultsWidget query={props.model.query} page={activePage} />
             </BorderLayoutWidget>
           </S.Container>
         );

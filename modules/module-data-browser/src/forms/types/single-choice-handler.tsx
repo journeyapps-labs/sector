@@ -1,0 +1,45 @@
+import { SingleChoiceType } from '@journeyapps/db';
+import { ComboBoxStore, ioc, SelectInput } from '@journeyapps-labs/reactor-mod';
+import * as _ from 'lodash';
+import { TypeHandler } from './shared/type-handler';
+import { Condition, SimpleFilter, Statement } from '../../core/query/filters';
+
+export const singleChoiceHandler: TypeHandler = {
+  matches: (type) => type instanceof SingleChoiceType,
+  encode: async (value: string) => value,
+  decode: async (value: string) => value,
+  generateField: ({ label, name, type }) => {
+    return new SelectInput({
+      name,
+      label,
+      options: _.mapValues(type.options, (o) => `${o.value}`)
+    });
+  },
+  generateDisplay: ({ value }) => {
+    return value;
+  },
+  setupFilter: async ({ variable, filter, position }) => {
+    if (!(variable.type instanceof SingleChoiceType)) {
+      return null;
+    }
+    const results = await ioc.get(ComboBoxStore).showMultiSelectComboBox(
+      _.map(variable.type.options, (option) => {
+        return {
+          title: `${option.value}`,
+          key: `${option.value}`,
+          checked: !!filter?.statements?.find((s) => s.arg === `${option.value}`)
+        };
+      }),
+      position as any
+    );
+    if (results.length === 0) {
+      return null;
+    }
+    return new SimpleFilter(
+      variable,
+      results.map((r) => {
+        return new Statement(Condition.EQUALS, r.key);
+      })
+    );
+  }
+};

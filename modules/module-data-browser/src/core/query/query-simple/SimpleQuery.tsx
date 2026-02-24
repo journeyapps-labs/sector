@@ -90,6 +90,9 @@ export class SimpleQuery extends AbstractSerializableQuery<SimpleQueryEncoded> {
     this.options.definition = await this.connection.waitForSchemaModelDefinitionByName(data.definition);
     this.simple_filters.clear();
     (data.filters || []).forEach((filter) => {
+      if (!SimpleFilter.canDeserialize(filter)) {
+        return;
+      }
       const variable = _.find(_.values(this.options.definition.definition.attributes), (attribute) => {
         return attribute.name === filter.variable;
       });

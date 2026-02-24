@@ -1,8 +1,6 @@
 import * as React from 'react';
-import { SingleChoiceIntegerType, SingleChoiceType, TextType, Variable } from '@journeyapps/db';
+import { Variable } from '@journeyapps/db';
 import {
-  ComboBoxStore,
-  DialogStore,
   DualIconWidget,
   IconWidget,
   MetadataWidget,
@@ -11,8 +9,8 @@ import {
   styled,
   TooltipPosition
 } from '@journeyapps-labs/reactor-mod';
-import * as _ from 'lodash';
-import { EqualsStatement, SimpleFilter } from '../filters';
+import { TypeEngine } from '../../../forms/TypeEngine';
+import { SimpleFilter } from '../filters';
 
 export interface SmartFilterWidgetProps {
   variable: Variable;
@@ -59,69 +57,29 @@ export const SmartFilterMetadataWidget: React.FC<SmartFilterMetadataWidgetProps>
 
 export const SmartFilterWidget: React.FC<SmartFilterWidgetProps> = (props) => {
   const isActive = (props.filter?.statements?.length || 0) > 0;
-
-  if (props.variable.type instanceof SingleChoiceIntegerType || props.variable.type instanceof SingleChoiceType) {
-    return (
-      <S.FilterButton
-        active={isActive}
-        {...setupTooltipProps({
-          tooltip: getFilterTooltip(props.filter),
-          tooltipPos: TooltipPosition.BOTTOM
-        })}
-        onClick={async (event) => {
-          const results = await ioc.get(ComboBoxStore).showMultiSelectComboBox(
-            _.map(props.variable.type.options, (option) => {
-              return {
-                title: `${option.value}`,
-                key: `${option.value}`,
-                checked: !!props.filter?.statements?.find((s) => s.arg === `${option.value}`)
-              };
-            }),
-            event as any
-          );
-          if (results.length > 0) {
-            props.filterChanged(
-              new SimpleFilter(
-                props.variable,
-                results.map((r) => {
-                  return new EqualsStatement(r.key);
-                })
-              )
-            );
-          } else {
-            props.filterChanged(null);
-          }
-        }}
-      >
-        {isActive ? <DualIconWidget icon1="filter" icon2="check" /> : <IconWidget icon="filter" />}
-      </S.FilterButton>
-    );
+  const handler = ioc.get(TypeEngine).getHandler(props.variable.type);
+  if (!handler?.setupFilter) {
+    return null;
   }
-  if (props.variable.type instanceof TextType) {
-    return (
-      <S.FilterButton
-        active={isActive}
-        {...setupTooltipProps({
-          tooltip: getFilterTooltip(props.filter),
-          tooltipPos: TooltipPosition.BOTTOM
-        })}
-        onClick={async () => {
-          const value = await ioc.get(DialogStore).showInputDialog({
-            title: `${props.variable.label}`,
-            initialValue: props.filter?.statements[0]?.arg
-          });
-          if (value) {
-            props.filterChanged(new SimpleFilter(props.variable, [new EqualsStatement(value)]));
-          } else {
-            props.filterChanged(null);
-          }
-        }}
-      >
-        {isActive ? <DualIconWidget icon1="filter" icon2="check" /> : <IconWidget icon="filter" />}
-      </S.FilterButton>
-    );
-  }
-  return null;
+  return (
+    <S.FilterButton
+      active={isActive}
+      {...setupTooltipProps({
+        tooltip: getFilterTooltip(props.filter),
+        tooltipPos: TooltipPosition.BOTTOM
+      })}
+      onClick={async (event) => {
+        const filter = await handler.setupFilter?.({
+          variable: props.variable,
+          filter: props.filter,
+          position: event.nativeEvent
+        });
+        props.filterChanged(filter ?? null);
+      }}
+    >
+      {isActive ? <DualIconWidget icon1="filter" icon2="check" /> : <IconWidget icon="filter" />}
+    </S.FilterButton>
+  );
 };
 
 namespace S {
