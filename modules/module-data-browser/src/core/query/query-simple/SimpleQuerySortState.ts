@@ -42,8 +42,7 @@ export class SimpleQuerySortState extends BaseObserver<SimpleQuerySortStateListe
     if (existing) {
       return false;
     }
-    let unsubscribe = () => {};
-    unsubscribe = sort.registerListener({
+    let unsubscribe = sort.registerListener({
       changed: () => {
         this.iterateListeners((cb) => cb.changed?.());
       },
