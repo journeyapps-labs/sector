@@ -1,4 +1,4 @@
-import { AbstractReactorModule, ActionStore, System, WorkspaceStore } from '@journeyapps-labs/reactor-mod';
+import { AbstractReactorModule, ActionStore, PrefsStore, System, WorkspaceStore } from '@journeyapps-labs/reactor-mod';
 import { Container } from '@journeyapps-labs/common-ioc';
 import { ConnectionStore } from './stores/ConnectionStore';
 import { ConnectionEntityDefinition } from './entities/ConnectionEntityDefinition';
@@ -22,6 +22,7 @@ import { SavedQueryStore } from './stores/SavedQueryStore';
 import { SavedQueryEntityDefinition } from './entities/SavedQueryEntityDefinition';
 import { OpenSavedQueryAction } from './actions/saved-queries/OpenSavedQueryAction';
 import { RemoveSavedQueryAction } from './actions/saved-queries/RemoveSavedQueryAction';
+import { registerQueryControlPreferences } from './preferences/QueryControlPreferences';
 
 export class DataBrowserModule extends AbstractReactorModule {
   constructor() {
@@ -51,6 +52,7 @@ export class DataBrowserModule extends AbstractReactorModule {
 
     system.addStore(ConnectionStore, connectionStore);
     system.addStore(SavedQueryStore, new SavedQueryStore());
+    registerQueryControlPreferences(ioc.get(PrefsStore));
 
     system.registerDefinition(new ConnectionEntityDefinition());
     system.registerDefinition(new ConnectionFactoryEntityDefinition());

@@ -74,7 +74,10 @@ export const SmartFilterWidget: React.FC<SmartFilterWidgetProps> = (props) => {
           filter: props.filter,
           position: event.nativeEvent
         });
-        props.filterChanged(filter ?? null);
+        if (filter == null) {
+          return;
+        }
+        props.filterChanged(filter);
       }}
     >
       {isActive ? <DualIconWidget icon1="filter" icon2="check" /> : <IconWidget icon="filter" />}

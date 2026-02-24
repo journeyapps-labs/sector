@@ -5,16 +5,21 @@ import { ColumnDisplayWidget } from './ColumnDisplayWidget';
 import { SmartFilterMetadataWidget, SmartFilterWidget } from './SmartFilterWidget';
 import { SimpleFilter } from '../filters';
 import { PanelTitleToolbarButtonWidget } from '@journeyapps-labs/reactor-mod';
+import type { SortDirection } from '../query-simple/SimpleQuery';
 
 export interface SmartColumnWidgetProps {
   variable: Variable;
   type?: ObjectType;
   filter?: SimpleFilter;
+  sortDirection?: SortDirection;
+  onToggleSort?: () => Promise<any> | any;
   filterChanged: (filter: SimpleFilter | null) => any;
 }
 
 export const SmartColumnWidget: React.FC<SmartColumnWidgetProps> = (props) => {
-  let display = <ColumnDisplayWidget label={props.variable.label || props.variable.name} />;
+  const baseLabel = props.variable.label || props.variable.name;
+  const displayLabel = props.sortDirection ? `${baseLabel} ${props.sortDirection === 'asc' ? '↑' : '↓'}` : baseLabel;
+  let display = <ColumnDisplayWidget label={displayLabel} onClick={props.onToggleSort} />;
   if (props.type) {
     display = (
       <S.TypeGroup>
