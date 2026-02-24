@@ -48,6 +48,10 @@ export const QueryPanelWidget: React.FC<QueryPanelWidgetProps> = observer((props
                 <TableControlsWidget
                   query={props.model.query}
                   current_page={page}
+                  onLoadSavedQuery={async (id) => {
+                    await props.model.loadSavedQuery(id);
+                    setPage(props.model.query.getPage(0));
+                  }}
                   goToPage={(index) => {
                     setPage(props.model.query.getPage(index));
                     props.model.current_page = index;
@@ -58,6 +62,10 @@ export const QueryPanelWidget: React.FC<QueryPanelWidgetProps> = observer((props
                 <TableControlsWidget
                   query={props.model.query}
                   current_page={page}
+                  onLoadSavedQuery={async (id) => {
+                    await props.model.loadSavedQuery(id);
+                    setPage(props.model.query.getPage(0));
+                  }}
                   goToPage={(index) => {
                     setPage(props.model.query.getPage(index));
                     props.model.current_page = index;

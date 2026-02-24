@@ -1,16 +1,8 @@
 import * as React from 'react';
 import { Page } from '../../core/query/Page';
-import {
-  ActionSource,
-  ioc,
-  LoadingPanelWidget,
-  ScrollableDivCss,
-  System,
-  TableWidget
-} from '@journeyapps-labs/reactor-mod';
+import { themed, ioc, LoadingPanelWidget, ScrollableDivCss, System, TableWidget } from '@journeyapps-labs/reactor-mod';
 import { AbstractQuery } from '../../core/query/AbstractQuery';
 import { observer } from 'mobx-react';
-import styled from '@emotion/styled';
 import { DataBrowserEntities } from '../../entities';
 import { SchemaModelObject } from '../../core/SchemaModelObject';
 
@@ -21,6 +13,7 @@ export interface PageResultsWidgetProps {
 
 export const PageResultsWidget: React.FC<PageResultsWidgetProps> = observer((props) => {
   const system = ioc.get(System);
+  const rows = props.page.asRows();
 
   return (
     <LoadingPanelWidget
@@ -34,9 +27,10 @@ export const PageResultsWidget: React.FC<PageResultsWidgetProps> = observer((pro
                   .getDefinition<SchemaModelObject>(DataBrowserEntities.SCHEMA_MODEL_OBJECT)
                   .showContextMenuForEntity(row.model, event);
               }}
-              rows={props.page.asRows()}
+              rows={rows}
               columns={props.query.getColumns()}
             />
+            {rows.length === 0 ? <S.EmptyState>No results for this query</S.EmptyState> : null}
           </S.Container>
         );
       }}
@@ -45,8 +39,19 @@ export const PageResultsWidget: React.FC<PageResultsWidgetProps> = observer((pro
 });
 
 namespace S {
-  export const Container = styled.div`
+  export const Container = themed.div`
+    position: relative;
     overflow: auto;
     ${ScrollableDivCss};
+  `;
+
+  export const EmptyState = themed.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 180px;
+    color: ${(p) => p.theme.text.secondary};
+    font-size: 14px;
+    font-weight: 500;
   `;
 }

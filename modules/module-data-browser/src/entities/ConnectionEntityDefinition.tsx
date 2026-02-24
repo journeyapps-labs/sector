@@ -12,10 +12,14 @@ import { DataBrowserEntities } from '../entities';
 import { ConnectionStore } from '../stores/ConnectionStore';
 import { AbstractConnection } from '../core/AbstractConnection';
 import { AddConnectionAction } from '../actions/connections/AddConnectionAction';
+import { SavedQueryEntity, SavedQueryStore } from '../stores/SavedQueryStore';
 
 export class ConnectionEntityDefinition extends EntityDefinition<AbstractConnection> {
   @inject(ConnectionStore)
   accessor connectionStore: ConnectionStore;
+
+  @inject(SavedQueryStore)
+  accessor savedQueryStore: SavedQueryStore;
 
   constructor() {
     super({
@@ -64,6 +68,22 @@ export class ConnectionEntityDefinition extends EntityDefinition<AbstractConnect
               openDefault: true
             },
             descendants: parent.schema_models.items
+          };
+        }
+      })
+    );
+
+    this.registerComponent(
+      new DescendantEntityProviderComponent<AbstractConnection, SavedQueryEntity>({
+        descendantType: DataBrowserEntities.SAVED_QUERY,
+        generateOptions: (parent) => {
+          return {
+            category: {
+              label: 'Saved queries',
+              icon: 'bookmark',
+              openDefault: false
+            },
+            descendants: this.savedQueryStore.getSavedEntitiesForConnection(parent.id)
           };
         }
       })

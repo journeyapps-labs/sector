@@ -18,6 +18,10 @@ import { TypeEngine } from './forms/TypeEngine';
 import { ViewSchemaModelAsJsonAction } from './actions/schema-model/ViewSchemaModelAsJsonAction';
 import { ModelJsonPanelFactory } from './panels/model-json/ModelJsonPanelFactory';
 import { SchemaModelIndexDefinition } from './entities/SchemaModelIndexDefinition';
+import { SavedQueryStore } from './stores/SavedQueryStore';
+import { SavedQueryEntityDefinition } from './entities/SavedQueryEntityDefinition';
+import { OpenSavedQueryAction } from './actions/saved-queries/OpenSavedQueryAction';
+import { RemoveSavedQueryAction } from './actions/saved-queries/RemoveSavedQueryAction';
 
 export class DataBrowserModule extends AbstractReactorModule {
   constructor() {
@@ -42,8 +46,11 @@ export class DataBrowserModule extends AbstractReactorModule {
     actionStore.registerAction(new CreateModelAction());
     actionStore.registerAction(new EditSchemaModelAction());
     actionStore.registerAction(new ViewSchemaModelAsJsonAction());
+    actionStore.registerAction(new OpenSavedQueryAction());
+    actionStore.registerAction(new RemoveSavedQueryAction());
 
     system.addStore(ConnectionStore, connectionStore);
+    system.addStore(SavedQueryStore, new SavedQueryStore());
 
     system.registerDefinition(new ConnectionEntityDefinition());
     system.registerDefinition(new ConnectionFactoryEntityDefinition());
@@ -51,6 +58,7 @@ export class DataBrowserModule extends AbstractReactorModule {
     system.registerDefinition(new SchemaModelObjectEntityDefinition());
     system.registerDefinition(new SchemaModelIndexDefinition());
     system.registerDefinition(new QueryEntityDefinition());
+    system.registerDefinition(new SavedQueryEntityDefinition());
 
     workspaceStore.registerFactory(new QueryPanelFactory());
     workspaceStore.registerFactory(new ModelPanelFactory());
@@ -59,5 +67,6 @@ export class DataBrowserModule extends AbstractReactorModule {
 
   async init(ioc: Container): Promise<any> {
     ioc.get(ConnectionStore).init();
+    ioc.get(SavedQueryStore).init();
   }
 }

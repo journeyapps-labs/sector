@@ -8,7 +8,7 @@ import * as React from 'react';
 import { action, observable } from 'mobx';
 import { CellDisplayWidget } from '../widgets/CellDisplayWidget';
 import { SmartColumnWidget } from '../widgets/SmartColumnWidget';
-import { SimpleFilter } from '../filters';
+import { SerializedSimpleFilter, SimpleFilter } from '../filters';
 import { SmartCellDisplayWidget } from '../widgets/SmartCellDisplayWidget';
 import { SchemaModelObject } from '../../SchemaModelObject';
 import { SimplePage } from './SimplePage';
@@ -23,6 +23,7 @@ export interface SimpleQueryOptions {
 export interface SimpleQueryEncoded extends AbstractQueryEncoded {
   limit: number;
   definition: string;
+  filters?: SerializedSimpleFilter[];
 }
 
 export class SimpleQuery extends AbstractSerializableQuery<SimpleQueryEncoded> {
@@ -78,7 +79,8 @@ export class SimpleQuery extends AbstractSerializableQuery<SimpleQueryEncoded> {
     return {
       ...super.serialize(),
       definition: this.options.definition.definition.name,
-      limit: this.options.limit
+      limit: this.options.limit,
+      filters: Array.from(this.simple_filters.values()).map((filter) => filter.serialize())
     };
   }
 
@@ -86,6 +88,16 @@ export class SimpleQuery extends AbstractSerializableQuery<SimpleQueryEncoded> {
     await super.deserialize(connectionStore, data);
     this.options.limit = data.limit;
     this.options.definition = await this.connection.waitForSchemaModelDefinitionByName(data.definition);
+    this.simple_filters.clear();
+    (data.filters || []).forEach((filter) => {
+      const variable = _.find(_.values(this.options.definition.definition.attributes), (attribute) => {
+        return attribute.name === filter.variable;
+      });
+      if (!variable) {
+        return;
+      }
+      this.simple_filters.set(variable, SimpleFilter.deserialize(variable, filter));
+    });
   }
 
   getColumns(): TableColumn[] {
