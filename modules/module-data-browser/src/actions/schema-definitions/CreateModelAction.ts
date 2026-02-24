@@ -1,4 +1,11 @@
-import { EntityAction, EntityActionEvent, inject, ioc, System, WorkspaceStore } from '@journeyapps-labs/reactor-mod';
+import {
+  ActionStore,
+  EntityAction,
+  EntityActionEvent,
+  inject,
+  ioc,
+  WorkspaceStore
+} from '@journeyapps-labs/reactor-mod';
 import { DataBrowserEntities } from '../../entities';
 import { SchemaModelDefinition } from '../../core/SchemaModelDefinition';
 import { ModelPanelModel } from '../../panels/model/ModelPanelFactory';
@@ -28,6 +35,6 @@ export class CreateModelAction extends EntityAction<SchemaModelDefinition> {
   }
 
   static get() {
-    return ioc.get(System).getActionByID<CreateModelAction>(CreateModelAction.ID);
+    return ioc.get(ActionStore).getActionByID<CreateModelAction>(CreateModelAction.ID);
   }
 }

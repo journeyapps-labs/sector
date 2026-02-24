@@ -19,17 +19,17 @@
   },
   "dependencies": {
     "@emotion/styled": "^11.14.1",
-    "@fortawesome/react-fontawesome": "^3.1.1",
+    "@fortawesome/react-fontawesome": "^3.2.0",
     "@journeyapps-labs/client-backend-v4": "1.0.0",
-    "@journeyapps-labs/common-ioc": "^1.0.0",
-    "@journeyapps-labs/common-sdk": "^1.0.2",
+    "@journeyapps-labs/common-ioc": "^1.0.1",
+    "@journeyapps-labs/common-sdk": "^1.0.3",
     "@journeyapps-labs/common-utils": "^1.0.1",
-    "@journeyapps-labs/lib-reactor-data-layer": "^1.0.8",
-    "@journeyapps-labs/reactor-mod": "4.0.1",
-    "@journeyapps-labs/reactor-mod-editor": "^1.1.14",
+    "@journeyapps-labs/lib-reactor-data-layer": "0.0.0-dev-20260223235320",
+    "@journeyapps-labs/reactor-mod": "0.0.0-dev-20260223235320",
+    "@journeyapps-labs/reactor-mod-editor": "0.0.0-dev-20260223235320",
     "@journeyapps/db": "^8.1.1",
     "@journeyapps/parser-schema": "^8.2.5",
-    "@projectstorm/react-workspaces-core": "4.2.2",
+    "@projectstorm/react-workspaces-core": "4.2.3",
     "async": "^3.2.6",
     "lodash": "^4.17.23",
     "mobx": "^6.15.0",
@@ -38,10 +38,10 @@
     "uuid": "^13.0.0"
   },
   "devDependencies": {
+    "@journeyapps-labs/lib-reactor-builder": "0.0.0-dev-20260223235320",
     "@types/async": "^3.2.25",
-    "@types/react": "^19.2.9",
-    "@journeyapps-labs/lib-reactor-builder": "^2.0.3",
-    "@types/lodash": "^4.17.23",
+    "@types/lodash": "^4.17.24",
+    "@types/react": "^19.2.14",
     "@types/uuid": "^11.0.0"
   }
 }

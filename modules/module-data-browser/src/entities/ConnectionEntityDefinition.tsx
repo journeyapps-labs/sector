@@ -1,5 +1,6 @@
 import {
   DescendantEntityProviderComponent,
+  EntityCardsPresenterComponent,
   EntityDefinition,
   EntityDescriberComponent,
   EntityPanelComponent,
@@ -43,7 +44,14 @@ export class ConnectionEntityDefinition extends EntityDefinition<AbstractConnect
       })
     );
 
-    this.registerComponent(new InlineTreePresenterComponent<AbstractConnection>());
+    this.registerComponent(
+      new InlineTreePresenterComponent<AbstractConnection>({
+        loadChildrenAsNodesAreOpened: true,
+        cacheTreeEntities: true
+      })
+    );
+
+    this.registerComponent(new EntityCardsPresenterComponent<AbstractConnection>());
 
     this.registerComponent(
       new DescendantEntityProviderComponent<AbstractConnection>({

@@ -1,4 +1,4 @@
-import { AbstractReactorModule, System, WorkspaceStore } from '@journeyapps-labs/reactor-mod';
+import { AbstractReactorModule, ActionStore, System, WorkspaceStore } from '@journeyapps-labs/reactor-mod';
 import { Container } from '@journeyapps-labs/common-ioc';
 import { ConnectionStore } from './stores/ConnectionStore';
 import { ConnectionEntityDefinition } from './entities/ConnectionEntityDefinition';
@@ -28,6 +28,7 @@ export class DataBrowserModule extends AbstractReactorModule {
 
   register(ioc: Container) {
     const system = ioc.get(System);
+    const actionStore = ioc.get(ActionStore);
     const workspaceStore = ioc.get(WorkspaceStore);
 
     let connectionStore = new ConnectionStore();
@@ -35,12 +36,12 @@ export class DataBrowserModule extends AbstractReactorModule {
 
     connectionStore.registerConnectionFactory(new ManualConnectionFactory());
 
-    system.registerAction(new AddConnectionAction());
-    system.registerAction(new RemoveConnectionAction());
-    system.registerAction(new QuerySchemaModelAction());
-    system.registerAction(new CreateModelAction());
-    system.registerAction(new EditSchemaModelAction());
-    system.registerAction(new ViewSchemaModelAsJsonAction());
+    actionStore.registerAction(new AddConnectionAction());
+    actionStore.registerAction(new RemoveConnectionAction());
+    actionStore.registerAction(new QuerySchemaModelAction());
+    actionStore.registerAction(new CreateModelAction());
+    actionStore.registerAction(new EditSchemaModelAction());
+    actionStore.registerAction(new ViewSchemaModelAsJsonAction());
 
     system.addStore(ConnectionStore, connectionStore);
 

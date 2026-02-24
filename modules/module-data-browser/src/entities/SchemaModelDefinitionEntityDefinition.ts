@@ -13,7 +13,6 @@ import { ConnectionStore } from '../stores/ConnectionStore';
 import { AbstractConnection } from '../core/AbstractConnection';
 import { SchemaModelDefinition } from '../core/SchemaModelDefinition';
 import { QuerySchemaModelAction } from '../actions/schema-definitions/QuerySchemaModelAction';
-import { V4Index } from '@journeyapps-labs/client-backend-v4';
 import { IndexModel } from '../core/IndexModel';
 
 export interface SchemaModelDefinitionEntityDefinitionEncoded {
@@ -78,7 +77,11 @@ export class SchemaModelDefinitionEntityDefinition extends EntityDefinition<Sche
       })
     );
 
-    this.registerComponent(new InlineTreePresenterComponent());
+    this.registerComponent(
+      new InlineTreePresenterComponent({
+        loadChildrenAsNodesAreOpened: true
+      })
+    );
 
     this.registerComponent(
       new SimpleParentEntitySearchEngine<AbstractConnection, SchemaModelDefinition>({
