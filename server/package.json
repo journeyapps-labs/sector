@@ -6,10 +6,10 @@
     "watch": "nodemon --watch src --ext ts --ignore dist --exec 'pnpm start'"
   },
   "dependencies": {
-    "@journeyapps-labs/lib-reactor-server": "0.0.0-dev-20260223235320",
-    "@journeyapps-labs/reactor-mod": "0.0.0-dev-20260223235320",
+    "@journeyapps-labs/lib-reactor-server": "1.1.11",
+    "@journeyapps-labs/reactor-mod": "5.0.0",
     "@journeyapps-labs/reactor-mod-data-browser": "workspace:^",
-    "@journeyapps-labs/reactor-mod-editor": "0.0.0-dev-20260223235320",
+    "@journeyapps-labs/reactor-mod-editor": "2.0.0",
     "@journeyapps-labs/reactor-mod-sector": "workspace:^",
     "compression": "^1.8.1",
     "express": "^5.2.1",

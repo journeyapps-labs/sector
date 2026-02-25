@@ -24,9 +24,9 @@
     "@journeyapps-labs/common-ioc": "^1.0.1",
     "@journeyapps-labs/common-sdk": "^1.0.3",
     "@journeyapps-labs/common-utils": "^1.0.1",
-    "@journeyapps-labs/lib-reactor-data-layer": "0.0.0-dev-20260223235320",
-    "@journeyapps-labs/reactor-mod": "0.0.0-dev-20260223235320",
-    "@journeyapps-labs/reactor-mod-editor": "0.0.0-dev-20260223235320",
+    "@journeyapps-labs/lib-reactor-data-layer": "1.0.10",
+    "@journeyapps-labs/reactor-mod": "5.0.0",
+    "@journeyapps-labs/reactor-mod-editor": "2.0.0",
     "@journeyapps/db": "^8.1.1",
     "@journeyapps/parser-schema": "^8.2.5",
     "@projectstorm/react-workspaces-core": "4.2.3",
@@ -38,7 +38,7 @@
     "uuid": "^13.0.0"
   },
   "devDependencies": {
-    "@journeyapps-labs/lib-reactor-builder": "0.0.0-dev-20260223235320",
+    "@journeyapps-labs/lib-reactor-builder": "2.0.5",
     "@types/async": "^3.2.25",
     "@types/lodash": "^4.17.24",
     "@types/react": "^19.2.14",

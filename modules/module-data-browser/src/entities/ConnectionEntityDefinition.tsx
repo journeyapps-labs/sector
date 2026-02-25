@@ -54,7 +54,7 @@ export class ConnectionEntityDefinition extends EntityDefinition<AbstractConnect
     this.registerComponent(
       new InlineTreePresenterComponent<AbstractConnection>({
         loadChildrenAsNodesAreOpened: true,
-        cacheTreeEntities: true
+        cacheTreeEntities: false
       })
     );
 
