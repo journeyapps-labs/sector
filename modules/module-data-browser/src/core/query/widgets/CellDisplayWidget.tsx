@@ -1,14 +1,9 @@
-import { ioc, SmartDateDisplayWidget, styled } from '@journeyapps-labs/reactor-mod';
-import * as _ from 'lodash';
+import { ioc, SmartDateDisplayWidget } from '@journeyapps-labs/reactor-mod';
 import * as React from 'react';
 import { PageRow } from '../Page';
 import { TypeEngine } from '../../../forms/TypeEngine';
-
-namespace S {
-  export const Empty = styled.div`
-    opacity: 0.2;
-  `;
-}
+import { EmptyValueWidget } from '../../../widgets/EmptyValueWidget';
+import { StandardModelFields } from '../StandardModelFields';
 
 export interface CellDisplayWidgetProps {
   row: PageRow;
@@ -19,10 +14,10 @@ export interface CellDisplayWidgetProps {
 export const CellDisplayWidget: React.FC<CellDisplayWidgetProps> = (props) => {
   const { row, cell, name } = props;
   if (cell == null) {
-    return <S.Empty>null</S.Empty>;
+    return <EmptyValueWidget />;
   }
 
-  if (name === 'updated_at') {
+  if (name === StandardModelFields.UPDATED_AT) {
     return <SmartDateDisplayWidget date={cell} />;
   }
 

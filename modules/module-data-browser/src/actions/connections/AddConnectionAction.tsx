@@ -1,4 +1,4 @@
-import { EntityAction, EntityActionEvent, inject, ioc, System } from '@journeyapps-labs/reactor-mod';
+import { ActionStore, EntityAction, EntityActionEvent, inject, ioc } from '@journeyapps-labs/reactor-mod';
 import { AbstractConnectionFactory } from '../../core/AbstractConnectionFactory';
 import { DataBrowserEntities } from '../../entities';
 import { ConnectionStore } from '../../stores/ConnectionStore';
@@ -28,6 +28,6 @@ export class AddConnectionAction extends EntityAction<AbstractConnectionFactory>
   }
 
   static get() {
-    return ioc.get(System).getActionByID<AddConnectionAction>(AddConnectionAction.ID);
+    return ioc.get(ActionStore).getActionByID<AddConnectionAction>(AddConnectionAction.ID);
   }
 }

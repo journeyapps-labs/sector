@@ -1,11 +1,14 @@
 import * as React from 'react';
-import { inject, ReactorPanelFactory, ReactorPanelModel } from '@journeyapps-labs/reactor-mod';
+import { inject, ioc, ReactorPanelModel } from '@journeyapps-labs/reactor-mod';
 import { QueryPanelWidget } from './QueryPanelWidget';
 import { AbstractQuery } from '../../core/query/AbstractQuery';
 import { ConnectionStore } from '../../stores/ConnectionStore';
 import { observable } from 'mobx';
 import { WorkspaceModelFactoryEvent } from '@projectstorm/react-workspaces-core';
 import { AbstractSerializableQuery } from '../../core/query/AbstractSerializableQuery';
+import { SavedQueryStore } from '../../stores/SavedQueryStore';
+import { AbstractConnection } from '../../core/AbstractConnection';
+import { SharedConnectionPanelFactory } from '../_shared/SharedConnectionPanelFactory';
 
 export class QueryPanelModel extends ReactorPanelModel {
   @inject(ConnectionStore)
@@ -49,9 +52,19 @@ export class QueryPanelModel extends ReactorPanelModel {
   decodeEntities(data: ReturnType<this['encodeEntities']>) {
     this.query = data.query;
   }
+
+  async loadSavedQuery(id: string): Promise<void> {
+    const query = await ioc.get(SavedQueryStore).loadSavedQuery(id);
+    if (!query) {
+      return;
+    }
+    this.current_page = 0;
+    this.query = query;
+    await query.load();
+  }
 }
 
-export class QueryPanelFactory extends ReactorPanelFactory<QueryPanelModel> {
+export class QueryPanelFactory extends SharedConnectionPanelFactory<QueryPanelModel> {
   static TYPE = 'query';
 
   constructor() {
@@ -69,6 +82,10 @@ export class QueryPanelFactory extends ReactorPanelFactory<QueryPanelModel> {
 
   getSimpleName(model: QueryPanelModel): string {
     return model.query?.getSimpleName();
+  }
+
+  protected getConnection(model: QueryPanelModel): AbstractConnection | null {
+    return model.query?.connection || null;
   }
 
   _generateModel(): QueryPanelModel {

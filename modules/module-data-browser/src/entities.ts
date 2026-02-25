@@ -4,5 +4,6 @@ export enum DataBrowserEntities {
   SCHEMA_MODEL_DEFINITION = 'databrowser/schema_model_definition',
   SCHEMA_MODEL_INDEX = 'databrowser/schema_model_index',
   SCHEMA_MODEL_OBJECT = 'databrowser/schema_model_object',
-  QUERY = 'databrowser/query'
+  QUERY = 'databrowser/query',
+  SAVED_QUERY = 'databrowser/saved_query'
 }

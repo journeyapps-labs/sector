@@ -1,5 +1,6 @@
 import {
   DescendantEntityProviderComponent,
+  EntityCardsPresenterComponent,
   EntityDefinition,
   EntityDescriberComponent,
   EntityPanelComponent,
@@ -11,10 +12,14 @@ import { DataBrowserEntities } from '../entities';
 import { ConnectionStore } from '../stores/ConnectionStore';
 import { AbstractConnection } from '../core/AbstractConnection';
 import { AddConnectionAction } from '../actions/connections/AddConnectionAction';
+import { SavedQueryEntity, SavedQueryStore } from '../stores/SavedQueryStore';
 
 export class ConnectionEntityDefinition extends EntityDefinition<AbstractConnection> {
   @inject(ConnectionStore)
   accessor connectionStore: ConnectionStore;
+
+  @inject(SavedQueryStore)
+  accessor savedQueryStore: SavedQueryStore;
 
   constructor() {
     super({
@@ -29,7 +34,10 @@ export class ConnectionEntityDefinition extends EntityDefinition<AbstractConnect
       new EntityDescriberComponent<AbstractConnection>({
         label: 'Simple',
         describe: (entity: AbstractConnection) => {
-          return entity.name;
+          return {
+            ...entity.name,
+            iconColor: entity.color
+          };
         }
       })
     );
@@ -43,7 +51,14 @@ export class ConnectionEntityDefinition extends EntityDefinition<AbstractConnect
       })
     );
 
-    this.registerComponent(new InlineTreePresenterComponent<AbstractConnection>());
+    this.registerComponent(
+      new InlineTreePresenterComponent<AbstractConnection>({
+        loadChildrenAsNodesAreOpened: true,
+        cacheTreeEntities: false
+      })
+    );
+
+    this.registerComponent(new EntityCardsPresenterComponent<AbstractConnection>());
 
     this.registerComponent(
       new DescendantEntityProviderComponent<AbstractConnection>({
@@ -52,10 +67,24 @@ export class ConnectionEntityDefinition extends EntityDefinition<AbstractConnect
           return {
             category: {
               label: 'Models',
-              icon: 'cube',
-              openDefault: true
+              icon: 'cube'
             },
             descendants: parent.schema_models.items
+          };
+        }
+      })
+    );
+
+    this.registerComponent(
+      new DescendantEntityProviderComponent<AbstractConnection, SavedQueryEntity>({
+        descendantType: DataBrowserEntities.SAVED_QUERY,
+        generateOptions: (parent) => {
+          return {
+            category: {
+              label: 'Saved queries',
+              icon: 'bookmark'
+            },
+            descendants: this.savedQueryStore.getSavedEntitiesForConnection(parent.id)
           };
         }
       })

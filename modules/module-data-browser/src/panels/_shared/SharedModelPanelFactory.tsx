@@ -1,8 +1,10 @@
-import { inject, ReactorPanelFactory, ReactorPanelModel } from '@journeyapps-labs/reactor-mod';
+import { inject, ReactorPanelModel } from '@journeyapps-labs/reactor-mod';
 import { ConnectionStore } from '../../stores/ConnectionStore';
 import { observable } from 'mobx';
 import { SchemaModelDefinition } from '../../core/SchemaModelDefinition';
 import { SchemaModelObject } from '../../core/SchemaModelObject';
+import { SharedConnectionPanelFactory } from './SharedConnectionPanelFactory';
+import { AbstractConnection } from '../../core/AbstractConnection';
 
 export interface SharedModelPanelModelOptions {
   definition: SchemaModelDefinition;
@@ -39,7 +41,11 @@ export class SharedModelPanelModel extends ReactorPanelModel {
   }
 }
 
-export abstract class SharedModelPanelFactory<T extends SharedModelPanelModel> extends ReactorPanelFactory<T> {
+export abstract class SharedModelPanelFactory<T extends SharedModelPanelModel> extends SharedConnectionPanelFactory<T> {
+  protected getConnection(model: T): AbstractConnection | null {
+    return model.definition?.connection || null;
+  }
+
   getSimpleName(model: T) {
     let _model = model.model;
     let _definition = model.definition;

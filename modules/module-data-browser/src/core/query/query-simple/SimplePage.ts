@@ -1,10 +1,13 @@
 import { Page, PageOptions } from '../Page';
 import { AbstractFilter } from '../filters';
+import { SimpleQuerySort } from './SimpleQueryTypes';
+import { applyFiltersAndSorts } from './SimpleQueryPlanner';
 
 export interface SimplePageOptions extends PageOptions {
   offset: number;
   limit: number;
   filters: AbstractFilter[];
+  sorts?: SimpleQuerySort[];
 }
 
 export class SimplePage extends Page {
@@ -15,11 +18,7 @@ export class SimplePage extends Page {
   async load() {
     this.loading = true;
     let collection = await this.options.definition.getCollection();
-    let query = collection.all();
-
-    this.options2.filters.forEach((f) => {
-      query = f.augment(query);
-    });
+    let query = applyFiltersAndSorts(collection.all(), this.options2.filters, this.options2.sorts || []);
 
     this.models = await this.options.definition.executeQuery(
       query.limit(this.options2.limit).skip(this.options2.offset)

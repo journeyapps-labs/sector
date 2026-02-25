@@ -20,6 +20,7 @@ export * from './entities/SchemaModelObjectEntityDefinition';
 export * from './panels/query/QueryPanelFactory';
 export * from './panels/model/ModelPanelFactory';
 export * from './panels/_shared/SharedModelPanelFactory';
+export * from './panels/_shared/SharedConnectionPanelFactory';
 
 export * from './stores/ConnectionStore';
 

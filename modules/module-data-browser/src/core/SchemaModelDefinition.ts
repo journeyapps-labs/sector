@@ -9,6 +9,7 @@ import { v4 } from 'uuid';
 import { V4Index } from '@journeyapps-labs/client-backend-v4';
 import { action, observable } from 'mobx';
 import { IndexModel } from './IndexModel';
+import { TypeEngine } from '../forms/TypeEngine';
 
 export interface SchemaModelDefinitionListener {
   resolved: (event: { object: SchemaModelObject }) => any;
@@ -168,5 +169,20 @@ export class SchemaModelDefinition
       definition: this,
       adapter: collection.adapter
     });
+  }
+
+  getFilterableFields(typeEngine: TypeEngine): { key: string; label: string }[] {
+    return Object.values(this.definition.attributes)
+      .map((attribute) => {
+        const handler = typeEngine.getHandler(attribute.type);
+        if (!handler?.setupFilter) {
+          return null;
+        }
+        return {
+          key: attribute.name,
+          label: attribute.label || attribute.name
+        };
+      })
+      .filter((value) => !!value);
   }
 }

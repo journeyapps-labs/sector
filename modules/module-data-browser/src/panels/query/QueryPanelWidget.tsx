@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { QueryPanelModel } from './QueryPanelFactory';
 import { observer } from 'mobx-react';
 import styled from '@emotion/styled';
@@ -22,7 +22,16 @@ namespace S {
 }
 
 export const QueryPanelWidget: React.FC<QueryPanelWidgetProps> = observer((props) => {
-  const [page, setPage] = useState<Page>(null);
+  const [displayPage, setDisplayPage] = useState<Page>(null);
+  const [loading, setLoading] = useState(false);
+  const displayPageRef = useRef<Page>(null);
+  const pendingDisposerRef = useRef<() => void>(null);
+
+  const setVisiblePage = (page: Page) => {
+    displayPageRef.current = page;
+    setDisplayPage(page);
+  };
+
   useEffect(() => {
     if (!props.model.query) {
       return;
@@ -33,13 +42,53 @@ export const QueryPanelWidget: React.FC<QueryPanelWidgetProps> = observer((props
   useEffect(() => {
     return autorun(() => {
       if (props.model.query) {
-        setPage(props.model.query.getPage(props.model.current_page));
+        const nextPage = props.model.query.getPage(props.model.current_page);
+        const currentPage = displayPageRef.current;
+
+        if (!currentPage) {
+          setVisiblePage(nextPage);
+          setLoading(!!nextPage?.loading);
+          return;
+        }
+
+        if (nextPage === currentPage) {
+          setLoading(!!nextPage.loading);
+          return;
+        }
+
+        if (!nextPage.loading) {
+          pendingDisposerRef.current?.();
+          pendingDisposerRef.current = null;
+          setVisiblePage(nextPage);
+          setLoading(false);
+          return;
+        }
+
+        setLoading(true);
+        pendingDisposerRef.current?.();
+        pendingDisposerRef.current = autorun(() => {
+          if (!nextPage.loading) {
+            pendingDisposerRef.current?.();
+            pendingDisposerRef.current = null;
+            setVisiblePage(nextPage);
+            setLoading(false);
+          }
+        });
       }
     });
   }, [props.model.query]);
 
+  useEffect(() => {
+    return () => {
+      pendingDisposerRef.current?.();
+      pendingDisposerRef.current = null;
+    };
+  }, []);
+
+  const activePage = displayPage || (props.model.query ? props.model.query.getPage(props.model.current_page) : null);
+
   return (
-    <LoadingPanelWidget loading={!props.model.query || !page}>
+    <LoadingPanelWidget loading={!props.model.query || !activePage}>
       {() => {
         return (
           <S.Container>
@@ -47,9 +96,12 @@ export const QueryPanelWidget: React.FC<QueryPanelWidgetProps> = observer((props
               top={
                 <TableControlsWidget
                   query={props.model.query}
-                  current_page={page}
+                  current_page={activePage}
+                  loading={loading}
+                  onLoadSavedQuery={async (id) => {
+                    await props.model.loadSavedQuery(id);
+                  }}
                   goToPage={(index) => {
-                    setPage(props.model.query.getPage(index));
                     props.model.current_page = index;
                   }}
                 />
@@ -57,15 +109,18 @@ export const QueryPanelWidget: React.FC<QueryPanelWidgetProps> = observer((props
               bottom={
                 <TableControlsWidget
                   query={props.model.query}
-                  current_page={page}
+                  current_page={activePage}
+                  loading={loading}
+                  onLoadSavedQuery={async (id) => {
+                    await props.model.loadSavedQuery(id);
+                  }}
                   goToPage={(index) => {
-                    setPage(props.model.query.getPage(index));
                     props.model.current_page = index;
                   }}
                 />
               }
             >
-              <PageResultsWidget query={props.model.query} page={page} />
+              <PageResultsWidget query={props.model.query} page={activePage} />
             </BorderLayoutWidget>
           </S.Container>
         );

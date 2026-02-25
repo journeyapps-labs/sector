@@ -4,33 +4,37 @@ import styled from '@emotion/styled';
 export interface ColumnDisplayWidgetProps {
   label: string;
   className?: any;
+  onClick?: () => any;
 }
 
 export const ColumnDisplayWidget: React.FC<ColumnDisplayWidgetProps> = (props) => {
-  let parts = (props.label || '').split(' ');
-  if (parts.length >= 5) {
-    return (
-      <S.Width className={props.className} length={150}>
-        {props.label}
-      </S.Width>
-    );
-  }
-  if (parts.length >= 3) {
-    return (
-      <S.Width className={props.className} length={80}>
-        {props.label}
-      </S.Width>
-    );
-  }
-  return <S.Span className={props.className}>{props.label}</S.Span>;
+  const parts = (props.label || '').split(' ');
+  const minWidth = parts.length >= 5 ? 150 : parts.length >= 3 ? 80 : undefined;
+  return (
+    <S.Label
+      className={props.className}
+      minWidth={minWidth}
+      clickable={!!props.onClick}
+      nowrap={!minWidth}
+      onClick={props.onClick}
+    >
+      {props.label}
+    </S.Label>
+  );
 };
 
 namespace S {
-  export const Width = styled.div<{ length: number }>`
-    min-width: ${(p) => p.length}px;
+  const clickableStyle = `
+    cursor: pointer;
+    user-select: none;
+    &:hover {
+      opacity: 0.9;
+    }
   `;
 
-  export const Span = styled.div`
-    white-space: nowrap;
+  export const Label = styled.div<{ minWidth?: number; clickable: boolean; nowrap: boolean }>`
+    ${(p) => (p.minWidth ? `min-width: ${p.minWidth}px;` : '')};
+    ${(p) => (p.nowrap ? 'white-space: nowrap;' : '')};
+    ${(p) => (p.clickable ? clickableStyle : '')};
   `;
 }
