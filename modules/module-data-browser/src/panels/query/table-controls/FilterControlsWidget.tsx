@@ -129,7 +129,7 @@ namespace S {
     padding: 1px 3px;
 
     &:hover {
-      background: ${(p) => p.theme.forms.groupBackground};
+      background: ${(p) => p.theme.forms.groupBorder};
     }
   `;
 
