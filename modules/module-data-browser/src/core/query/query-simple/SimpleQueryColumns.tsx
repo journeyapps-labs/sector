@@ -108,7 +108,7 @@ export const buildSimpleQueryColumns = (options: BuildSimpleQueryColumnsOptions)
             }}
             filterChanged={async (filter) => {
               if (!filter) {
-                options.filterState.removeFilter(a.name);
+                options.filterState.getFilter(a.name)?.delete();
                 return;
               }
               options.filterState.setFilter(a.name, filter);

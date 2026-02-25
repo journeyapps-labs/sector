@@ -1,5 +1,5 @@
 import { NumberType, Variable } from '@journeyapps/db';
-import { DialogStore2, FormDialogDirective, FormInput, NumberInput, ioc } from '@journeyapps-labs/reactor-mod';
+import { DialogStore2, FormInput, NumberInput, ioc } from '@journeyapps-labs/reactor-mod';
 import { TypeHandler } from './shared/type-handler';
 import { Condition, SimpleFilter, Statement, StatementMatch } from '../../core/query/filters';
 import {
@@ -8,6 +8,7 @@ import {
   ConditionalFilterFormValue,
   ConditionalStatementValue
 } from './filters/ConditionalFilterForm';
+import { ClearableFilterFormDialogDirective } from './filters/ClearableFilterFormDialogDirective';
 
 interface NumberFilterFormValue extends ConditionalFilterFormValue<number> {
   statements: ConditionalStatementValue<number>[];
@@ -84,9 +85,10 @@ export const numberHandler: TypeHandler = {
   setupFilter: async ({ variable, filter }) => {
     const form = new NumberFilterForm(NumberFilterForm.fromFilter(filter));
     const result = await ioc.get(DialogStore2).showDialog(
-      new FormDialogDirective({
+      new ClearableFilterFormDialogDirective({
         title: `Filter ${variable.label || variable.name}`,
         form,
+        filter,
         handler: async () => {}
       })
     );

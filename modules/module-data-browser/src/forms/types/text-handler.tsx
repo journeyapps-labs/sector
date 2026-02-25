@@ -1,7 +1,6 @@
 import { TextType, Variable } from '@journeyapps/db';
 import {
   DialogStore2,
-  FormDialogDirective,
   FormInput,
   FormInputRenderOptions,
   TableButtonWidget,
@@ -23,6 +22,7 @@ import {
   ConditionalFilterFormValue,
   ConditionalStatementValue
 } from './filters/ConditionalFilterForm';
+import { ClearableFilterFormDialogDirective } from './filters/ClearableFilterFormDialogDirective';
 
 interface TextFilterFormValue extends ConditionalFilterFormValue<string> {
   statements: ConditionalStatementValue<string>[];
@@ -212,9 +212,10 @@ export const textHandler = (context: TypeHandlerContext): TypeHandler<TextType, 
 
       const form = new TextFilterForm(TextFilterForm.fromFilter(filter, variable.type));
       const result = await ioc.get(DialogStore2).showDialog(
-        new FormDialogDirective({
+        new ClearableFilterFormDialogDirective({
           title: `Filter ${variable.label || variable.name}`,
           form,
+          filter,
           handler: async () => {}
         })
       );

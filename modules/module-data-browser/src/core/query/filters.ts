@@ -1,7 +1,20 @@
 import { Query, Variable } from '@journeyapps/db';
 import { EntityLabel } from '@journeyapps-labs/reactor-mod';
+import { BaseObserver } from '@journeyapps-labs/common-utils';
 
-export abstract class AbstractFilter {
+export interface AbstractFilterListener {
+  removeRequested: () => any;
+}
+
+export abstract class AbstractFilter extends BaseObserver<AbstractFilterListener> {
+  constructor() {
+    super();
+  }
+
+  delete() {
+    this.iterateListeners((listener) => listener.removeRequested?.());
+  }
+
   abstract augment(query: Query);
 }
 

@@ -31,6 +31,7 @@ export class SimpleQueryFilterState extends BaseObserver<SimpleQueryFilterStateL
     this.definition = definition;
     const hadFilters = this.simpleFilters.size > 0;
     if (definitionChanged) {
+      Array.from(this.simpleFilters.values()).forEach((filter) => filter.delete());
       this.simpleFilters.clear();
     }
     if (definitionChanged || hadFilters) {
@@ -89,6 +90,7 @@ export class SimpleQueryFilterState extends BaseObserver<SimpleQueryFilterStateL
       return;
     }
     let changed = this.simpleFilters.size > 0;
+    Array.from(this.simpleFilters.values()).forEach((filter) => filter.delete());
     this.simpleFilters.clear();
     (filters || []).forEach((filter) => {
       if (!SimpleFilter.canDeserialize(filter)) {
@@ -100,7 +102,7 @@ export class SimpleQueryFilterState extends BaseObserver<SimpleQueryFilterStateL
       if (!variable) {
         return;
       }
-      this.simpleFilters.set(variable, SimpleFilter.deserialize(variable, filter));
+      this.addFilter(variable, SimpleFilter.deserialize(variable, filter));
       changed = true;
     });
     if (changed) {
@@ -108,26 +110,12 @@ export class SimpleQueryFilterState extends BaseObserver<SimpleQueryFilterStateL
     }
   }
 
-  removeFilter(field: string) {
-    const variable = this.resolveAttribute(field);
-    if (!variable) {
-      return false;
-    }
-    const changed = this.simpleFilters.delete(variable);
-    if (changed) {
-      this.iterateListeners((cb) => cb.changed?.());
-    }
-    return changed;
-  }
-
   setFilter(field: string, filter: SimpleFilter) {
     const variable = this.resolveAttribute(field);
     if (!variable) {
       return false;
     }
-    this.simpleFilters.set(variable, filter);
-    this.iterateListeners((cb) => cb.changed?.());
-    return true;
+    return this.addFilter(variable, filter);
   }
 
   async setupFilterForField(field: string, position?: MouseEvent): Promise<boolean> {
@@ -148,7 +136,31 @@ export class SimpleQueryFilterState extends BaseObserver<SimpleQueryFilterStateL
     if (!nextFilter) {
       return false;
     }
-    this.simpleFilters.set(variable, nextFilter);
+    return this.addFilter(variable, nextFilter);
+  }
+
+  private addFilter(variable: Variable, filter: SimpleFilter): boolean {
+    if (!variable || !filter) {
+      return false;
+    }
+    const existing = this.simpleFilters.get(variable);
+    if (existing && existing !== filter) {
+      existing.delete();
+    }
+    if (existing === filter) {
+      this.iterateListeners((cb) => cb.changed?.());
+      return true;
+    }
+    let unsubscribe = filter.registerListener({
+      removeRequested: () => {
+        unsubscribe();
+        if (this.simpleFilters.get(variable) === filter) {
+          this.simpleFilters.delete(variable);
+          this.iterateListeners((cb) => cb.changed?.());
+        }
+      }
+    });
+    this.simpleFilters.set(variable, filter);
     this.iterateListeners((cb) => cb.changed?.());
     return true;
   }

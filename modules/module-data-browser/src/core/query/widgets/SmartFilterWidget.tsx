@@ -10,7 +10,7 @@ import {
   TooltipPosition
 } from '@journeyapps-labs/reactor-mod';
 import { TypeEngine } from '../../../forms/TypeEngine';
-import { SimpleFilter } from '../filters';
+import { SimpleFilter, StatementMatch } from '../filters';
 
 export interface SmartFilterWidgetProps {
   variable: Variable;
@@ -29,7 +29,9 @@ const getFilterSummary = (filter?: SimpleFilter): string => {
   if (metadata.length === 0) {
     return 'No filter applied';
   }
-  return `Filtered by: ${metadata.map((entry) => `${entry.label} ${entry.value}`).join(', ')}`.trim();
+  const match = filter?.match === StatementMatch.ALL ? 'AND' : 'OR';
+  const joined = metadata.map((entry) => `${entry.label} ${entry.value}`).join(` ${match} `);
+  return `Filtered by: ${joined}`.trim();
 };
 
 const getFilterTooltip = (filter?: SimpleFilter): string => {
@@ -44,11 +46,15 @@ export const SmartFilterMetadataWidget: React.FC<SmartFilterMetadataWidgetProps>
   if (metadata.length === 0) {
     return null;
   }
+  const matchLabel = props.filter?.match === StatementMatch.ALL ? 'AND' : 'OR';
   return (
     <S.MetaList className={props.className}>
       {metadata.map((entry, index) => {
         return (
-          <MetadataWidget key={`${entry.label}-${entry.value}-${index}`} {...entry} active={entry.active ?? true} />
+          <React.Fragment key={`${entry.label}-${entry.value}-${index}`}>
+            {index > 0 ? <S.MetaJoiner>{matchLabel}</S.MetaJoiner> : null}
+            <MetadataWidget {...entry} active={entry.active ?? true} />
+          </React.Fragment>
         );
       })}
     </S.MetaList>
@@ -89,7 +95,16 @@ namespace S {
   export const MetaList = styled.div`
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     gap: 4px;
+  `;
+
+  export const MetaJoiner = styled.div`
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: ${(p) => p.theme.text.secondary};
+    padding: 0 2px;
   `;
 
   export const FilterButton = styled.button<{ active: boolean }>`

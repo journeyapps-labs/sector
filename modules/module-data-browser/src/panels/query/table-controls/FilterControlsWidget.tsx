@@ -3,7 +3,6 @@ import {
   ComboBoxItem,
   ComboBoxStore2,
   InputContainerWidget,
-  MetadataWidget,
   PanelButtonMode,
   PanelButtonWidget,
   SimpleComboBoxDirective,
@@ -11,6 +10,7 @@ import {
   styled
 } from '@journeyapps-labs/reactor-mod';
 import { SimpleQuery } from '../../../core/query/query-simple/SimpleQuery';
+import { SmartFilterMetadataWidget } from '../../../core/query/widgets/SmartFilterWidget';
 
 export interface FilterControlsWidgetProps {
   simpleQuery: SimpleQuery;
@@ -56,17 +56,48 @@ export const FilterControlsWidget: React.FC<FilterControlsWidgetProps> = (props)
         />
         {filters.map((entry) => {
           return (
-            <S.FilterItem key={entry.key}>
+            <S.FilterItem
+              key={entry.key}
+              onContextMenu={async (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                const directive = await ioc.get(ComboBoxStore2).show(
+                  new SimpleComboBoxDirective({
+                    title: entry.label,
+                    event: event as any,
+                    items: [
+                      {
+                        key: 'edit',
+                        title: 'Edit filter',
+                        icon: 'pencil',
+                        action: async () => {
+                          await props.simpleQuery.filterState.setupFilterForField(entry.key, event.nativeEvent as any);
+                          props.goToPage?.(0);
+                        }
+                      },
+                      {
+                        key: 'clear',
+                        title: 'Clear filter',
+                        icon: 'trash',
+                        action: async () => {
+                          entry.filter.delete();
+                          props.goToPage?.(0);
+                        }
+                      }
+                    ]
+                  })
+                );
+                directive.getSelectedItem();
+              }}
+            >
               <S.FilterLabel>{entry.label}</S.FilterLabel>
-              {entry.filter.getMetadata().map((meta, index) => {
-                return <MetadataWidget key={`${entry.key}-${index}-${meta.label}-${meta.value}`} {...meta} />;
-              })}
-              <PanelButtonWidget
+              <SmartFilterMetadataWidget filter={entry.filter} variable={entry.filter.variable} />
+              <S.CloseButton
                 mode={PanelButtonMode.LINK}
                 icon="close"
                 tooltip={`Clear ${entry.label} filter`}
                 action={async () => {
-                  props.simpleQuery.filterState.removeFilter(entry.key);
+                  entry.filter.delete();
                   props.goToPage?.(0);
                 }}
               />
@@ -92,11 +123,21 @@ namespace S {
     display: flex;
     flex-direction: row;
     align-items: center;
-    column-gap: 4px;
+    border-radius: 4px;
+    padding: 1px 3px;
+
+    &:hover {
+      background: ${(p) => p.theme.forms.groupBackground};
+    }
+  `;
+
+  export const CloseButton = styled(PanelButtonWidget)`
+    padding: 2px;
   `;
 
   export const FilterLabel = styled.div`
     font-size: 12px;
     color: ${(p) => p.theme.text.secondary};
+    padding-right: 4px;
   `;
 }

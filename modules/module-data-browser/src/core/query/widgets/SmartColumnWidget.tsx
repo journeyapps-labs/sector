@@ -34,18 +34,6 @@ export const SmartColumnWidget: React.FC<SmartColumnWidgetProps> = (props) => {
         {display}
         <SmartFilterWidget filter={props.filter} variable={props.variable} filterChanged={props.filterChanged} />
       </S.TopRow>
-      {props.filter ? (
-        <S.FilterMetaRow>
-          <SmartFilterMetadataWidget variable={props.variable} filter={props.filter} />
-          <PanelTitleToolbarButtonWidget
-            icon="times"
-            tooltip="Clear filter"
-            action={() => {
-              props.filterChanged(null);
-            }}
-          />
-        </S.FilterMetaRow>
-      ) : null}
     </S.Container>
   );
 };

@@ -3,7 +3,6 @@ import {
   DateInput,
   DateTimePickerType,
   DialogStore2,
-  FormDialogDirective,
   FormInput,
   SmartDateDisplayWidget,
   ioc
@@ -17,6 +16,7 @@ import {
   ConditionalFilterFormValue,
   ConditionalStatementValue
 } from './filters/ConditionalFilterForm';
+import { ClearableFilterFormDialogDirective } from './filters/ClearableFilterFormDialogDirective';
 
 interface DateFilterFormValue extends ConditionalFilterFormValue<Date> {
   statements: ConditionalStatementValue<Date>[];
@@ -110,9 +110,10 @@ export const dateHandler: TypeHandler = {
     const pickerType = variable.type instanceof DatetimeType ? DateTimePickerType.DATETIME : DateTimePickerType.DATE;
     const form = new DateFilterForm(DateFilterForm.fromFilter(filter, pickerType));
     const result = await ioc.get(DialogStore2).showDialog(
-      new FormDialogDirective({
+      new ClearableFilterFormDialogDirective({
         title: `Filter ${variable.label || variable.name}`,
         form,
+        filter,
         handler: async () => {}
       })
     );
