@@ -14,6 +14,11 @@ export interface SimpleQueryFilterStateOptions {
   typeEngine: TypeEngine;
 }
 
+export interface ActiveFilterEntry {
+  variable: Variable;
+  filter: SimpleFilter;
+}
+
 export class SimpleQueryFilterState extends BaseObserver<SimpleQueryFilterStateListener> {
   readonly simpleFilters: Map<Variable, SimpleFilter>;
   accessor definition: SchemaModelDefinition | undefined;
@@ -54,11 +59,10 @@ export class SimpleQueryFilterState extends BaseObserver<SimpleQueryFilterStateL
     return this.definition.getFilterableFields(this.typeEngine);
   }
 
-  getActiveFilters(): { key: string; label: string; filter: SimpleFilter }[] {
+  getActiveFilters(): ActiveFilterEntry[] {
     return Array.from(this.simpleFilters.entries()).map(([variable, filter]) => {
       return {
-        key: variable.name,
-        label: variable.label || variable.name,
+        variable,
         filter
       };
     });

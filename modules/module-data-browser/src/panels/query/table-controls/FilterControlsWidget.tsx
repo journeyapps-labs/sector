@@ -55,15 +55,17 @@ export const FilterControlsWidget: React.FC<FilterControlsWidgetProps> = (props)
           }}
         />
         {filters.map((entry) => {
+          const key = entry.variable.name;
+          const label = entry.variable.label || entry.variable.name;
           return (
             <S.FilterItem
-              key={entry.key}
+              key={key}
               onContextMenu={async (event) => {
                 event.preventDefault();
                 event.stopPropagation();
                 const directive = await ioc.get(ComboBoxStore2).show(
                   new SimpleComboBoxDirective({
-                    title: entry.label,
+                    title: label,
                     event: event as any,
                     items: [
                       {
@@ -71,7 +73,7 @@ export const FilterControlsWidget: React.FC<FilterControlsWidgetProps> = (props)
                         title: 'Edit filter',
                         icon: 'pencil',
                         action: async () => {
-                          await props.simpleQuery.filterState.setupFilterForField(entry.key, event.nativeEvent as any);
+                          await props.simpleQuery.filterState.setupFilterForField(key, event.nativeEvent as any);
                           props.goToPage?.(0);
                         }
                       },
@@ -90,12 +92,12 @@ export const FilterControlsWidget: React.FC<FilterControlsWidgetProps> = (props)
                 directive.getSelectedItem();
               }}
             >
-              <S.FilterLabel>{entry.label}</S.FilterLabel>
+              <S.FilterLabel>{label}</S.FilterLabel>
               <SmartFilterMetadataWidget filter={entry.filter} variable={entry.filter.variable} />
               <S.CloseButton
                 mode={PanelButtonMode.LINK}
                 icon="close"
-                tooltip={`Clear ${entry.label} filter`}
+                tooltip={`Clear ${label} filter`}
                 action={async () => {
                   entry.filter.delete();
                   props.goToPage?.(0);
