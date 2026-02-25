@@ -67,8 +67,7 @@ export class ConnectionEntityDefinition extends EntityDefinition<AbstractConnect
           return {
             category: {
               label: 'Models',
-              icon: 'cube',
-              openDefault: true
+              icon: 'cube'
             },
             descendants: parent.schema_models.items
           };
@@ -83,8 +82,7 @@ export class ConnectionEntityDefinition extends EntityDefinition<AbstractConnect
           return {
             category: {
               label: 'Saved queries',
-              icon: 'bookmark',
-              openDefault: false
+              icon: 'bookmark'
             },
             descendants: this.savedQueryStore.getSavedEntitiesForConnection(parent.id)
           };
