@@ -1,13 +1,14 @@
 import * as React from 'react';
-import { inject, ioc, ReactorPanelFactory, ReactorPanelModel, TabWidget } from '@journeyapps-labs/reactor-mod';
+import { inject, ioc, ReactorPanelModel } from '@journeyapps-labs/reactor-mod';
 import { QueryPanelWidget } from './QueryPanelWidget';
 import { AbstractQuery } from '../../core/query/AbstractQuery';
 import { ConnectionStore } from '../../stores/ConnectionStore';
 import { observable } from 'mobx';
 import { WorkspaceModelFactoryEvent } from '@projectstorm/react-workspaces-core';
-import { TabRendererEvent } from '@projectstorm/react-workspaces-model-tabs';
 import { AbstractSerializableQuery } from '../../core/query/AbstractSerializableQuery';
 import { SavedQueryStore } from '../../stores/SavedQueryStore';
+import { AbstractConnection } from '../../core/AbstractConnection';
+import { SharedConnectionPanelFactory } from '../_shared/SharedConnectionPanelFactory';
 
 export class QueryPanelModel extends ReactorPanelModel {
   @inject(ConnectionStore)
@@ -63,7 +64,7 @@ export class QueryPanelModel extends ReactorPanelModel {
   }
 }
 
-export class QueryPanelFactory extends ReactorPanelFactory<QueryPanelModel> {
+export class QueryPanelFactory extends SharedConnectionPanelFactory<QueryPanelModel> {
   static TYPE = 'query';
 
   constructor() {
@@ -83,24 +84,8 @@ export class QueryPanelFactory extends ReactorPanelFactory<QueryPanelModel> {
     return model.query?.getSimpleName();
   }
 
-  protected generatePanelTabInternal(event: TabRendererEvent<QueryPanelModel>) {
-    return (
-      <TabWidget
-        icon={this.getTabIcon(event)}
-        factory={this}
-        engine={event.engine}
-        model={event.model}
-        selected={event.selected}
-        title={this.getSimpleName(event.model)}
-        indicator={
-          event.model.query?.connection?.color
-            ? {
-                color: event.model.query.connection.color
-              }
-            : undefined
-        }
-      />
-    );
+  protected getConnection(model: QueryPanelModel): AbstractConnection | null {
+    return model.query?.connection || null;
   }
 
   _generateModel(): QueryPanelModel {

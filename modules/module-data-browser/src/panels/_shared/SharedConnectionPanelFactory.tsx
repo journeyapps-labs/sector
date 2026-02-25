@@ -29,10 +29,11 @@ export class SharedConnectionPanelModel extends ReactorPanelModel {
   }
 }
 
-export abstract class SharedConnectionPanelFactory<
-  T extends SharedConnectionPanelModel
-> extends ReactorPanelFactory<T> {
+export abstract class SharedConnectionPanelFactory<T extends ReactorPanelModel> extends ReactorPanelFactory<T> {
+  protected abstract getConnection(model: T): AbstractConnection | null;
+
   protected generatePanelTabInternal(event: TabRendererEvent<T>) {
+    const connection = this.getConnection(event.model);
     return (
       <TabWidget
         icon={this.getTabIcon(event)}
@@ -42,9 +43,9 @@ export abstract class SharedConnectionPanelFactory<
         selected={event.selected}
         title={this.getSimpleName(event.model)}
         indicator={
-          event.model.connection?.color
+          connection?.color
             ? {
-                color: event.model.connection.color
+                color: connection.color
               }
             : undefined
         }
