@@ -1,5 +1,11 @@
 # @journeyapps-labs/reactor-mod-data-browser
 
+## 3.1.1
+
+### Patch Changes
+
+- 4e3887d: Bump dependencies
+
 ## 3.1.0
 
 ### Minor Changes
