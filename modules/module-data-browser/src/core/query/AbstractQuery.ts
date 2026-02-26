@@ -29,4 +29,6 @@ export abstract class AbstractQuery {
   abstract get totalPages(): number;
 
   abstract getPage(number: number): Page;
+
+  abstract matches(query: AbstractQuery): boolean;
 }

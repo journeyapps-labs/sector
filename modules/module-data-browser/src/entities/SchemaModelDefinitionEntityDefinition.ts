@@ -79,7 +79,13 @@ export class SchemaModelDefinitionEntityDefinition extends EntityDefinition<Sche
 
     this.registerComponent(
       new InlineTreePresenterComponent({
-        loadChildrenAsNodesAreOpened: true
+        loadChildrenAsNodesAreOpened: true,
+        cacheTreeEntities: true,
+        augmentTreeNodeProps: () => {
+          return {
+            openOnSingleClick: false
+          };
+        }
       })
     );
 
