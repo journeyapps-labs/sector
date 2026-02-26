@@ -3,6 +3,7 @@ import { SchemaModelObject } from '../../SchemaModelObject';
 import { AbstractQuery } from '../AbstractQuery';
 import { Page } from '../Page';
 import { SimpleQuery } from '../query-simple/SimpleQuery';
+import * as _ from 'lodash';
 
 export class ChangedModelQuery extends AbstractQuery {
   constructor(protected query: SimpleQuery) {
@@ -31,5 +32,12 @@ export class ChangedModelQuery extends AbstractQuery {
     page.loading = false;
     page.models = this.query.getDirtyObjects();
     return page;
+  }
+
+  matches(query: AbstractQuery): boolean {
+    if (query instanceof ChangedModelQuery) {
+      return _.isEqual(query.query.serialize(), this.query.serialize());
+    }
+    return false;
   }
 }

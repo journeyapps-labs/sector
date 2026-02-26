@@ -6,6 +6,7 @@ import {
   EntityPanelComponent,
   inject,
   InlineTreePresenterComponent,
+  SearchableTreeSearchScope,
   SimpleEntitySearchEngineComponent
 } from '@journeyapps-labs/reactor-mod';
 import { DataBrowserEntities } from '../entities';
@@ -54,7 +55,8 @@ export class ConnectionEntityDefinition extends EntityDefinition<AbstractConnect
     this.registerComponent(
       new InlineTreePresenterComponent<AbstractConnection>({
         loadChildrenAsNodesAreOpened: true,
-        cacheTreeEntities: false
+        cacheTreeEntities: true,
+        searchScope: SearchableTreeSearchScope.VISIBLE_ONLY
       })
     );
 

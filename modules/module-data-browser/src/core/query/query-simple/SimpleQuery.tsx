@@ -1,7 +1,6 @@
 import { inject, ioc, TableColumn } from '@journeyapps-labs/reactor-mod';
 import { ConnectionStore } from '../../../stores/ConnectionStore';
 import { Promise } from '@journeyapps/db';
-import * as _ from 'lodash';
 import { Page } from '../Page';
 import { SchemaModelDefinition } from '../../SchemaModelDefinition';
 import { action, observable } from 'mobx';
@@ -15,6 +14,8 @@ import { applyFiltersAndSorts } from './SimpleQueryPlanner';
 import { buildSimpleQueryColumns } from './SimpleQueryColumns';
 import { SimpleQuerySortState } from './SimpleQuerySortState';
 import { SimpleQueryFilterState } from './SimpleQueryFilterState';
+import { AbstractQuery } from '../AbstractQuery';
+import * as _ from 'lodash';
 
 export interface SimpleQueryOptions {
   definition?: SchemaModelDefinition;
@@ -23,7 +24,6 @@ export interface SimpleQueryOptions {
 
 export interface SimpleQueryEncoded extends AbstractQueryEncoded {
   limit: number;
-  definition: string;
   filters?: SerializedSimpleFilter[];
   sorts?: SerializedSimpleQuerySort[];
 }
@@ -81,6 +81,13 @@ export class SimpleQuery extends AbstractSerializableQuery<SimpleQueryEncoded> {
         onStateChange();
       }
     });
+  }
+
+  matches(query: AbstractQuery): boolean {
+    if (query instanceof SimpleQuery) {
+      return _.isEqual(this.serialize(), query.serialize());
+    }
+    return false;
   }
 
   @action async load() {

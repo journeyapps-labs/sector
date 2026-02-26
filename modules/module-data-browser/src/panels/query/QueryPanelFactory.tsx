@@ -80,6 +80,10 @@ export class QueryPanelFactory extends SharedConnectionPanelFactory<QueryPanelMo
     });
   }
 
+  matchesModel(m1: QueryPanelModel, m2: QueryPanelModel) {
+    return m1.query.matches(m2.query);
+  }
+
   getSimpleName(model: QueryPanelModel): string {
     return model.query?.getSimpleName();
   }
