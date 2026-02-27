@@ -1,5 +1,11 @@
 # @journeyapps-labs/reactor-mod-data-browser
 
+## 3.1.2
+
+### Patch Changes
+
+- 4761497: bump deps
+
 ## 3.1.1
 
 ### Patch Changes
