@@ -7,9 +7,9 @@
   },
   "dependencies": {
     "@journeyapps-labs/lib-reactor-server": "1.1.11",
-    "@journeyapps-labs/reactor-mod": "5.0.1",
+    "@journeyapps-labs/reactor-mod": "5.0.2",
     "@journeyapps-labs/reactor-mod-data-browser": "workspace:^",
-    "@journeyapps-labs/reactor-mod-editor": "2.0.1",
+    "@journeyapps-labs/reactor-mod-editor": "2.0.2",
     "@journeyapps-labs/reactor-mod-sector": "workspace:^",
     "compression": "^1.8.1",
     "express": "^5.2.1",
