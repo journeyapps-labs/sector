@@ -13,7 +13,7 @@
     "@emotion/styled": "^11.14.1",
     "@journeyapps-labs/common-ioc": "^1.0.1",
     "@journeyapps-labs/common-utils": "^1.0.1",
-    "@journeyapps-labs/reactor-mod": "5.0.1",
+    "@journeyapps-labs/reactor-mod": "5.0.2",
     "@journeyapps-labs/reactor-mod-data-browser": "workspace:^",
     "mobx": "^6.15.0",
     "react": "19.2.4",

@@ -18,8 +18,8 @@ importers:
         specifier: ^11.0.0
         version: 11.0.0
       npm-check-updates:
-        specifier: ^19.6.0
-        version: 19.6.1
+        specifier: ^19.6.2
+        version: 19.6.2
       prettier:
         specifier: 3.8.1
         version: 3.8.1
@@ -51,11 +51,11 @@ importers:
         specifier: 1.0.10
         version: 1.0.10
       '@journeyapps-labs/reactor-mod':
-        specifier: 5.0.1
-        version: 5.0.1(@babel/runtime@7.28.3)(@types/react@19.2.14)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)
+        specifier: 5.0.2
+        version: 5.0.2(@babel/runtime@7.28.3)(@types/react@19.2.14)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)
       '@journeyapps-labs/reactor-mod-editor':
-        specifier: 2.0.1
-        version: 2.0.1(@babel/runtime@7.28.3)(@types/react@19.2.14)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)
+        specifier: 2.0.2
+        version: 2.0.2(@babel/runtime@7.28.3)(@types/react@19.2.14)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)
       '@journeyapps/db':
         specifier: ^8.1.1
         version: 8.1.1(fp-ts@2.16.10)
@@ -112,8 +112,8 @@ importers:
         specifier: ^1.0.1
         version: 1.0.1
       '@journeyapps-labs/reactor-mod':
-        specifier: 5.0.1
-        version: 5.0.1(@babel/runtime@7.28.3)(@types/react@19.2.14)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)
+        specifier: 5.0.2
+        version: 5.0.2(@babel/runtime@7.28.3)(@types/react@19.2.14)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)
       '@journeyapps-labs/reactor-mod-data-browser':
         specifier: workspace:^
         version: link:../module-data-browser
@@ -140,14 +140,14 @@ importers:
         specifier: 1.1.11
         version: 1.1.11
       '@journeyapps-labs/reactor-mod':
-        specifier: 5.0.1
-        version: 5.0.1(@babel/runtime@7.28.3)(@types/react@19.2.14)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)
+        specifier: 5.0.2
+        version: 5.0.2(@babel/runtime@7.28.3)(@types/react@19.2.14)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)
       '@journeyapps-labs/reactor-mod-data-browser':
         specifier: workspace:^
         version: link:../modules/module-data-browser
       '@journeyapps-labs/reactor-mod-editor':
-        specifier: 2.0.1
-        version: 2.0.1(@babel/runtime@7.28.3)(@types/react@19.2.14)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)
+        specifier: 2.0.2
+        version: 2.0.2(@babel/runtime@7.28.3)(@types/react@19.2.14)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)
       '@journeyapps-labs/reactor-mod-sector':
         specifier: workspace:^
         version: link:../modules/module-sector
@@ -1228,11 +1228,11 @@ packages:
   '@journeyapps-labs/micro-streaming@1.0.1':
     resolution: {integrity: sha512-woWFNtPwKZwTz5NQ4RUecGOPXXO/W/KLkx8YOx9mvZ7XY3Lx1bDRpI1i6ZSBPeix+IBbl+bs394R0qlFliI1cg==}
 
-  '@journeyapps-labs/reactor-mod-editor@2.0.1':
-    resolution: {integrity: sha512-+x46j/7E4XvuV6UNtcQvJC+38w+B+NN/dafNuVFOaBAGFCc9pWBYFpVGpAPF+Gxg5CNB4p305hgEGDoBqzhMxw==}
+  '@journeyapps-labs/reactor-mod-editor@2.0.2':
+    resolution: {integrity: sha512-xPWMoKXFB43BJyP/3mMEo7++RHkTZqlli9jOs9IhVPhO7OsRvsKfM555JxC7YkcCGpe9Ss5k2B29uOhknqjG+w==}
 
-  '@journeyapps-labs/reactor-mod@5.0.1':
-    resolution: {integrity: sha512-fYM1a11xF3MUDByQCcWNe7pXNaE+QZgwjCAbZ2F92zkjQvfhHrbcK4tplSd9sC8YxczAqmBQQR3LbU98qmW4HA==}
+  '@journeyapps-labs/reactor-mod@5.0.2':
+    resolution: {integrity: sha512-fEtddQR8JcXXal+vAt9/w3b1fabAliScV0A0MrS1FfI91Q1IjAvBFRiNbR7zV2goGo78ToLRC0NX5B5HMJAnhw==}
 
   '@journeyapps/core-date@5.3.2':
     resolution: {integrity: sha512-xRTEe7Ur0/lGfmYvVfJpknfDZxb+lHfV4TRjmi+Zj8ZTwlXbl94muFlvQ6h12swzLlYi6dU7xyCpRWZjnZEIgA==}
@@ -3415,8 +3415,8 @@ packages:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
     engines: {node: '>=0.10.0'}
 
-  npm-check-updates@19.6.1:
-    resolution: {integrity: sha512-oa0ZBydDx6ShvBVxMP5kaTHH3K2S6isMTYn4AhOa9l7k8m/QGY/D7VWbmI97GSXxRmmq9PAtRBMNOgOgwpD0yA==}
+  npm-check-updates@19.6.2:
+    resolution: {integrity: sha512-fxoQAhn90dx/pLOHY0w3U0IzW02DGDgkNwjTsPpHexo3niLxkL3xAggTQNjODMwTtWoRhP7rhnm7ji0hw/F1kA==}
     engines: {node: '>=20.0.0', npm: '>=8.12.1'}
     hasBin: true
 
@@ -6194,14 +6194,14 @@ snapshots:
       - tsx
       - yaml
 
-  '@journeyapps-labs/reactor-mod-editor@2.0.1(@babel/runtime@7.28.3)(@types/react@19.2.14)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)':
+  '@journeyapps-labs/reactor-mod-editor@2.0.2(@babel/runtime@7.28.3)(@types/react@19.2.14)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)':
     dependencies:
       '@journeyapps-labs/common-ioc': 1.0.1
       '@journeyapps-labs/common-utils': 1.0.1
       '@journeyapps-labs/lib-reactor-builder': 2.0.5
       '@journeyapps-labs/lib-reactor-search': 1.0.10
       '@journeyapps-labs/lib-reactor-utils': 2.0.9
-      '@journeyapps-labs/reactor-mod': 5.0.1(@babel/runtime@7.28.3)(@types/react@19.2.14)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)
+      '@journeyapps-labs/reactor-mod': 5.0.2(@babel/runtime@7.28.3)(@types/react@19.2.14)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)
       '@projectstorm/react-workspaces-core': 4.2.3(@types/react@19.2.14)
       json5: 2.2.3
       jszip: 3.10.1
@@ -6234,7 +6234,7 @@ snapshots:
       - webpack-bundle-analyzer
       - webpack-dev-server
 
-  '@journeyapps-labs/reactor-mod@5.0.1(@babel/runtime@7.28.3)(@types/react@19.2.14)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)':
+  '@journeyapps-labs/reactor-mod@5.0.2(@babel/runtime@7.28.3)(@types/react@19.2.14)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)':
     dependencies:
       '@emotion/is-prop-valid': 1.4.0
       '@emotion/react': 11.14.0(@types/react@19.2.14)(react@19.2.4)
@@ -8810,7 +8810,7 @@ snapshots:
 
   normalize-path@3.0.0: {}
 
-  npm-check-updates@19.6.1: {}
+  npm-check-updates@19.6.2: {}
 
   nth-check@2.1.1:
     dependencies:
