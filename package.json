@@ -19,10 +19,10 @@
     "watch:ts": "pnpm build:ts --watch"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.29.8",
+    "@changesets/cli": "^2.30.0",
     "concurrently": "9.2.1",
     "env-cmd": "^11.0.0",
-    "npm-check-updates": "^19.6.2",
+    "npm-check-updates": "^19.6.3",
     "prettier": "3.8.1",
     "typescript": "^5.9.3"
   }
