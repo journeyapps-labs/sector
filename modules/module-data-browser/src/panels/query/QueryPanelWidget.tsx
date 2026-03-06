@@ -22,28 +22,34 @@ namespace S {
 }
 
 export const QueryPanelWidget: React.FC<QueryPanelWidgetProps> = observer((props) => {
-  const [displayPage, setDisplayPage] = useState<Page>(null);
   const [loading, setLoading] = useState(false);
-  const displayPageRef = useRef<Page>(null);
   const pendingDisposerRef = useRef<() => void>(null);
 
   const setVisiblePage = (page: Page) => {
-    displayPageRef.current = page;
-    setDisplayPage(page);
+    props.model.current_page_data = page;
   };
 
   useEffect(() => {
-    if (!props.model.query) {
-      return;
-    }
-    props.model.query.load();
-  }, [props.model.query]);
+    return autorun(() => {
+      const query = props.model.query;
+      if (!query) {
+        return;
+      }
+      if (props.model.current_page_data) {
+        return;
+      }
+      if (query.totalPages !== 0) {
+        return;
+      }
+      void query.load();
+    });
+  }, [props.model]);
 
   useEffect(() => {
     return autorun(() => {
       if (props.model.query) {
         const nextPage = props.model.query.getPage(props.model.current_page);
-        const currentPage = displayPageRef.current;
+        const currentPage = props.model.current_page_data;
 
         if (!currentPage) {
           setVisiblePage(nextPage);
@@ -76,7 +82,7 @@ export const QueryPanelWidget: React.FC<QueryPanelWidgetProps> = observer((props
         });
       }
     });
-  }, [props.model.query]);
+  }, [props.model]);
 
   useEffect(() => {
     return () => {
@@ -85,7 +91,8 @@ export const QueryPanelWidget: React.FC<QueryPanelWidgetProps> = observer((props
     };
   }, []);
 
-  const activePage = displayPage || (props.model.query ? props.model.query.getPage(props.model.current_page) : null);
+  const activePage =
+    props.model.current_page_data || (props.model.query ? props.model.query.getPage(props.model.current_page) : null);
 
   return (
     <LoadingPanelWidget loading={!props.model.query || !activePage}>
@@ -120,7 +127,16 @@ export const QueryPanelWidget: React.FC<QueryPanelWidgetProps> = observer((props
                 />
               }
             >
-              <PageResultsWidget query={props.model.query} page={activePage} />
+              <PageResultsWidget
+                query={props.model.query}
+                page={activePage}
+                scrollTop={props.model.table_scroll_top}
+                scrollLeft={props.model.table_scroll_left}
+                onScroll={({ top, left }) => {
+                  props.model.table_scroll_top = top;
+                  props.model.table_scroll_left = left;
+                }}
+              />
             </BorderLayoutWidget>
           </S.Container>
         );

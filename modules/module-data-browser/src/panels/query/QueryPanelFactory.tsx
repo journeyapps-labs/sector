@@ -9,6 +9,7 @@ import { AbstractSerializableQuery } from '../../core/query/AbstractSerializable
 import { SavedQueryStore } from '../../stores/SavedQueryStore';
 import { AbstractConnection } from '../../core/AbstractConnection';
 import { SharedConnectionPanelFactory } from '../_shared/SharedConnectionPanelFactory';
+import { Page } from '../../core/query/Page';
 
 export class QueryPanelModel extends ReactorPanelModel {
   @inject(ConnectionStore)
@@ -20,11 +21,20 @@ export class QueryPanelModel extends ReactorPanelModel {
   @observable
   accessor current_page: number;
 
+  @observable.ref
+  accessor current_page_data: Page | null;
+
+  accessor table_scroll_top: number;
+  accessor table_scroll_left: number;
+
   constructor(query: AbstractQuery) {
     super(QueryPanelFactory.TYPE);
     this.setExpand(true, true);
     this.query = query;
     this.current_page = 0;
+    this.current_page_data = null;
+    this.table_scroll_top = 0;
+    this.table_scroll_left = 0;
   }
 
   isSerializable() {
@@ -51,6 +61,7 @@ export class QueryPanelModel extends ReactorPanelModel {
 
   decodeEntities(data: ReturnType<this['encodeEntities']>) {
     this.query = data.query;
+    this.current_page_data = null;
   }
 
   async loadSavedQuery(id: string): Promise<void> {
@@ -59,6 +70,7 @@ export class QueryPanelModel extends ReactorPanelModel {
       return;
     }
     this.current_page = 0;
+    this.current_page_data = null;
     this.query = query;
     await query.load();
   }

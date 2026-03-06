@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useEffect, useRef } from 'react';
 import { Page } from '../../core/query/Page';
 import { themed, ioc, ScrollableDivCss, System, TableWidget, LoadingPanelWidget } from '@journeyapps-labs/reactor-mod';
 import { AbstractQuery } from '../../core/query/AbstractQuery';
@@ -9,14 +10,39 @@ import { SchemaModelObject } from '../../core/SchemaModelObject';
 export interface PageResultsWidgetProps {
   page: Page;
   query: AbstractQuery;
+  scrollTop: number;
+  scrollLeft: number;
+  onScroll: (offsets: { top: number; left: number }) => void;
 }
 
 export const PageResultsWidget: React.FC<PageResultsWidgetProps> = observer((props) => {
   const system = ioc.get(System);
   const rows = props.page.loading ? [] : props.page.asRows();
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!ref.current) {
+      return;
+    }
+    if (ref.current.scrollTop !== props.scrollTop) {
+      ref.current.scrollTop = props.scrollTop;
+    }
+    if (ref.current.scrollLeft !== props.scrollLeft) {
+      ref.current.scrollLeft = props.scrollLeft;
+    }
+  }, [props.scrollLeft, props.scrollTop]);
 
   return (
-    <S.Container>
+    <S.Container
+      ref={ref}
+      onScroll={(event) => {
+        const target = event.currentTarget;
+        props.onScroll({
+          top: target.scrollTop,
+          left: target.scrollLeft
+        });
+      }}
+    >
       <TableWidget
         onContextMenu={(event, row) => {
           system

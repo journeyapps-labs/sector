@@ -15,6 +15,7 @@ import { buildSimpleQueryColumns } from './SimpleQueryColumns';
 import { SimpleQuerySortState } from './SimpleQuerySortState';
 import { SimpleQueryFilterState } from './SimpleQueryFilterState';
 import { AbstractQuery } from '../AbstractQuery';
+import { StandardModelFields } from '../StandardModelFields';
 import * as _ from 'lodash';
 
 export interface SimpleQueryOptions {
@@ -81,6 +82,12 @@ export class SimpleQuery extends AbstractSerializableQuery<SimpleQueryEncoded> {
         onStateChange();
       }
     });
+
+    // Some code paths construct a shell query (no definition) before deserialize/hydration.
+    // Only seed the default sort once a definition exists to avoid premature load() calls.
+    if (options.definition && this.sortState.sorts.length === 0) {
+      this.sortState.addSort(SimpleQuerySort.create(StandardModelFields.UPDATED_AT, SortDirection.DESC));
+    }
   }
 
   matches(query: AbstractQuery): boolean {
