@@ -1,5 +1,14 @@
 # @journeyapps-labs/reactor-mod-data-browser
 
+## 3.2.0
+
+### Minor Changes
+
+- 35229c1: Improve query panel state behavior for data browser queries.
+  - Default new simple queries to sort by `updated_at` descending.
+  - Keep in-memory query page and table scroll offsets when switching tabs.
+  - Fix browser-reload query panels getting stuck by reactively triggering initial query load after hydration.
+
 ## 3.1.3
 
 ### Patch Changes
