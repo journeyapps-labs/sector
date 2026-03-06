@@ -38,4 +38,4 @@ jobs:
         with:
           use-conventional-commits: true
           author-name: renovate[bot]
-          author-email: github+renovate@scharley.me
+          author-email: 29139614+renovate[bot]@users.noreply.github.com

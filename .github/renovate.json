@@ -1,7 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
-  "gitIgnoredAuthors": ["github+renovate@scharley.me"],
+  "gitIgnoredAuthors": ["29139614+renovate[bot]@users.noreply.github.com"],
   "enabledManagers": ["npm"],
   "packageRules": [
     {
