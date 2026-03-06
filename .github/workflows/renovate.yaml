@@ -25,6 +25,7 @@ jobs:
         env:
           LOG_LEVEL: info
           RENOVATE_CONFIG_FILE: .github/renovate.json
+          RENOVATE_REPOSITORIES: ${{ github.repository }}
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 

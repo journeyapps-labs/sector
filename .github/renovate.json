@@ -6,7 +6,7 @@
   "packageRules": [
     {
       "matchDatasources": ["npm"],
-      "matchPackagePatterns": ["^@journeyapps-labs/reactor-mod($|-)"],
+      "matchPackageNames": ["/^@journeyapps-labs/reactor-mod($|-)/"],
       "groupName": "labs/reactor packages",
       "labels": ["dependencies", "reactor"],
       "rangeStrategy": "replace"
