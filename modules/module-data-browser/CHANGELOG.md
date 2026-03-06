@@ -1,5 +1,11 @@
 # @journeyapps-labs/reactor-mod-data-browser
 
+## 3.2.1
+
+### Patch Changes
+
+- 5b59443: Update labs/reactor packages
+
 ## 3.2.0
 
 ### Minor Changes
