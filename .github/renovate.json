@@ -9,6 +9,7 @@
       "matchPackageNames": ["/^@journeyapps-labs/reactor-mod($|-)/"],
       "groupName": "labs/reactor packages",
       "labels": ["dependencies", "reactor"],
+      "recreateWhen": "always",
       "rangeStrategy": "replace"
     }
   ]
