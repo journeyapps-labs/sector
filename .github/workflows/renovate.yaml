@@ -31,7 +31,12 @@ jobs:
 
   dependency-changeset:
     name: Create changeset for dependency PRs
-    if: github.event_name == 'pull_request_target' && contains(github.event.pull_request.labels.*.name, 'dependencies')
+    if: >-
+      github.event_name == 'pull_request_target' &&
+      (
+        github.event.pull_request.user.login == 'renovate[bot]' ||
+        github.actor == 'renovate[bot]'
+      )
     runs-on: ubuntu-latest
     steps:
       - name: Add dependency changeset
