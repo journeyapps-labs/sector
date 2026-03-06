@@ -1,0 +1,15 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "gitIgnoredAuthors": ["29139614+renovate[bot]@users.noreply.github.com"],
+  "enabledManagers": ["npm"],
+  "packageRules": [
+    {
+      "matchDatasources": ["npm"],
+      "matchPackagePatterns": ["^@journeyapps-labs/reactor-mod($|-)"],
+      "groupName": "labs/reactor packages",
+      "labels": ["dependencies", "reactor"],
+      "rangeStrategy": "replace"
+    }
+  ]
+}
