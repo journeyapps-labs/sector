@@ -42,6 +42,7 @@ jobs:
       - name: Add dependency changeset
         uses: mscharley/dependency-changesets-action@v1.1.1
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           use-conventional-commits: true
           author-name: renovate[bot]
           author-email: 29139614+renovate[bot]@users.noreply.github.com
