@@ -45,5 +45,6 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           use-conventional-commits: false
+          use-semantic-commits: false
           author-name: renovate[bot]
           author-email: 29139614+renovate[bot]@users.noreply.github.com
