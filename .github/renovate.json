@@ -1,6 +1,8 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
+  "dependencyDashboard": false,
+  "prBodyColumns": ["Package", "Update", "Change"],
   "gitIgnoredAuthors": ["29139614+renovate[bot]@users.noreply.github.com"],
   "enabledManagers": ["npm"],
   "packageRules": [
