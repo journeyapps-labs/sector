@@ -22,6 +22,10 @@ export class ManualConnection extends AbstractConnection {
     return Database.instance(this.options);
   }
 
+  async init() {
+    await this.ensureOnline();
+  }
+
   _serialize(): ManualConnectionDetails {
     return this.options;
   }
