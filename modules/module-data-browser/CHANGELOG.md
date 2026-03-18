@@ -1,5 +1,11 @@
 # @journeyapps-labs/reactor-mod-data-browser
 
+## 3.3.0
+
+### Minor Changes
+
+- 928d844: Connections now have an online status
+
 ## 3.2.1
 
 ### Patch Changes
