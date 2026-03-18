@@ -18,8 +18,8 @@ importers:
         specifier: ^11.0.0
         version: 11.0.0
       npm-check-updates:
-        specifier: ^19.6.3
-        version: 19.6.3
+        specifier: ^19.6.5
+        version: 19.6.5
       prettier:
         specifier: 3.8.1
         version: 3.8.1
@@ -51,11 +51,11 @@ importers:
         specifier: 1.0.10
         version: 1.0.10
       '@journeyapps-labs/reactor-mod':
-        specifier: 5.2.1
-        version: 5.2.1(@babel/runtime@7.28.3)(@types/react@19.2.14)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)
+        specifier: 5.3.1
+        version: 5.3.1(@babel/runtime@7.28.3)(@types/react@19.2.14)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)
       '@journeyapps-labs/reactor-mod-editor':
-        specifier: 2.1.2
-        version: 2.1.2(@babel/runtime@7.28.3)(@types/react@19.2.14)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)
+        specifier: 2.2.1
+        version: 2.2.1(@babel/runtime@7.28.3)(@types/react@19.2.14)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)
       '@journeyapps/db':
         specifier: ^8.1.1
         version: 8.1.1(fp-ts@2.16.10)
@@ -85,8 +85,8 @@ importers:
         version: 13.0.0
     devDependencies:
       '@journeyapps-labs/lib-reactor-builder':
-        specifier: 2.0.5
-        version: 2.0.5
+        specifier: 3.0.1
+        version: 3.0.1
       '@types/async':
         specifier: ^3.2.25
         version: 3.2.25
@@ -112,8 +112,8 @@ importers:
         specifier: ^1.0.1
         version: 1.0.1
       '@journeyapps-labs/reactor-mod':
-        specifier: 5.2.1
-        version: 5.2.1(@babel/runtime@7.28.3)(@types/react@19.2.14)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)
+        specifier: 5.3.1
+        version: 5.3.1(@babel/runtime@7.28.3)(@types/react@19.2.14)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)
       '@journeyapps-labs/reactor-mod-data-browser':
         specifier: workspace:^
         version: link:../module-data-browser
@@ -128,8 +128,8 @@ importers:
         version: 13.0.0
     devDependencies:
       '@journeyapps-labs/lib-reactor-builder':
-        specifier: 2.0.5
-        version: 2.0.5
+        specifier: 3.0.1
+        version: 3.0.1
       '@types/uuid':
         specifier: ^11.0.0
         version: 11.0.0
@@ -140,14 +140,14 @@ importers:
         specifier: 1.1.11
         version: 1.1.11
       '@journeyapps-labs/reactor-mod':
-        specifier: 5.2.1
-        version: 5.2.1(@babel/runtime@7.28.3)(@types/react@19.2.14)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)
+        specifier: 5.3.1
+        version: 5.3.1(@babel/runtime@7.28.3)(@types/react@19.2.14)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)
       '@journeyapps-labs/reactor-mod-data-browser':
         specifier: workspace:^
         version: link:../modules/module-data-browser
       '@journeyapps-labs/reactor-mod-editor':
-        specifier: 2.1.2
-        version: 2.1.2(@babel/runtime@7.28.3)(@types/react@19.2.14)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)
+        specifier: 2.2.1
+        version: 2.2.1(@babel/runtime@7.28.3)(@types/react@19.2.14)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)
       '@journeyapps-labs/reactor-mod-sector':
         specifier: workspace:^
         version: link:../modules/module-sector
@@ -1200,8 +1200,8 @@ packages:
   '@journeyapps-labs/common-utils@1.0.1':
     resolution: {integrity: sha512-9P1f++wHSveqMQIWulLdGnDgvMdEqXP+j8eIscDm2bAuiMCIbij856AQgdrG0mQPPhL5SlUNlSGrfdKfhul2QA==}
 
-  '@journeyapps-labs/lib-reactor-builder@2.0.5':
-    resolution: {integrity: sha512-MzV/mpdT3z3rR2xqhzyE+4+HBnLXMwhW0p9sR0Mg5H4IBUrWXwkeaCuzoDDl3V50QUiTyQF95/7bD7EJr+Mcvw==}
+  '@journeyapps-labs/lib-reactor-builder@3.0.1':
+    resolution: {integrity: sha512-/LsIaFKC17xzpvFVZ6H0xNxwFcPEusi/gqLiXPYyqEkb+z5Hpuz61uBFUssuWPOwbV4WYauhIiPRUA0I4sQ+kQ==}
     hasBin: true
 
   '@journeyapps-labs/lib-reactor-data-layer@1.0.10':
@@ -1228,11 +1228,11 @@ packages:
   '@journeyapps-labs/micro-streaming@1.0.1':
     resolution: {integrity: sha512-woWFNtPwKZwTz5NQ4RUecGOPXXO/W/KLkx8YOx9mvZ7XY3Lx1bDRpI1i6ZSBPeix+IBbl+bs394R0qlFliI1cg==}
 
-  '@journeyapps-labs/reactor-mod-editor@2.1.2':
-    resolution: {integrity: sha512-tpNpk9BzYJex0Rhu6HxeSKH+bSyPQkgufHYREYSJRD6/TxAPuATos2cNGwDrbnr1f/UvOS2fsur3bkFVgmzLiQ==}
+  '@journeyapps-labs/reactor-mod-editor@2.2.1':
+    resolution: {integrity: sha512-sTdSO+xSk+el5NIIJuFPO6gOXkxo0M/8MuS5VJDxi+1HDd2ZmXU2LZkbED6D2zqNCp4ouo/EeJ1yxoGkukKIpw==}
 
-  '@journeyapps-labs/reactor-mod@5.2.1':
-    resolution: {integrity: sha512-8W4RAn4FI5DnOqFcDipGpDwuuSnZG3fKtQj6aciBiZVoc7Dwvd8DcX5wrfcx+g+iaaY37zuM1TQuOh5Qetyruw==}
+  '@journeyapps-labs/reactor-mod@5.3.1':
+    resolution: {integrity: sha512-EC9OcjnepEk1tti4ZwwKV013FPasC9FOuFj2rtje4XSfeY3Z+wF/szuj0fVZJSSsbkz6Cw3BvHKsMh1qCg1vWA==}
 
   '@journeyapps/core-date@5.3.2':
     resolution: {integrity: sha512-xRTEe7Ur0/lGfmYvVfJpknfDZxb+lHfV4TRjmi+Zj8ZTwlXbl94muFlvQ6h12swzLlYi6dU7xyCpRWZjnZEIgA==}
@@ -3408,8 +3408,8 @@ packages:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
     engines: {node: '>=0.10.0'}
 
-  npm-check-updates@19.6.3:
-    resolution: {integrity: sha512-VAt9Bp26eLaymZ0nZyh5n/by+YZIuegXlvWR0yv1zBqd984f8VnEnBbn+1lS3nN5LyEjn62BJ+yYgzNSpb6Gzg==}
+  npm-check-updates@19.6.5:
+    resolution: {integrity: sha512-XlBUMC30relXfEerrnX239W9iB30U6Woz0Hj42Sv6iSF4EGOvj2mS2r45sZ3RglH0VPBxXOWooMxObZ/SMZhrw==}
     engines: {node: '>=20.0.0', npm: '>=8.12.1'}
     hasBin: true
 
@@ -4542,8 +4542,8 @@ packages:
     resolution: {integrity: sha512-7tP1PdV4vF+lYPnkMR0jMY5/la2ub5Fc/8VQrrU+lXkiM6C4TjVfGw7iKfyhnTQOsD+6Q/iKw0eFciziRgD58Q==}
     engines: {node: '>=10.13.0'}
 
-  webpack@5.105.2:
-    resolution: {integrity: sha512-dRXm0a2qcHPUBEzVk8uph0xWSjV/xZxenQQbLwnwP7caQCYpqG1qddwlyEkIDkYn0K8tvmcrZ+bOrzoQ3HxCDw==}
+  webpack@5.105.3:
+    resolution: {integrity: sha512-LLBBA4oLmT7sZdHiYE/PeVuifOxYyE2uL/V+9VQP7YSYdJU7bSf7H8bZRRxW8kEPMkmVjnrXmoR3oejIdX0xbg==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     peerDependencies:
@@ -6023,34 +6023,34 @@ snapshots:
     dependencies:
       uuid: 13.0.0
 
-  '@journeyapps-labs/lib-reactor-builder@2.0.5':
+  '@journeyapps-labs/lib-reactor-builder@3.0.1':
     dependencies:
       '@babel/core': 7.29.0
       '@babel/preset-env': 7.29.0(@babel/core@7.29.0)
       '@babel/preset-react': 7.28.5(@babel/core@7.29.0)
       '@rbarilani/remove-source-map-url-webpack-plugin': 1.1.0(webpack-cli@6.0.1)
       assert: 2.1.0
-      babel-loader: 10.0.0(@babel/core@7.29.0)(webpack@5.105.2)
+      babel-loader: 10.0.0(@babel/core@7.29.0)(webpack@5.105.3)
       browserify-zlib: 0.2.0
       crypto-browserify: 3.12.1
-      css-loader: 7.1.4(webpack@5.105.2)
-      expose-loader: 5.0.1(webpack@5.105.2)
+      css-loader: 7.1.4(webpack@5.105.3)
+      expose-loader: 5.0.1(webpack@5.105.3)
       https-browserify: 1.0.0
-      null-loader: 4.0.1(webpack@5.105.2)
+      null-loader: 4.0.1(webpack@5.105.3)
       os-browserify: 0.3.0
       path-browserify: 1.0.1
       process: 0.11.10
       readable-stream: 4.7.0
       resolve: 1.22.11
-      source-map-loader: 5.0.0(webpack@5.105.2)
+      source-map-loader: 5.0.0(webpack@5.105.3)
       stream-browserify: 3.0.0
       stream-http: 3.2.0
-      style-loader: 4.0.0(webpack@5.105.2)
-      terser-webpack-plugin: 5.3.16(webpack@5.105.2)
+      style-loader: 4.0.0(webpack@5.105.3)
+      terser-webpack-plugin: 5.3.16(webpack@5.105.3)
       util: 0.12.5
-      val-loader: 6.0.0(webpack@5.105.2)
-      webpack: 5.105.2(webpack-cli@6.0.1)
-      webpack-cli: 6.0.1(webpack@5.105.2)
+      val-loader: 6.0.0(webpack@5.105.3)
+      webpack: 5.105.3(webpack-cli@6.0.1)
+      webpack-cli: 6.0.1(webpack@5.105.3)
       yargs: 18.0.0
     transitivePeerDependencies:
       - '@rspack/core'
@@ -6186,14 +6186,13 @@ snapshots:
       - tsx
       - yaml
 
-  '@journeyapps-labs/reactor-mod-editor@2.1.2(@babel/runtime@7.28.3)(@types/react@19.2.14)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)':
+  '@journeyapps-labs/reactor-mod-editor@2.2.1(@babel/runtime@7.28.3)(@types/react@19.2.14)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)':
     dependencies:
       '@journeyapps-labs/common-ioc': 1.0.1
       '@journeyapps-labs/common-utils': 1.0.1
-      '@journeyapps-labs/lib-reactor-builder': 2.0.5
       '@journeyapps-labs/lib-reactor-search': 1.0.10
       '@journeyapps-labs/lib-reactor-utils': 2.0.9
-      '@journeyapps-labs/reactor-mod': 5.2.1(@babel/runtime@7.28.3)(@types/react@19.2.14)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)
+      '@journeyapps-labs/reactor-mod': 5.3.1(@babel/runtime@7.28.3)(@types/react@19.2.14)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)
       '@projectstorm/react-workspaces-core': 4.2.3(@types/react@19.2.14)
       json5: 2.2.3
       jszip: 3.10.1
@@ -6211,22 +6210,16 @@ snapshots:
       react-monaco-editor: 0.59.0(monaco-editor@0.55.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
     transitivePeerDependencies:
       - '@babel/runtime'
-      - '@rspack/core'
-      - '@swc/core'
       - '@types/react'
       - core-js-pure
-      - esbuild
       - jquery
       - prop-types
       - react-is
       - react-native
       - redux
       - supports-color
-      - uglify-js
-      - webpack-bundle-analyzer
-      - webpack-dev-server
 
-  '@journeyapps-labs/reactor-mod@5.2.1(@babel/runtime@7.28.3)(@types/react@19.2.14)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)':
+  '@journeyapps-labs/reactor-mod@5.3.1(@babel/runtime@7.28.3)(@types/react@19.2.14)(core-js-pure@3.45.1)(jquery@3.7.1)(prop-types@15.8.1)(react-is@16.13.1)(redux@5.0.1)':
     dependencies:
       '@emotion/is-prop-valid': 1.4.0
       '@emotion/react': 11.14.0(@types/react@19.2.14)(react@19.2.4)
@@ -6511,7 +6504,7 @@ snapshots:
   '@rbarilani/remove-source-map-url-webpack-plugin@1.1.0(webpack-cli@6.0.1)':
     dependencies:
       colors: 1.4.0
-      webpack: 5.105.2(webpack-cli@6.0.1)
+      webpack: 5.105.3(webpack-cli@6.0.1)
     transitivePeerDependencies:
       - '@swc/core'
       - esbuild
@@ -6878,20 +6871,20 @@ snapshots:
       '@webassemblyjs/ast': 1.14.1
       '@xtuc/long': 4.2.2
 
-  '@webpack-cli/configtest@3.0.1(webpack-cli@6.0.1)(webpack@5.105.2)':
+  '@webpack-cli/configtest@3.0.1(webpack-cli@6.0.1)(webpack@5.105.3)':
     dependencies:
-      webpack: 5.105.2(webpack-cli@6.0.1)
-      webpack-cli: 6.0.1(webpack@5.105.2)
+      webpack: 5.105.3(webpack-cli@6.0.1)
+      webpack-cli: 6.0.1(webpack@5.105.3)
 
-  '@webpack-cli/info@3.0.1(webpack-cli@6.0.1)(webpack@5.105.2)':
+  '@webpack-cli/info@3.0.1(webpack-cli@6.0.1)(webpack@5.105.3)':
     dependencies:
-      webpack: 5.105.2(webpack-cli@6.0.1)
-      webpack-cli: 6.0.1(webpack@5.105.2)
+      webpack: 5.105.3(webpack-cli@6.0.1)
+      webpack-cli: 6.0.1(webpack@5.105.3)
 
-  '@webpack-cli/serve@3.0.1(webpack-cli@6.0.1)(webpack@5.105.2)':
+  '@webpack-cli/serve@3.0.1(webpack-cli@6.0.1)(webpack@5.105.3)':
     dependencies:
-      webpack: 5.105.2(webpack-cli@6.0.1)
-      webpack-cli: 6.0.1(webpack@5.105.2)
+      webpack: 5.105.3(webpack-cli@6.0.1)
+      webpack-cli: 6.0.1(webpack@5.105.3)
 
   '@xtuc/ieee754@1.2.0': {}
 
@@ -7001,11 +6994,11 @@ snapshots:
 
   await-to-js@3.0.0: {}
 
-  babel-loader@10.0.0(@babel/core@7.29.0)(webpack@5.105.2):
+  babel-loader@10.0.0(@babel/core@7.29.0)(webpack@5.105.3):
     dependencies:
       '@babel/core': 7.29.0
       find-up: 5.0.0
-      webpack: 5.105.2(webpack-cli@6.0.1)
+      webpack: 5.105.3(webpack-cli@6.0.1)
 
   babel-plugin-macros@3.1.0:
     dependencies:
@@ -7428,7 +7421,7 @@ snapshots:
       randombytes: 2.1.0
       randomfill: 1.0.4
 
-  css-loader@7.1.4(webpack@5.105.2):
+  css-loader@7.1.4(webpack@5.105.3):
     dependencies:
       icss-utils: 5.1.0(postcss@8.5.6)
       postcss: 8.5.6
@@ -7439,7 +7432,7 @@ snapshots:
       postcss-value-parser: 4.2.0
       semver: 7.7.4
     optionalDependencies:
-      webpack: 5.105.2(webpack-cli@6.0.1)
+      webpack: 5.105.3(webpack-cli@6.0.1)
 
   css-select@5.2.2:
     dependencies:
@@ -7769,9 +7762,9 @@ snapshots:
 
   expect-type@1.2.2: {}
 
-  expose-loader@5.0.1(webpack@5.105.2):
+  expose-loader@5.0.1(webpack@5.105.3):
     dependencies:
-      webpack: 5.105.2(webpack-cli@6.0.1)
+      webpack: 5.105.3(webpack-cli@6.0.1)
 
   express-session@1.19.0:
     dependencies:
@@ -8798,17 +8791,17 @@ snapshots:
 
   normalize-path@3.0.0: {}
 
-  npm-check-updates@19.6.3: {}
+  npm-check-updates@19.6.5: {}
 
   nth-check@2.1.1:
     dependencies:
       boolbase: 1.0.0
 
-  null-loader@4.0.1(webpack@5.105.2):
+  null-loader@4.0.1(webpack@5.105.3):
     dependencies:
       loader-utils: 2.0.4
       schema-utils: 3.3.0
-      webpack: 5.105.2(webpack-cli@6.0.1)
+      webpack: 5.105.3(webpack-cli@6.0.1)
 
   object-assign@4.1.1: {}
 
@@ -9527,11 +9520,11 @@ snapshots:
 
   source-map-js@1.2.1: {}
 
-  source-map-loader@5.0.0(webpack@5.105.2):
+  source-map-loader@5.0.0(webpack@5.105.3):
     dependencies:
       iconv-lite: 0.6.3
       source-map-js: 1.2.1
-      webpack: 5.105.2(webpack-cli@6.0.1)
+      webpack: 5.105.3(webpack-cli@6.0.1)
 
   source-map-support@0.5.21:
     dependencies:
@@ -9619,9 +9612,9 @@ snapshots:
       '@tokenizer/token': 0.3.0
       peek-readable: 4.1.0
 
-  style-loader@4.0.0(webpack@5.105.2):
+  style-loader@4.0.0(webpack@5.105.3):
     dependencies:
-      webpack: 5.105.2(webpack-cli@6.0.1)
+      webpack: 5.105.3(webpack-cli@6.0.1)
 
   style-to-js@1.1.21:
     dependencies:
@@ -9651,14 +9644,14 @@ snapshots:
 
   term-size@2.2.1: {}
 
-  terser-webpack-plugin@5.3.16(webpack@5.105.2):
+  terser-webpack-plugin@5.3.16(webpack@5.105.3):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       jest-worker: 27.5.1
       schema-utils: 4.3.3
       serialize-javascript: 6.0.2
       terser: 5.46.0
-      webpack: 5.105.2(webpack-cli@6.0.1)
+      webpack: 5.105.3(webpack-cli@6.0.1)
 
   terser@5.46.0:
     dependencies:
@@ -9843,9 +9836,9 @@ snapshots:
 
   uuid@9.0.1: {}
 
-  val-loader@6.0.0(webpack@5.105.2):
+  val-loader@6.0.0(webpack@5.105.3):
     dependencies:
-      webpack: 5.105.2(webpack-cli@6.0.1)
+      webpack: 5.105.3(webpack-cli@6.0.1)
 
   vary@1.1.2: {}
 
@@ -10054,12 +10047,12 @@ snapshots:
 
   webidl-conversions@3.0.1: {}
 
-  webpack-cli@6.0.1(webpack@5.105.2):
+  webpack-cli@6.0.1(webpack@5.105.3):
     dependencies:
       '@discoveryjs/json-ext': 0.6.3
-      '@webpack-cli/configtest': 3.0.1(webpack-cli@6.0.1)(webpack@5.105.2)
-      '@webpack-cli/info': 3.0.1(webpack-cli@6.0.1)(webpack@5.105.2)
-      '@webpack-cli/serve': 3.0.1(webpack-cli@6.0.1)(webpack@5.105.2)
+      '@webpack-cli/configtest': 3.0.1(webpack-cli@6.0.1)(webpack@5.105.3)
+      '@webpack-cli/info': 3.0.1(webpack-cli@6.0.1)(webpack@5.105.3)
+      '@webpack-cli/serve': 3.0.1(webpack-cli@6.0.1)(webpack@5.105.3)
       colorette: 2.0.20
       commander: 12.1.0
       cross-spawn: 7.0.6
@@ -10068,7 +10061,7 @@ snapshots:
       import-local: 3.2.0
       interpret: 3.1.1
       rechoir: 0.8.0
-      webpack: 5.105.2(webpack-cli@6.0.1)
+      webpack: 5.105.3(webpack-cli@6.0.1)
       webpack-merge: 6.0.1
 
   webpack-merge@6.0.1:
@@ -10079,7 +10072,7 @@ snapshots:
 
   webpack-sources@3.3.4: {}
 
-  webpack@5.105.2(webpack-cli@6.0.1):
+  webpack@5.105.3(webpack-cli@6.0.1):
     dependencies:
       '@types/eslint-scope': 3.7.7
       '@types/estree': 1.0.8
@@ -10103,11 +10096,11 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 4.3.3
       tapable: 2.3.0
-      terser-webpack-plugin: 5.3.16(webpack@5.105.2)
+      terser-webpack-plugin: 5.3.16(webpack@5.105.3)
       watchpack: 2.5.1
       webpack-sources: 3.3.4
     optionalDependencies:
-      webpack-cli: 6.0.1(webpack@5.105.2)
+      webpack-cli: 6.0.1(webpack@5.105.3)
     transitivePeerDependencies:
       - '@swc/core'
       - esbuild

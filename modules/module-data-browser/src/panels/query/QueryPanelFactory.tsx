@@ -4,7 +4,7 @@ import { QueryPanelWidget } from './QueryPanelWidget';
 import { AbstractQuery } from '../../core/query/AbstractQuery';
 import { ConnectionStore } from '../../stores/ConnectionStore';
 import { observable } from 'mobx';
-import { WorkspaceModelFactoryEvent } from '@projectstorm/react-workspaces-core';
+import { WorkspaceEngine, WorkspaceModelFactoryEvent } from '@projectstorm/react-workspaces-core';
 import { AbstractSerializableQuery } from '../../core/query/AbstractSerializableQuery';
 import { SavedQueryStore } from '../../stores/SavedQueryStore';
 import { AbstractConnection } from '../../core/AbstractConnection';
@@ -48,7 +48,7 @@ export class QueryPanelModel extends ReactorPanelModel {
     };
   }
 
-  fromArray(data: ReturnType<this['toArray']>, engine) {
+  fromArray(data: ReturnType<this['toArray']>, engine: WorkspaceEngine) {
     super.fromArray(data, engine);
     this.current_page = data.current_page || 0;
   }

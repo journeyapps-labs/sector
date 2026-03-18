@@ -1,5 +1,6 @@
 import {
   DescendantEntityProviderComponent,
+  DescendantLoadingEntityProviderComponent,
   EntityCardsPresenterComponent,
   EntityDefinition,
   EntityDescriberComponent,
@@ -7,13 +8,17 @@ import {
   inject,
   InlineTreePresenterComponent,
   SearchableTreeSearchScope,
-  SimpleEntitySearchEngineComponent
+  SimpleEntitySearchEngineComponent,
+  TreeBadgeWidget,
+  ThemeStore
 } from '@journeyapps-labs/reactor-mod';
+import * as React from 'react';
 import { DataBrowserEntities } from '../entities';
 import { ConnectionStore } from '../stores/ConnectionStore';
 import { AbstractConnection } from '../core/AbstractConnection';
 import { AddConnectionAction } from '../actions/connections/AddConnectionAction';
 import { SavedQueryEntity, SavedQueryStore } from '../stores/SavedQueryStore';
+import { SchemaModelDefinition } from '../core/SchemaModelDefinition';
 
 export class ConnectionEntityDefinition extends EntityDefinition<AbstractConnection> {
   @inject(ConnectionStore)
@@ -21,6 +26,9 @@ export class ConnectionEntityDefinition extends EntityDefinition<AbstractConnect
 
   @inject(SavedQueryStore)
   accessor savedQueryStore: SavedQueryStore;
+
+  @inject(ThemeStore)
+  accessor themeStore: ThemeStore;
 
   constructor() {
     super({
@@ -56,14 +64,30 @@ export class ConnectionEntityDefinition extends EntityDefinition<AbstractConnect
       new InlineTreePresenterComponent<AbstractConnection>({
         loadChildrenAsNodesAreOpened: true,
         cacheTreeEntities: true,
-        searchScope: SearchableTreeSearchScope.VISIBLE_ONLY
+        searchScope: SearchableTreeSearchScope.VISIBLE_ONLY,
+        augmentTreeNodeProps: (entity) => {
+          if (!entity.isOnline) {
+            return {};
+          }
+          const theme = this.themeStore.getCurrentTheme();
+          return {
+            rightChildren: (
+              <TreeBadgeWidget
+                icon="bolt"
+                background={'transparent'}
+                iconColor={theme.status.success}
+                tooltip="Connection online"
+              />
+            )
+          };
+        }
       })
     );
 
     this.registerComponent(new EntityCardsPresenterComponent<AbstractConnection>());
 
     this.registerComponent(
-      new DescendantEntityProviderComponent<AbstractConnection>({
+      new DescendantLoadingEntityProviderComponent<AbstractConnection, SchemaModelDefinition>({
         descendantType: DataBrowserEntities.SCHEMA_MODEL_DEFINITION,
         generateOptions: (parent) => {
           return {
@@ -71,7 +95,11 @@ export class ConnectionEntityDefinition extends EntityDefinition<AbstractConnect
               label: 'Models',
               icon: 'cube'
             },
-            descendants: parent.schema_models.items
+            descendants: parent.schema_models.items,
+            loading: () => parent.isLoadingOnline,
+            refreshDescendants: async () => {
+              await parent.ensureOnline();
+            }
           };
         }
       })

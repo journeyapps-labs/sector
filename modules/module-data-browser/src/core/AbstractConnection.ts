@@ -7,7 +7,7 @@ import { v4 } from 'uuid';
 import { BaseObserver } from '@journeyapps-labs/common-utils';
 import { Collection, LifecycleCollection } from '@journeyapps-labs/lib-reactor-data-layer';
 import { when } from 'mobx';
-import { observable } from 'mobx';
+import { computed, observable } from 'mobx';
 import { EntityDescription } from '@journeyapps-labs/reactor-mod';
 import { V4BackendClient, V4Index, V4Indexes } from '@journeyapps-labs/client-backend-v4';
 import { SchemaModelObject } from './SchemaModelObject';
@@ -24,18 +24,27 @@ export interface AbstractConnectionListener {
   removed: () => any;
 }
 
+export enum ConnectionOnlineState {
+  OFFLINE = 'offline',
+  LOADING = 'loading',
+  ONLINE = 'online'
+}
+
 export abstract class AbstractConnection extends BaseObserver<AbstractConnectionListener> {
   id: string;
   @observable accessor color: string;
+  @observable accessor onlineState: ConnectionOnlineState;
 
   schema_models_collection: Collection<ObjectType>;
   schema_models: LifecycleCollection<ObjectType, SchemaModelDefinition>;
   private fetch_indexes_promise: Promise<V4Indexes['models']>;
+  private initialize_online_promise: Promise<void>;
 
   constructor(public factory: AbstractConnectionFactory) {
     super();
     this.id = v4();
     this.color = getDefaultConnectionColor(this.id);
+    this.onlineState = ConnectionOnlineState.OFFLINE;
     this.schema_models_collection = new Collection();
     this.schema_models = new LifecycleCollection({
       collection: this.schema_models_collection,
@@ -88,7 +97,16 @@ export abstract class AbstractConnection extends BaseObserver<AbstractConnection
     return this.schema_models.items.find((i) => i.definition.name === name);
   }
 
+  @computed get isOnline() {
+    return this.onlineState === ConnectionOnlineState.ONLINE;
+  }
+
+  @computed get isLoadingOnline() {
+    return this.onlineState === ConnectionOnlineState.LOADING;
+  }
+
   async waitForSchemaModelDefinitionByName(name: string) {
+    await this.ensureOnline();
     await when(() => !!this.getSchemaModelDefinitionByName(name));
     return this.getSchemaModelDefinitionByName(name);
   }
@@ -107,8 +125,33 @@ export abstract class AbstractConnection extends BaseObserver<AbstractConnection
     });
   }
 
-  async init() {
+  async init() {}
+
+  protected async connectOnline() {
     await this.reload();
+  }
+
+  async ensureOnline() {
+    if (this.isOnline) {
+      return;
+    }
+    if (!this.initialize_online_promise) {
+      this.initialize_online_promise = this.initializeOnline();
+    }
+    await this.initialize_online_promise;
+  }
+
+  private async initializeOnline() {
+    this.onlineState = ConnectionOnlineState.LOADING;
+    try {
+      await this.connectOnline();
+      this.onlineState = ConnectionOnlineState.ONLINE;
+    } finally {
+      if (this.onlineState === ConnectionOnlineState.LOADING) {
+        this.onlineState = ConnectionOnlineState.OFFLINE;
+      }
+      this.initialize_online_promise = null;
+    }
   }
 
   protected async getSchemaModelDefinitions() {

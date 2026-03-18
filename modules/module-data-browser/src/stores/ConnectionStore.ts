@@ -1,6 +1,6 @@
 import { AbstractStore, LocalStorageSerializer } from '@journeyapps-labs/reactor-mod';
 import { AbstractConnection, AbstractConnectionSerialized } from '../core/AbstractConnection';
-import { action, computed, observable, runInAction, when } from 'mobx';
+import { computed, observable, runInAction, when } from 'mobx';
 import { AbstractConnectionFactory } from '../core/AbstractConnectionFactory';
 import { getDefaultConnectionColor } from '../core/connection-colors';
 
@@ -51,9 +51,18 @@ export class ConnectionStore extends AbstractStore<ConnectionStoreSerialized> {
   }
 
   async deserializeConnection(data: AbstractConnectionSerialized) {
-    let conn = this._connectionFactories.get(data.factory).generateConnection();
+    let conn = this._connectionFactories.get(data.factory)?.generateConnection();
+    if (!conn) {
+      return null;
+    }
+
     conn.id = data.id;
-    await conn._deSerialize(data.payload);
+    try {
+      await conn._deSerialize(data.payload);
+    } catch (ex) {
+      this.logger.error(`Failed to deserialize connection: [${conn.id}]`, ex);
+      return null;
+    }
     conn.color = data.color || getDefaultConnectionColor(conn.id);
     return conn;
   }
@@ -66,9 +75,11 @@ export class ConnectionStore extends AbstractStore<ConnectionStoreSerialized> {
           return this.deserializeConnection(connSer);
         })
       );
-      connections.forEach((c) => {
-        this.addConnection(c);
-      });
+      connections
+        .filter((c) => !!c)
+        .forEach((c) => {
+          this.addConnection(c);
+        });
     });
   }
 

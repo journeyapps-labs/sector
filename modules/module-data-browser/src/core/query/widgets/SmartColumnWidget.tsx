@@ -1,11 +1,10 @@
 import * as React from 'react';
 import styled from '@emotion/styled';
-import { ObjectType, Type, Variable } from '@journeyapps/db';
+import { ObjectType, Variable } from '@journeyapps/db';
 import { ColumnDisplayWidget } from './ColumnDisplayWidget';
-import { SmartFilterMetadataWidget, SmartFilterWidget } from './SmartFilterWidget';
+import { SmartFilterWidget } from './SmartFilterWidget';
 import { SimpleFilter } from '../filters';
-import { PanelTitleToolbarButtonWidget } from '@journeyapps-labs/reactor-mod';
-import type { SortDirection } from '../query-simple/SimpleQuery';
+import { SortDirection } from '../query-simple/SimpleQuery';
 
 export interface SmartColumnWidgetProps {
   variable: Variable;
@@ -18,7 +17,9 @@ export interface SmartColumnWidgetProps {
 
 export const SmartColumnWidget: React.FC<SmartColumnWidgetProps> = (props) => {
   const baseLabel = props.variable.label || props.variable.name;
-  const displayLabel = props.sortDirection ? `${baseLabel} ${props.sortDirection === 'asc' ? '↑' : '↓'}` : baseLabel;
+  const displayLabel = props.sortDirection
+    ? `${baseLabel} ${props.sortDirection === SortDirection.ASC ? '↓' : '↑'}`
+    : baseLabel;
   let display = <ColumnDisplayWidget label={displayLabel} onClick={props.onToggleSort} />;
   if (props.type) {
     display = (

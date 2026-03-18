@@ -27,7 +27,7 @@ export const buildSimpleQueryColumns = (options: BuildSimpleQueryColumnsOptions)
     if (!direction) {
       return label;
     }
-    return `${label} ${direction === SortDirection.ASC ? '↑' : '↓'}`;
+    return `${label} ${direction === SortDirection.ASC ? '↓' : '↑'}`;
   };
 
   return [
