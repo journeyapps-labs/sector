@@ -7,11 +7,7 @@
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "inlineSources": false,
-    "lib": [
-      "ES2020",
-      "dom"
-    ],
-    "preserveSymlinks": true,
+    "lib": ["ES2020", "dom"],
     "importHelpers": true,
     "module": "es6",
     "target": "es2017",

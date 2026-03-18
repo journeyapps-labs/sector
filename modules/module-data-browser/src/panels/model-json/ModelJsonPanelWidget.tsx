@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { JSX, useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 import styled from '@emotion/styled';
 import { BorderLayoutWidget, LoadingPanelWidget, PanelToolbarWidget } from '@journeyapps-labs/reactor-mod';
-import { saveFile, copyTextToClipboard } from '@journeyapps-labs/lib-reactor-utils';
+import { copyTextToClipboard, saveFile } from '@journeyapps-labs/lib-reactor-utils';
 import { ModelJsonPanelModel } from './ModelJsonPanelFactory';
 import { SimpleEditorWidget } from '@journeyapps-labs/reactor-mod-editor';
 
@@ -25,7 +25,7 @@ namespace S {
 }
 
 export const ModelJsonPanelWidget: React.FC<QueryPanelWidgetProps> = observer((props) => {
-  const [json, setJson] = useState(null);
+  const [json, setJson] = useState<string | null>(null);
 
   useEffect(() => {
     if (!props.model?.model?.data) {
@@ -39,8 +39,8 @@ export const ModelJsonPanelWidget: React.FC<QueryPanelWidgetProps> = observer((p
     }
   }, [props.model.model?.data]);
 
-  let top = null;
-  if (props.model.model) {
+  let top: JSX.Element;
+  if (props.model.model && json) {
     top = (
       <PanelToolbarWidget
         btns={[
@@ -67,6 +67,8 @@ export const ModelJsonPanelWidget: React.FC<QueryPanelWidgetProps> = observer((p
             label: 'ID',
             value: props.model?.id
           },
+
+          // @ts-ignore FIXME, this can take null
           props.model?.field
             ? {
                 label: 'Field',
@@ -83,7 +85,7 @@ export const ModelJsonPanelWidget: React.FC<QueryPanelWidgetProps> = observer((p
       {() => {
         return (
           <BorderLayoutWidget top={top}>
-            <S.SimpleEditor lang="application/json" path={`${props.model.model.id}`} text={json} />
+            <S.SimpleEditor lang="application/json" path={`${props.model.model.id}`} text={json!} />
           </BorderLayoutWidget>
         );
       }}
