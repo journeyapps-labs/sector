@@ -4,6 +4,7 @@ import { BelongsToDisplayWidget } from './BelongsToDisplayWidget';
 import { PageRow } from '../Page';
 import { ActionSource, styled } from '@journeyapps-labs/reactor-mod';
 import { AbstractConnection } from '../../AbstractConnection';
+import { SchemaModelObject } from '../../SchemaModelObject';
 import { Variable } from '@journeyapps/db';
 import { observer } from 'mobx-react';
 
@@ -11,6 +12,7 @@ export interface SmartBelongsToDisplayWidgetProps {
   row: PageRow;
   connection: AbstractConnection;
   variable_id: Variable;
+  filterBelongsTo?: (object: SchemaModelObject) => any;
 }
 
 export const SmartBelongsToDisplayWidget: React.FC<SmartBelongsToDisplayWidgetProps> = observer((props) => {
@@ -35,6 +37,7 @@ export const SmartBelongsToDisplayWidget: React.FC<SmartBelongsToDisplayWidgetPr
       relationship={row.model.definition.definition.belongsTo[variable_id.relationship]}
       connection={connection}
       id={value}
+      filterBelongsTo={props.filterBelongsTo}
     />
   );
 });

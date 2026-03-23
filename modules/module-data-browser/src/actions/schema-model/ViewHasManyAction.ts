@@ -12,7 +12,6 @@ import {
   ioc
 } from '@journeyapps-labs/reactor-mod';
 import { Relationship } from '@journeyapps/parser-schema';
-import * as _ from 'lodash';
 import { DataBrowserEntities } from '../../entities';
 import { SchemaModelObject } from '../../core/SchemaModelObject';
 import { QueryPanelModel } from '../../panels/query/QueryPanelFactory';
@@ -84,14 +83,7 @@ export class ViewHasManyAction extends EntityAction<SchemaModelObject> {
     const definition = await parent.definition.connection.waitForSchemaModelDefinitionByName(
       relationship.objectType.name
     );
-    const variable =
-      _.find(_.values(definition.definition.belongsToIdVars), (entry) => {
-        return entry.isBelongsToId && entry.relationship === relationship.name;
-      }) ||
-      definition.definition.belongsToIdVars[relationship.name] ||
-      _.find(_.values(definition.definition.belongsToIdVars), (entry) => {
-        return entry.relationship === relationship.name;
-      });
+    const variable = definition.getBelongsToIdVariableForRelationship(relationship.name);
     if (!variable) {
       this.notifications.showNotification({
         title: 'Cannot open relationship',

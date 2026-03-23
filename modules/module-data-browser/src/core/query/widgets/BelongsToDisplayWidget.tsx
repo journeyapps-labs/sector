@@ -14,6 +14,7 @@ export interface BelongsToDisplayWidgetProps {
   id: string;
   connection: AbstractConnection;
   open: (object: SchemaModelObject) => any;
+  filterBelongsTo?: (object: SchemaModelObject) => any;
   className?: any;
 }
 
@@ -62,7 +63,7 @@ export const BelongsToDisplayWidget: React.FC<BelongsToDisplayWidgetProps> = obs
     <S.Container className={props.className}>
       {object.data.display}
       <S.Actions>
-        <PeekRelationshipButton object={object} open={props.open} />
+        <PeekRelationshipButton object={object} open={props.open} filterBelongsTo={props.filterBelongsTo} />
         <TableButtonWidget
           icon="arrow-right"
           action={() => {

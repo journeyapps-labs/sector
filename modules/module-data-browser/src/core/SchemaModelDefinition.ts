@@ -1,6 +1,7 @@
 import { AbstractConnection } from './AbstractConnection';
 import { ObjectType } from '@journeyapps/parser-schema';
-import { Collection, JourneyAPIAdapter, Query } from '@journeyapps/db';
+import { Collection, JourneyAPIAdapter, Query, Variable } from '@journeyapps/db';
+import * as _ from 'lodash';
 import { SchemaModelObject } from './SchemaModelObject';
 import { LifecycleModel } from '@journeyapps-labs/lib-reactor-data-layer';
 import { BaseObserver } from '@journeyapps-labs/common-utils';
@@ -177,6 +178,48 @@ export class SchemaModelDefinition
       definition: this,
       adapter: collection.adapter
     });
+  }
+
+  getBelongsToIdVariableForRelationship(relationshipName: string): Variable | undefined {
+    const variable = _.find(_.values(this.definition.belongsToIdVars), (entry) => {
+      return entry.relationship === relationshipName;
+    });
+
+    if (!variable) {
+      return undefined;
+    }
+
+    const relationship = this.definition.belongsTo[relationshipName];
+    if (relationship) {
+      variable.label = relationship.name;
+    }
+
+    return variable;
+  }
+
+  getBelongsToRelationshipForField(field: string):
+    | {
+        variable: Variable;
+        relationship: ObjectType['belongsTo'][string];
+      }
+    | undefined {
+    const variable = _.find(_.values(this.definition.belongsToIdVars), (entry) => {
+      return entry.name === field;
+    });
+    if (!variable?.relationship) {
+      return undefined;
+    }
+
+    const relationship = this.definition.belongsTo[variable.relationship];
+    if (!relationship) {
+      return undefined;
+    }
+
+    variable.label = relationship.name;
+    return {
+      variable,
+      relationship
+    };
   }
 
   getFilterableFields(typeEngine: TypeEngine): FilterableField[] {

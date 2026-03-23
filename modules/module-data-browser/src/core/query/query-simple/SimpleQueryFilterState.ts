@@ -188,20 +188,6 @@ export class SimpleQueryFilterState extends BaseObserver<SimpleQueryFilterStateL
     if (!this.definition?.definition) {
       return undefined;
     }
-    const variable = _.find(_.values(this.definition.definition.belongsToIdVars), (entry) => {
-      return entry.name === field;
-    });
-    if (!variable?.relationship) {
-      return undefined;
-    }
-    const relationship = this.definition.definition.belongsTo[variable.relationship];
-    if (!relationship) {
-      return undefined;
-    }
-    variable.label = relationship.name;
-    return {
-      variable,
-      relationship
-    };
+    return this.definition.getBelongsToRelationshipForField(field);
   }
 }

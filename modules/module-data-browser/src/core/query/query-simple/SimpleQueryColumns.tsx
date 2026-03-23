@@ -16,6 +16,7 @@ import { SimpleQueryFilterState } from './SimpleQueryFilterState';
 import { STANDARD_MODEL_FIELD_LABELS, StandardModelFields, idVariable } from '../StandardModelFields';
 import { TypeEngine } from '../../../forms/TypeEngine';
 import { setupBelongsToFilter } from '../../../forms/types/belongs-to-filter';
+import { Condition, SimpleFilter, Statement } from '../filters';
 
 export interface BuildSimpleQueryColumnsOptions {
   definition: SchemaModelDefinition;
@@ -108,7 +109,19 @@ export const buildSimpleQueryColumns = (options: BuildSimpleQueryColumnsOptions)
         noWrap: true,
         shrink: true,
         accessor: (cell, row: PageRow) => {
-          return <SmartBelongsToDisplayWidget variable_id={a} row={row} connection={options.connection} />;
+          return (
+            <SmartBelongsToDisplayWidget
+              variable_id={a}
+              row={row}
+              connection={options.connection}
+              filterBelongsTo={async (object) => {
+                options.filterState.setFilter(
+                  a.name,
+                  new SimpleFilter(a, [new Statement(Condition.EQUALS, object.id)])
+                );
+              }}
+            />
+          );
         }
       } as TableColumn;
     }),
