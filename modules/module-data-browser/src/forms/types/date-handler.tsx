@@ -86,6 +86,7 @@ const toDateValue = (value: unknown): Date | undefined => {
 
 export const dateHandler: TypeHandler = {
   matches: (type) => type instanceof DatetimeType || type instanceof DateType,
+  getTypeLabel: (type) => (type instanceof DatetimeType ? 'Datetime' : 'Date'),
   encode: async (value: Date) => new Day(value),
   decode: async (value: Day | Date) => toDateValue(value),
   encodeToScalar: async (value: Date) => value?.toISOString() || null,

@@ -1,6 +1,7 @@
 import { AbstractConnection } from './AbstractConnection';
 import { ObjectType } from '@journeyapps/parser-schema';
-import { Collection, JourneyAPIAdapter, Query } from '@journeyapps/db';
+import { Collection, JourneyAPIAdapter, Query, Variable } from '@journeyapps/db';
+import * as _ from 'lodash';
 import { SchemaModelObject } from './SchemaModelObject';
 import { LifecycleModel } from '@journeyapps-labs/lib-reactor-data-layer';
 import { BaseObserver } from '@journeyapps-labs/common-utils';
@@ -10,6 +11,7 @@ import { V4Index } from '@journeyapps-labs/client-backend-v4';
 import { action, observable } from 'mobx';
 import { IndexModel } from './IndexModel';
 import { TypeEngine } from '../forms/TypeEngine';
+import { STANDARD_MODEL_FIELD_LABELS, StandardModelFields, idVariable } from './query/StandardModelFields';
 
 export interface SchemaModelDefinitionListener {
   resolved: (event: { object: SchemaModelObject }) => any;
@@ -20,6 +22,13 @@ export interface SchemaModelDefinitionOptions {
   connection: AbstractConnection;
   definition: ObjectType;
 }
+
+export interface FilterableField {
+  key: string;
+  label: string;
+  group: 'Fields' | 'Belongs to';
+}
+
 export class SchemaModelDefinition
   extends BaseObserver<SchemaModelDefinitionListener>
   implements LifecycleModel<ObjectType>
@@ -171,18 +180,85 @@ export class SchemaModelDefinition
     });
   }
 
-  getFilterableFields(typeEngine: TypeEngine): { key: string; label: string }[] {
-    return Object.values(this.definition.attributes)
-      .map((attribute) => {
-        const handler = typeEngine.getHandler(attribute.type);
-        if (!handler?.setupFilter) {
-          return null;
-        }
-        return {
-          key: attribute.name,
-          label: attribute.label || attribute.name
-        };
-      })
-      .filter((value) => !!value);
+  getBelongsToIdVariableForRelationship(relationshipName: string): Variable | undefined {
+    const variable = _.find(_.values(this.definition.belongsToIdVars), (entry) => {
+      return entry.relationship === relationshipName;
+    });
+
+    if (!variable) {
+      return undefined;
+    }
+
+    const relationship = this.definition.belongsTo[relationshipName];
+    if (relationship) {
+      variable.label = relationship.name;
+    }
+
+    return variable;
+  }
+
+  getBelongsToRelationshipForField(field: string):
+    | {
+        variable: Variable;
+        relationship: ObjectType['belongsTo'][string];
+      }
+    | undefined {
+    const variable = _.find(_.values(this.definition.belongsToIdVars), (entry) => {
+      return entry.name === field;
+    });
+    if (!variable?.relationship) {
+      return undefined;
+    }
+
+    const relationship = this.definition.belongsTo[variable.relationship];
+    if (!relationship) {
+      return undefined;
+    }
+
+    variable.label = relationship.name;
+    return {
+      variable,
+      relationship
+    };
+  }
+
+  getFilterableFields(typeEngine: TypeEngine): FilterableField[] {
+    return [
+      ...(typeEngine.getHandler(idVariable.type)?.setupFilter
+        ? [
+            {
+              key: StandardModelFields.ID,
+              label: STANDARD_MODEL_FIELD_LABELS[StandardModelFields.ID],
+              group: 'Fields' as const
+            }
+          ]
+        : []),
+      ...Object.values(this.definition.belongsToIdVars)
+        .map((variable) => {
+          if (!variable?.name || !variable.relationship) {
+            return null;
+          }
+          const relationship = this.definition.belongsTo[variable.relationship];
+          return {
+            key: variable.name,
+            label: relationship?.name || variable.label || variable.name,
+            group: 'Belongs to' as const
+          };
+        })
+        .filter((value) => !!value),
+      ...Object.values(this.definition.attributes)
+        .map((attribute) => {
+          const handler = typeEngine.getHandler(attribute.type);
+          if (!handler?.setupFilter) {
+            return null;
+          }
+          return {
+            key: attribute.name,
+            label: attribute.label || attribute.name,
+            group: 'Fields' as const
+          };
+        })
+        .filter((value) => !!value)
+    ];
   }
 }

@@ -105,7 +105,6 @@ export class SimpleQuerySortState extends BaseObserver<SimpleQuerySortStateListe
       };
     });
     return [
-      { key: StandardModelFields.ID, label: STANDARD_MODEL_FIELD_LABELS[StandardModelFields.ID] },
       {
         key: StandardModelFields.UPDATED_AT,
         label: STANDARD_MODEL_FIELD_LABELS[StandardModelFields.UPDATED_AT]

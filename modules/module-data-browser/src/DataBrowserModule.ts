@@ -17,6 +17,7 @@ import { SchemaModelObjectEntityDefinition } from './entities/SchemaModelObjectE
 import { EditSchemaModelAction } from './actions/schema-model/EditSchemaModelAction';
 import { TypeEngine } from './forms/TypeEngine';
 import { ViewSchemaModelAsJsonAction } from './actions/schema-model/ViewSchemaModelAsJsonAction';
+import { ViewHasManyAction } from './actions/schema-model/ViewHasManyAction';
 import { ModelJsonPanelFactory } from './panels/model-json/ModelJsonPanelFactory';
 import { SchemaModelIndexDefinition } from './entities/SchemaModelIndexDefinition';
 import { SavedQueryStore } from './stores/SavedQueryStore';
@@ -49,6 +50,7 @@ export class DataBrowserModule extends AbstractReactorModule {
     actionStore.registerAction(new CreateModelAction());
     actionStore.registerAction(new EditSchemaModelAction());
     actionStore.registerAction(new ViewSchemaModelAsJsonAction());
+    actionStore.registerAction(new ViewHasManyAction());
     actionStore.registerAction(new OpenSavedQueryAction());
     actionStore.registerAction(new RemoveSavedQueryAction());
 

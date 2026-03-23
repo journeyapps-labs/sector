@@ -1,17 +1,22 @@
 import * as React from 'react';
 import styled from '@emotion/styled';
-import { ObjectType, Variable } from '@journeyapps/db';
+import { Variable } from '@journeyapps/db';
 import { ColumnDisplayWidget } from './ColumnDisplayWidget';
-import { SmartFilterWidget } from './SmartFilterWidget';
+import { SmartFilterWidget, SmartTypeEngineFilterWidget } from './SmartFilterWidget';
 import { SimpleFilter } from '../filters';
 import { SortDirection } from '../query-simple/SimpleQuery';
 
 export interface SmartColumnWidgetProps {
   variable: Variable;
-  type?: ObjectType;
+  typeLabel?: string;
   filter?: SimpleFilter;
   sortDirection?: SortDirection;
   onToggleSort?: () => Promise<any> | any;
+  setupFilter?: (event: {
+    variable: Variable;
+    filter?: SimpleFilter;
+    position?: MouseEvent;
+  }) => Promise<SimpleFilter | null>;
   filterChanged: (filter: SimpleFilter | null) => any;
 }
 
@@ -20,20 +25,24 @@ export const SmartColumnWidget: React.FC<SmartColumnWidgetProps> = (props) => {
   const displayLabel = props.sortDirection
     ? `${baseLabel} ${props.sortDirection === SortDirection.ASC ? '↓' : '↑'}`
     : baseLabel;
-  let display = <ColumnDisplayWidget label={displayLabel} onClick={props.onToggleSort} />;
-  if (props.type) {
-    display = (
-      <S.TypeGroup>
-        {display}
-        <S.Type label={props.type.label} />
-      </S.TypeGroup>
-    );
-  }
   return (
     <S.Container>
       <S.TopRow>
-        {display}
-        <SmartFilterWidget filter={props.filter} variable={props.variable} filterChanged={props.filterChanged} />
+        <ColumnDisplayWidget label={displayLabel} secondaryLabel={props.typeLabel} onClick={props.onToggleSort} />
+        {props.setupFilter ? (
+          <SmartFilterWidget
+            filter={props.filter}
+            variable={props.variable}
+            setupFilter={props.setupFilter}
+            filterChanged={props.filterChanged}
+          />
+        ) : (
+          <SmartTypeEngineFilterWidget
+            filter={props.filter}
+            variable={props.variable}
+            filterChanged={props.filterChanged}
+          />
+        )}
       </S.TopRow>
     </S.Container>
   );
@@ -53,12 +62,6 @@ namespace S {
     align-items: center;
     column-gap: 5px;
   `;
-
-  export const Type = styled(ColumnDisplayWidget)`
-    opacity: 0.5;
-  `;
-
-  export const TypeGroup = styled.div``;
 
   export const FilterMetaRow = styled.div`
     display: flex;

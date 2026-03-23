@@ -31,6 +31,7 @@ export const FilterControlsWidget: React.FC<FilterControlsWidgetProps> = (props)
           return {
             key: field.key,
             title: field.label,
+            group: field.group,
             action: async () => {
               await props.simpleQuery.filterState.setupFilterForField(field.key, event.nativeEvent as any);
               props.goToPage?.(0);

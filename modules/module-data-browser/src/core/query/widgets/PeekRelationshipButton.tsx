@@ -21,6 +21,7 @@ import { EmptyValueWidget } from '../../../widgets/EmptyValueWidget';
 export interface PeekRelationshipButtonProps {
   object: SchemaModelObject;
   open: (object: SchemaModelObject) => any;
+  filterBelongsTo?: (object: SchemaModelObject) => any;
 }
 
 export const PeekRelationshipButton: React.FC<PeekRelationshipButtonProps> = (props) => {
@@ -89,8 +90,15 @@ export const PeekRelationshipButton: React.FC<PeekRelationshipButtonProps> = (pr
         title: 'ID',
         icon: 'copy',
         right: <S.FieldValue>{props.object.id}</S.FieldValue>,
-        disabled: true,
-        group: 'Object'
+        group: 'Object',
+        action: async () => {
+          copyTextToClipboard(props.object.id);
+          notifications.showNotification({
+            title: 'Copied',
+            description: 'Relationship ID copied to clipboard',
+            type: NotificationType.SUCCESS
+          });
+        }
       },
       {
         key: 'meta-updated',
@@ -114,20 +122,19 @@ export const PeekRelationshipButton: React.FC<PeekRelationshipButtonProps> = (pr
           props.open(props.object);
         }
       },
-      {
-        key: 'copy',
-        title: 'Copy ID',
-        icon: 'copy',
-        group: 'Actions',
-        action: async () => {
-          copyTextToClipboard(props.object.id);
-          notifications.showNotification({
-            title: 'Copied',
-            description: 'Relationship ID copied to clipboard',
-            type: NotificationType.SUCCESS
-          });
-        }
-      }
+      ...(props.filterBelongsTo
+        ? [
+            {
+              key: 'filter-belongs-to',
+              title: 'Filter belongs to',
+              icon: 'filter',
+              group: 'Actions',
+              action: async () => {
+                await props.filterBelongsTo?.(props.object);
+              }
+            } as ComboBoxItem
+          ]
+        : [])
     ];
     const directive = await ioc.get(ComboBoxStore2).show(
       new SimpleComboBoxDirective({

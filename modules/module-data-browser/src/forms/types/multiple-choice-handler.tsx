@@ -6,6 +6,7 @@ import { TypeHandler, TypeHandlerContext } from './shared/type-handler';
 export const multipleChoiceHandler = (context: TypeHandlerContext): TypeHandler => {
   return {
     matches: (type) => type instanceof MultipleChoiceType,
+    getTypeLabel: () => 'Multiple choice',
     encode: async (value: string[]) => value,
     decode: async (value: string[]) => value,
     encodeToScalar: async (value: string[]) => JSON.stringify(value || []),
