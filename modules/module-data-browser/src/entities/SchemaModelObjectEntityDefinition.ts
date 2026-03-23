@@ -1,4 +1,5 @@
 import {
+  Action,
   EntityDefinition,
   EntityDescriberComponent,
   inject,
@@ -11,6 +12,7 @@ import { ConnectionStore } from '../stores/ConnectionStore';
 import { SchemaModelObject } from '../core/SchemaModelObject';
 import { SchemaModelDefinition } from '../core/SchemaModelDefinition';
 import { validate as validateUUID } from 'uuid';
+import { ViewHasManyAction } from '../actions/schema-model/ViewHasManyAction';
 
 export interface SchemaModelObjectEntityDefinitionEncoded {
   connection_id: string;
@@ -93,5 +95,12 @@ export class SchemaModelObjectEntityDefinition extends EntityDefinition<SchemaMo
 
   getEntityUID(t: SchemaModelObject) {
     return t.model.id;
+  }
+
+  isActionAllowedForEntity(action: Action, entity: SchemaModelObject) {
+    if (action.id === ViewHasManyAction.ID) {
+      return Object.keys(entity.definition.definition.hasMany || {}).length > 0;
+    }
+    return super.isActionAllowedForEntity(action, entity);
   }
 }
