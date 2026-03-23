@@ -10,6 +10,7 @@ import { DataBrowserEntities } from '../entities';
 import { ConnectionStore } from '../stores/ConnectionStore';
 import { SchemaModelObject } from '../core/SchemaModelObject';
 import { SchemaModelDefinition } from '../core/SchemaModelDefinition';
+import { validate as validateUUID } from 'uuid';
 
 export interface SchemaModelObjectEntityDefinitionEncoded {
   connection_id: string;
@@ -42,21 +43,6 @@ export class SchemaModelObjectEntityDefinition extends EntityDefinition<SchemaMo
       })
     );
 
-    // this.registerComponent(
-    //   new SimpleParentEntitySearchEngine<SchemaModelDefinition,SchemaModelObject>({
-    //     label: 'ID',
-    //     filterResultsWithMatcher: false,
-    //     type: DataBrowserEntities.SCHEMA_MODEL_DEFINITION,
-    //     getEntities: async (event) => {
-    //       let object = await event.parameters.parent.resolve(event.value);
-    //       if(object){
-    //         return [object]
-    //       }
-    //       return []
-    //     }
-    //   })
-    // );
-
     this.registerComponent(
       new SimpleParentEntitySearchEngine<SchemaModelDefinition, SchemaModelObject>({
         label: 'Label',
@@ -64,6 +50,13 @@ export class SchemaModelObjectEntityDefinition extends EntityDefinition<SchemaMo
         filterResultsWithMatcher: false,
         getEntities: async (event) => {
           if (!event.value) {
+            return [];
+          }
+          if (validateUUID(event.value)) {
+            const object = await event.parameters.parent.resolve(event.value);
+            if (object) {
+              return [object];
+            }
             return [];
           }
           return await event.parameters.parent.search(event.value);

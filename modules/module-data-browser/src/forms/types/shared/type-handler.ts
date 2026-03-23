@@ -9,6 +9,7 @@ export type ScalarValue = string | number | boolean | null;
 
 export interface TypeHandler<T extends Type = Type, ENCODED = any, DECODED = any> {
   matches: (type: Type) => boolean;
+  getTypeLabel?: (type: T) => string;
   generateField: (event: { label: string; name: string; type: T }) => FormInput;
   generateDisplay: (event: {
     label: string;

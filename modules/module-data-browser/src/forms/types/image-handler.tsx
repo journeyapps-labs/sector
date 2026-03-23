@@ -30,6 +30,7 @@ export const imageHandler = (context: TypeHandlerContext): TypeHandler => {
 
   return {
     matches: (type) => type instanceof SignatureType || type instanceof PhotoType,
+    getTypeLabel: (type) => (type instanceof SignatureType ? 'Signature' : 'Photo'),
     encode: async (value: ImageMedia) => {
       return Attachment.create({
         data: await value.toArrayBuffer()

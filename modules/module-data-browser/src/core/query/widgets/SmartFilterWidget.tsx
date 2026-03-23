@@ -15,6 +15,11 @@ import { SimpleFilter, StatementMatch } from '../filters';
 export interface SmartFilterWidgetProps {
   variable: Variable;
   filter?: SimpleFilter;
+  setupFilter: (event: {
+    variable: Variable;
+    filter?: SimpleFilter;
+    position?: MouseEvent;
+  }) => Promise<SimpleFilter | null>;
   filterChanged: (filter: SimpleFilter | null) => any;
 }
 
@@ -63,10 +68,6 @@ export const SmartFilterMetadataWidget: React.FC<SmartFilterMetadataWidgetProps>
 
 export const SmartFilterWidget: React.FC<SmartFilterWidgetProps> = (props) => {
   const isActive = (props.filter?.statements?.length || 0) > 0;
-  const handler = ioc.get(TypeEngine).getHandler(props.variable.type);
-  if (!handler?.setupFilter) {
-    return null;
-  }
   return (
     <S.FilterButton
       active={isActive}
@@ -75,7 +76,7 @@ export const SmartFilterWidget: React.FC<SmartFilterWidgetProps> = (props) => {
         tooltipPos: TooltipPosition.BOTTOM
       })}
       onClick={async (event) => {
-        const filter = await handler.setupFilter?.({
+        const filter = await props.setupFilter({
           variable: props.variable,
           filter: props.filter,
           position: event.nativeEvent
@@ -89,6 +90,14 @@ export const SmartFilterWidget: React.FC<SmartFilterWidgetProps> = (props) => {
       {isActive ? <DualIconWidget icon1="filter" icon2="check" /> : <IconWidget icon="filter" />}
     </S.FilterButton>
   );
+};
+
+export const SmartTypeEngineFilterWidget: React.FC<Omit<SmartFilterWidgetProps, 'setupFilter'>> = (props) => {
+  const setupFilter = ioc.get(TypeEngine).getHandler(props.variable.type)?.setupFilter;
+  if (!setupFilter) {
+    return null;
+  }
+  return <SmartFilterWidget {...props} setupFilter={setupFilter} />;
 };
 
 namespace S {

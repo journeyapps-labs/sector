@@ -1,9 +1,11 @@
 import { Variable } from '@journeyapps/db';
 import * as _ from 'lodash';
 import { BaseObserver } from '@journeyapps-labs/common-utils';
-import { SchemaModelDefinition } from '../../SchemaModelDefinition';
+import { FilterableField, SchemaModelDefinition } from '../../SchemaModelDefinition';
 import { SerializedSimpleFilter, SimpleFilter } from '../filters';
 import { TypeEngine } from '../../../forms/TypeEngine';
+import { setupBelongsToFilter } from '../../../forms/types/belongs-to-filter';
+import { idVariable, StandardModelFields } from '../StandardModelFields';
 
 export interface SimpleQueryFilterStateListener {
   changed: () => any;
@@ -52,7 +54,7 @@ export class SimpleQueryFilterState extends BaseObserver<SimpleQueryFilterStateL
     return definitionChanged || hadFilters;
   }
 
-  getFilterableFields(): { key: string; label: string }[] {
+  getFilterableFields(): FilterableField[] {
     if (!this.definition?.definition) {
       return [];
     }
@@ -69,7 +71,7 @@ export class SimpleQueryFilterState extends BaseObserver<SimpleQueryFilterStateL
   }
 
   getFilter(field: string): SimpleFilter | undefined {
-    const variable = this.resolveAttribute(field);
+    const variable = this.resolveField(field);
     return variable ? this.simpleFilters.get(variable) : undefined;
   }
 
@@ -87,9 +89,7 @@ export class SimpleQueryFilterState extends BaseObserver<SimpleQueryFilterStateL
       if (!SimpleFilter.canDeserialize(filter)) {
         return;
       }
-      const variable = _.find(_.values(definition.definition.attributes), (attribute) => {
-        return attribute.name === filter.variable;
-      });
+      const variable = this.resolveField(filter.variable);
       if (!variable) {
         return;
       }
@@ -98,7 +98,7 @@ export class SimpleQueryFilterState extends BaseObserver<SimpleQueryFilterStateL
   }
 
   setFilter(field: string, filter: SimpleFilter) {
-    const variable = this.resolveAttribute(field);
+    const variable = this.resolveField(field);
     if (!variable) {
       return false;
     }
@@ -106,7 +106,21 @@ export class SimpleQueryFilterState extends BaseObserver<SimpleQueryFilterStateL
   }
 
   async setupFilterForField(field: string, position?: MouseEvent): Promise<boolean> {
-    const variable = this.resolveAttribute(field);
+    const relationship = this.resolveBelongsToField(field);
+    if (relationship) {
+      const existing = this.simpleFilters.get(relationship.variable);
+      const nextFilter = await setupBelongsToFilter({
+        definition: this.definition,
+        relationship: relationship.relationship,
+        variable: relationship.variable,
+        filter: existing
+      });
+      if (!nextFilter) {
+        return false;
+      }
+      return this.addFilter(relationship.variable, nextFilter);
+    }
+    const variable = this.resolveField(field);
     if (!variable) {
       return false;
     }
@@ -149,12 +163,45 @@ export class SimpleQueryFilterState extends BaseObserver<SimpleQueryFilterStateL
     return true;
   }
 
-  private resolveAttribute(field: string): Variable | undefined {
+  private resolveField(field: string): Variable | undefined {
     if (!this.definition?.definition) {
       return undefined;
+    }
+    if (field === StandardModelFields.ID) {
+      return idVariable;
+    }
+    const relationship = this.resolveBelongsToField(field);
+    if (relationship) {
+      return relationship.variable;
     }
     return _.find(_.values(this.definition.definition.attributes), (attribute) => {
       return attribute.name === field;
     });
+  }
+
+  private resolveBelongsToField(field: string):
+    | {
+        variable: Variable;
+        relationship: any;
+      }
+    | undefined {
+    if (!this.definition?.definition) {
+      return undefined;
+    }
+    const variable = _.find(_.values(this.definition.definition.belongsToIdVars), (entry) => {
+      return entry.name === field;
+    });
+    if (!variable?.relationship) {
+      return undefined;
+    }
+    const relationship = this.definition.definition.belongsTo[variable.relationship];
+    if (!relationship) {
+      return undefined;
+    }
+    variable.label = relationship.name;
+    return {
+      variable,
+      relationship
+    };
   }
 }

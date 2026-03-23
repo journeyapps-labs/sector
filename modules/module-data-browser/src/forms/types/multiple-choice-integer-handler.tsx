@@ -6,6 +6,7 @@ import { TypeHandler, TypeHandlerContext } from './shared/type-handler';
 export const multipleChoiceIntegerHandler = (context: TypeHandlerContext): TypeHandler => {
   return {
     matches: (type) => type instanceof MultipleChoiceIntegerType,
+    getTypeLabel: () => 'Multiple choice integer',
     encode: async (value: string[]) => value.map((v) => parseInt(v)),
     decode: async (value: number[]) => value.map((v) => `${v}`),
     encodeToScalar: async (value: string[]) => JSON.stringify(value || []),

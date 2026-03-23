@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { TableColumn } from '@journeyapps-labs/reactor-mod';
+import { ioc, TableColumn } from '@journeyapps-labs/reactor-mod';
 import * as _ from 'lodash';
 import { PageRow } from '../Page';
 import { CellDisplayWidget } from '../widgets/CellDisplayWidget';
@@ -7,12 +7,15 @@ import { SmartColumnWidget } from '../widgets/SmartColumnWidget';
 import { SmartCellDisplayWidget } from '../widgets/SmartCellDisplayWidget';
 import { SmartBelongsToDisplayWidget } from '../widgets/SmartBelongsToDisplayWidget';
 import { ColumnDisplayWidget } from '../widgets/ColumnDisplayWidget';
+import { IDCellDisplayWidget } from '../widgets/IDCellDisplayWidget';
 import { SchemaModelDefinition } from '../../SchemaModelDefinition';
 import { AbstractConnection } from '../../AbstractConnection';
 import { SimpleQuerySort, SortDirection } from './SimpleQueryTypes';
 import { SimpleQuerySortState } from './SimpleQuerySortState';
 import { SimpleQueryFilterState } from './SimpleQueryFilterState';
-import { STANDARD_MODEL_FIELD_LABELS, StandardModelFields } from '../StandardModelFields';
+import { STANDARD_MODEL_FIELD_LABELS, StandardModelFields, idVariable } from '../StandardModelFields';
+import { TypeEngine } from '../../../forms/TypeEngine';
+import { setupBelongsToFilter } from '../../../forms/types/belongs-to-filter';
 
 export interface BuildSimpleQueryColumnsOptions {
   definition: SchemaModelDefinition;
@@ -34,20 +37,24 @@ export const buildSimpleQueryColumns = (options: BuildSimpleQueryColumnsOptions)
     {
       key: StandardModelFields.ID,
       display: (
-        <ColumnDisplayWidget
-          label={getSortLabel(StandardModelFields.ID, STANDARD_MODEL_FIELD_LABELS[StandardModelFields.ID])}
-          onClick={async () => {
-            const sort = options.sortState.getSort(StandardModelFields.ID);
-            if (!sort) {
-              options.sortState.addSort(SimpleQuerySort.create(StandardModelFields.ID));
+        <SmartColumnWidget
+          variable={idVariable}
+          typeLabel={ioc.get(TypeEngine).getHandler(idVariable.type)?.getTypeLabel?.(idVariable.type)}
+          filter={options.filterState.getFilter(StandardModelFields.ID)}
+          filterChanged={async (filter) => {
+            if (!filter) {
+              options.filterState.getFilter(StandardModelFields.ID)?.delete();
               return;
             }
-            sort.toggle();
+            options.filterState.setFilter(StandardModelFields.ID, filter);
           }}
         />
       ),
       noWrap: true,
-      shrink: true
+      shrink: true,
+      accessor: (cell, row: PageRow) => {
+        return <IDCellDisplayWidget id={row.model.id} />;
+      }
     },
     {
       key: StandardModelFields.UPDATED_AT,
@@ -79,8 +86,23 @@ export const buildSimpleQueryColumns = (options: BuildSimpleQueryColumnsOptions)
         display: (
           <SmartColumnWidget
             variable={options.definition.definition.belongsToVars[a.relationship]}
-            type={options.definition.definition.belongsTo[a.relationship].foreignType}
-            filterChanged={(filter) => {}}
+            typeLabel={`Belongs To: ${options.definition.definition.belongsTo[a.relationship].foreignType.label}`}
+            filter={options.filterState.getFilter(a.name)}
+            setupFilter={async ({ filter }) => {
+              return await setupBelongsToFilter({
+                definition: options.definition,
+                relationship: options.definition.definition.belongsTo[a.relationship],
+                variable: a,
+                filter
+              });
+            }}
+            filterChanged={async (filter) => {
+              if (!filter) {
+                options.filterState.getFilter(a.name)?.delete();
+                return;
+              }
+              options.filterState.setFilter(a.name, filter);
+            }}
           />
         ),
         noWrap: true,
@@ -96,6 +118,7 @@ export const buildSimpleQueryColumns = (options: BuildSimpleQueryColumnsOptions)
         display: (
           <SmartColumnWidget
             variable={a}
+            typeLabel={ioc.get(TypeEngine).getHandler(a.type)?.getTypeLabel?.(a.type)}
             filter={options.filterState.getFilter(a.name)}
             sortDirection={options.sortState.getSort(a.name)?.direction}
             onToggleSort={async () => {

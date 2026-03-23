@@ -6,6 +6,7 @@ import { TypeHandler } from './shared/type-handler';
 
 export const locationHandler: TypeHandler = {
   matches: (type) => type instanceof LocationType,
+  getTypeLabel: () => 'Location',
   encode: async (value: Location) => value,
   decode: async (value: Location) => value,
   encodeToScalar: async (value: Location) => {

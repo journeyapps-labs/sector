@@ -1,4 +1,4 @@
-import { NumberType, Variable } from '@journeyapps/db';
+import { IntegerType, NumberType, Variable } from '@journeyapps/db';
 import { DialogStore2, FormInput, NumberInput, ioc } from '@journeyapps-labs/reactor-mod';
 import { TypeHandler } from './shared/type-handler';
 import { Condition, SimpleFilter, Statement, StatementMatch } from '../../core/query/filters';
@@ -68,7 +68,8 @@ class NumberFilterForm extends ConditionalFilterForm<number> {
 }
 
 export const numberHandler: TypeHandler = {
-  matches: (type) => type instanceof NumberType,
+  matches: (type) => type instanceof NumberType || type instanceof IntegerType,
+  getTypeLabel: (type) => (type instanceof IntegerType ? 'Integer' : 'Number'),
   encode: async (value: number) => value,
   decode: async (value: number) => value,
   encodeToScalar: async (value: number) => value,

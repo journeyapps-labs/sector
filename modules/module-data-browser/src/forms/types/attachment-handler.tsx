@@ -5,6 +5,7 @@ import { TypeHandler } from './shared/type-handler';
 
 export const attachmentHandler: TypeHandler = {
   matches: (type) => type instanceof AttachmentType,
+  getTypeLabel: () => 'Attachment',
   encode: async (value: File) => {
     return Attachment.create({
       data: await value.arrayBuffer(),

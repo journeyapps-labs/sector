@@ -6,6 +6,7 @@ import { Condition, SimpleFilter, Statement } from '../../core/query/filters';
 
 export const singleChoiceIntegerHandler: TypeHandler = {
   matches: (type) => type instanceof SingleChoiceIntegerType,
+  getTypeLabel: () => 'Single choice integer',
   encode: async (value: string) => parseInt(value),
   decode: async (value: number) => `${value}`,
   encodeToScalar: async (value: string) => value,
