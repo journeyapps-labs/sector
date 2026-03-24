@@ -15,6 +15,7 @@ export * from './entities/QueryEntityDefinition';
 export * from './entities/ConnectionEntityDefinition';
 export * from './entities/ConnectionFactoryEntityDefinition';
 export * from './entities/SchemaModelDefinitionEntityDefinition';
+export * from './entities/SchemaModelTreePresenterComponent';
 export * from './entities/SchemaModelObjectEntityDefinition';
 
 export * from './panels/query/QueryPanelFactory';

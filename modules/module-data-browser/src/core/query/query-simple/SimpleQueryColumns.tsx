@@ -17,6 +17,7 @@ import { STANDARD_MODEL_FIELD_LABELS, StandardModelFields, idVariable } from '..
 import { TypeEngine } from '../../../forms/TypeEngine';
 import { setupBelongsToFilter } from '../../../forms/types/belongs-to-filter';
 import { Condition, SimpleFilter, Statement } from '../filters';
+import { OrderedSchemaFieldType } from '../../SchemaModelDefinition';
 
 export interface BuildSimpleQueryColumnsOptions {
   definition: SchemaModelDefinition;
@@ -81,82 +82,90 @@ export const buildSimpleQueryColumns = (options: BuildSimpleQueryColumnsOptions)
         return <CellDisplayWidget name={StandardModelFields.UPDATED_AT} cell={row.model.updated_at} row={row} />;
       }
     },
-    ..._.map(options.definition.definition.belongsToIdVars, (a) => {
-      return {
-        key: a.name,
-        display: (
-          <SmartColumnWidget
-            variable={options.definition.definition.belongsToVars[a.relationship]}
-            typeLabel={`Belongs To: ${options.definition.definition.belongsTo[a.relationship].foreignType.label}`}
-            filter={options.filterState.getFilter(a.name)}
-            setupFilter={async ({ filter }) => {
-              return await setupBelongsToFilter({
-                definition: options.definition,
-                relationship: options.definition.definition.belongsTo[a.relationship],
-                variable: a,
-                filter
-              });
-            }}
-            filterChanged={async (filter) => {
-              if (!filter) {
-                options.filterState.getFilter(a.name)?.delete();
-                return;
-              }
-              options.filterState.setFilter(a.name, filter);
-            }}
-          />
-        ),
-        noWrap: true,
-        shrink: true,
-        accessor: (cell, row: PageRow) => {
-          return (
-            <SmartBelongsToDisplayWidget
-              variable_id={a}
-              row={row}
-              connection={options.connection}
-              filterBelongsTo={async (object) => {
-                options.filterState.setFilter(
-                  a.name,
-                  new SimpleFilter(a, [new Statement(Condition.EQUALS, object.id)])
-                );
+    ...options.definition.getOrderedFieldsAndRelationships().flatMap((entry) => {
+      if (entry.type === OrderedSchemaFieldType.BELONGS_TO) {
+        const variable = entry.variable;
+        const relationship = entry.object;
+        return [
+          {
+            key: variable.name,
+            display: (
+              <SmartColumnWidget
+                variable={options.definition.definition.belongsToVars[variable.relationship]}
+                typeLabel={`Belongs To: ${relationship.foreignType.label}`}
+                filter={options.filterState.getFilter(variable.name)}
+                setupFilter={async ({ filter }) => {
+                  return await setupBelongsToFilter({
+                    definition: options.definition,
+                    relationship,
+                    variable,
+                    filter
+                  });
+                }}
+                filterChanged={async (filter) => {
+                  if (!filter) {
+                    options.filterState.getFilter(variable.name)?.delete();
+                    return;
+                  }
+                  options.filterState.setFilter(variable.name, filter);
+                }}
+              />
+            ),
+            noWrap: true,
+            shrink: true,
+            accessor: (cell, row: PageRow) => {
+              return (
+                <SmartBelongsToDisplayWidget
+                  variable_id={variable}
+                  row={row}
+                  connection={options.connection}
+                  filterBelongsTo={async (object) => {
+                    options.filterState.setFilter(
+                      variable.name,
+                      new SimpleFilter(variable, [new Statement(Condition.EQUALS, object.id)])
+                    );
+                  }}
+                />
+              );
+            }
+          } as TableColumn
+        ];
+      }
+
+      const attribute = entry.object;
+      return [
+        {
+          key: attribute.name,
+          display: (
+            <SmartColumnWidget
+              variable={attribute}
+              typeLabel={ioc.get(TypeEngine).getHandler(attribute.type)?.getTypeLabel?.(attribute.type)}
+              filter={options.filterState.getFilter(attribute.name)}
+              sortDirection={options.sortState.getSort(attribute.name)?.direction}
+              onToggleSort={async () => {
+                const sort = options.sortState.getSort(attribute.name);
+                if (!sort) {
+                  options.sortState.addSort(SimpleQuerySort.create(attribute.name));
+                  return;
+                }
+                sort.toggle();
+              }}
+              filterChanged={async (filter) => {
+                if (!filter) {
+                  options.filterState.getFilter(attribute.name)?.delete();
+                  return;
+                }
+                options.filterState.setFilter(attribute.name, filter);
               }}
             />
-          );
-        }
-      } as TableColumn;
-    }),
-    ..._.map(options.definition.definition.attributes, (a) => {
-      return {
-        key: a.name,
-        display: (
-          <SmartColumnWidget
-            variable={a}
-            typeLabel={ioc.get(TypeEngine).getHandler(a.type)?.getTypeLabel?.(a.type)}
-            filter={options.filterState.getFilter(a.name)}
-            sortDirection={options.sortState.getSort(a.name)?.direction}
-            onToggleSort={async () => {
-              const sort = options.sortState.getSort(a.name);
-              if (!sort) {
-                options.sortState.addSort(SimpleQuerySort.create(a.name));
-                return;
-              }
-              sort.toggle();
-            }}
-            filterChanged={async (filter) => {
-              if (!filter) {
-                options.filterState.getFilter(a.name)?.delete();
-                return;
-              }
-              options.filterState.setFilter(a.name, filter);
-            }}
-          />
-        ),
-        noWrap: true,
-        shrink: true,
-        accessor: (cell, row: PageRow) => {
-          return <SmartCellDisplayWidget name={a.name} row={row} />;
-        }
-      } as TableColumn;
+          ),
+          noWrap: true,
+          shrink: true,
+          accessor: (cell, row: PageRow) => {
+            return <SmartCellDisplayWidget name={attribute.name} row={row} />;
+          }
+        } as TableColumn
+      ];
     })
   ];
 };

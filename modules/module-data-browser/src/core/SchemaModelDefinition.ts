@@ -12,6 +12,7 @@ import { action, observable } from 'mobx';
 import { IndexModel } from './IndexModel';
 import { TypeEngine } from '../forms/TypeEngine';
 import { STANDARD_MODEL_FIELD_LABELS, StandardModelFields, idVariable } from './query/StandardModelFields';
+import { SchemaFieldOrderValue, SchemaFieldOrderingPreference } from '../preferences/SchemaOrderingPreferences';
 
 export interface SchemaModelDefinitionListener {
   resolved: (event: { object: SchemaModelObject }) => any;
@@ -28,6 +29,26 @@ export interface FilterableField {
   label: string;
   group: 'Fields' | 'Belongs to';
 }
+
+export enum OrderedSchemaFieldType {
+  FIELD = 'FIELD',
+  BELONGS_TO = 'BELONGS_TO'
+}
+
+export type OrderedSchemaFieldOrRelationship =
+  | {
+      type: OrderedSchemaFieldType.FIELD;
+      object: Variable;
+      key: string;
+      label: string;
+    }
+  | {
+      type: OrderedSchemaFieldType.BELONGS_TO;
+      object: ObjectType['belongsTo'][string];
+      key: string;
+      label: string;
+      variable: Variable;
+    };
 
 export class SchemaModelDefinition
   extends BaseObserver<SchemaModelDefinitionListener>
@@ -222,6 +243,70 @@ export class SchemaModelDefinition
     };
   }
 
+  private getSchemaOrderedFields(): Variable[] {
+    return Object.keys(this.definition.attributes).map((key) => this.definition.attributes[key]);
+  }
+
+  private getSchemaOrderedBelongsToFields(): OrderedSchemaFieldOrRelationship[] {
+    return Object.keys(this.definition.belongsTo)
+      .map((relationshipName) => {
+        const relationship = this.definition.belongsTo[relationshipName];
+        const variable = this.getBelongsToIdVariableForRelationship(relationshipName);
+        if (!relationship || !variable) {
+          return null;
+        }
+        return {
+          type: OrderedSchemaFieldType.BELONGS_TO,
+          object: relationship,
+          key: variable.name,
+          label: relationship.name || variable.label || variable.name,
+          variable
+        } as OrderedSchemaFieldOrRelationship;
+      })
+      .filter((value): value is OrderedSchemaFieldOrRelationship => !!value);
+  }
+
+  private getAlphabeticalOrderedFields(): OrderedSchemaFieldOrRelationship[] {
+    return _.sortBy(
+      this.getSchemaOrderedFields().map((attribute) => {
+        return {
+          type: OrderedSchemaFieldType.FIELD,
+          object: attribute,
+          key: attribute.name,
+          label: attribute.label || attribute.name
+        } as OrderedSchemaFieldOrRelationship;
+      }),
+      (item) => item.label.toLowerCase()
+    );
+  }
+
+  getOrderedFieldsAndRelationships(): OrderedSchemaFieldOrRelationship[] {
+    const orderedFields = this.getAlphabeticalOrderedFields();
+    const orderedBelongsTo = _.sortBy(this.getSchemaOrderedBelongsToFields(), (item) => item.label.toLowerCase());
+
+    switch (SchemaFieldOrderingPreference.getValue()) {
+      case SchemaFieldOrderValue.ALPHABETICAL:
+        return _.sortBy([...orderedFields, ...orderedBelongsTo], (item) => item.label.toLowerCase());
+      case SchemaFieldOrderValue.BELONGS_TO_FIRST:
+        return [...orderedBelongsTo, ...orderedFields];
+      case SchemaFieldOrderValue.BELONGS_TO_LAST:
+        return [...orderedFields, ...orderedBelongsTo];
+      case SchemaFieldOrderValue.AS_DEFINED_IN_SCHEMA:
+      default:
+        return [
+          ...this.getSchemaOrderedFields().map((attribute) => {
+            return {
+              type: OrderedSchemaFieldType.FIELD,
+              object: attribute,
+              key: attribute.name,
+              label: attribute.label || attribute.name
+            } as OrderedSchemaFieldOrRelationship;
+          }),
+          ...this.getSchemaOrderedBelongsToFields()
+        ];
+    }
+  }
+
   getFilterableFields(typeEngine: TypeEngine): FilterableField[] {
     return [
       ...(typeEngine.getHandler(idVariable.type)?.setupFilter
@@ -233,28 +318,23 @@ export class SchemaModelDefinition
             }
           ]
         : []),
-      ...Object.values(this.definition.belongsToIdVars)
-        .map((variable) => {
-          if (!variable?.name || !variable.relationship) {
-            return null;
+      ...this.getOrderedFieldsAndRelationships()
+        .map((entry) => {
+          if (entry.type === OrderedSchemaFieldType.BELONGS_TO) {
+            return {
+              key: entry.key,
+              label: entry.label,
+              group: 'Belongs to' as const
+            };
           }
-          const relationship = this.definition.belongsTo[variable.relationship];
-          return {
-            key: variable.name,
-            label: relationship?.name || variable.label || variable.name,
-            group: 'Belongs to' as const
-          };
-        })
-        .filter((value) => !!value),
-      ...Object.values(this.definition.attributes)
-        .map((attribute) => {
-          const handler = typeEngine.getHandler(attribute.type);
+
+          const handler = typeEngine.getHandler(entry.object.type);
           if (!handler?.setupFilter) {
             return null;
           }
           return {
-            key: attribute.name,
-            label: attribute.label || attribute.name,
+            key: entry.key,
+            label: entry.label,
             group: 'Fields' as const
           };
         })

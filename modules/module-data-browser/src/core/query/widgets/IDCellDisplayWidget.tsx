@@ -1,17 +1,30 @@
 import * as React from 'react';
-import { NotificationStore, NotificationType, TableButtonWidget, ioc, styled } from '@journeyapps-labs/reactor-mod';
+import { observer } from 'mobx-react';
+import {
+  BooleanSetting,
+  NotificationStore,
+  NotificationType,
+  PrefsStore,
+  TableButtonWidget,
+  ioc,
+  styled
+} from '@journeyapps-labs/reactor-mod';
 import { copyTextToClipboard } from '@journeyapps-labs/lib-reactor-utils';
+import { QueryControlPreferences } from '../../../preferences/QueryControlPreferences';
 
 export interface IDCellDisplayWidgetProps {
   id: string;
 }
 
-export const IDCellDisplayWidget: React.FC<IDCellDisplayWidgetProps> = (props) => {
+export const IDCellDisplayWidget: React.FC<IDCellDisplayWidgetProps> = observer((props) => {
   const notifications = ioc.get(NotificationStore);
+  const showIdValue = ioc
+    .get(PrefsStore)
+    .getPreference<BooleanSetting>(QueryControlPreferences.SHOW_ID_VALUE_IN_ID_COLUMN).checked;
 
   return (
     <S.Container>
-      <S.Value>{props.id}</S.Value>
+      {showIdValue ? <S.Value>{props.id}</S.Value> : null}
       <TableButtonWidget
         icon="copy"
         tooltip="Copy ID"
@@ -26,7 +39,7 @@ export const IDCellDisplayWidget: React.FC<IDCellDisplayWidgetProps> = (props) =
       />
     </S.Container>
   );
-};
+});
 
 namespace S {
   export const Container = styled.div`

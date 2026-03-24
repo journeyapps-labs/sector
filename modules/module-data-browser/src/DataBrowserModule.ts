@@ -25,6 +25,7 @@ import { SavedQueryEntityDefinition } from './entities/SavedQueryEntityDefinitio
 import { OpenSavedQueryAction } from './actions/saved-queries/OpenSavedQueryAction';
 import { RemoveSavedQueryAction } from './actions/saved-queries/RemoveSavedQueryAction';
 import { registerQueryControlPreferences } from './preferences/QueryControlPreferences';
+import { registerSchemaOrderingPreferences } from './preferences/SchemaOrderingPreferences';
 
 export class DataBrowserModule extends AbstractReactorModule {
   constructor() {
@@ -57,6 +58,7 @@ export class DataBrowserModule extends AbstractReactorModule {
     system.addStore(ConnectionStore, connectionStore);
     system.addStore(SavedQueryStore, new SavedQueryStore());
     registerQueryControlPreferences(ioc.get(PrefsStore));
+    registerSchemaOrderingPreferences(ioc.get(PrefsStore));
 
     system.registerDefinition(new ConnectionEntityDefinition());
     system.registerDefinition(new ConnectionFactoryEntityDefinition());
