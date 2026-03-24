@@ -15,18 +15,19 @@
   "license": "Apache-2.0",
   "scripts": {
     "build:module": "reactor build .",
+    "clean": "rm -rf dist-module",
     "watch:module": "pnpm build:module --watch"
   },
   "dependencies": {
     "@emotion/styled": "^11.14.1",
-    "@fortawesome/react-fontawesome": "^3.2.0",
+    "@fortawesome/react-fontawesome": "^3.3.0",
     "@journeyapps-labs/client-backend-v4": "1.0.0",
     "@journeyapps-labs/common-ioc": "^1.0.1",
     "@journeyapps-labs/common-sdk": "^1.0.3",
     "@journeyapps-labs/common-utils": "^1.0.1",
-    "@journeyapps-labs/lib-reactor-data-layer": "1.0.10",
-    "@journeyapps-labs/reactor-mod": "5.3.1",
-    "@journeyapps-labs/reactor-mod-editor": "2.2.1",
+    "@journeyapps-labs/lib-reactor-data-layer": "1.0.11",
+    "@journeyapps-labs/reactor-mod": "5.4.0",
+    "@journeyapps-labs/reactor-mod-editor": "2.2.2",
     "@journeyapps/db": "^8.1.1",
     "@journeyapps/parser-schema": "^8.2.5",
     "@projectstorm/react-workspaces-core": "4.2.3",
@@ -38,7 +39,7 @@
     "uuid": "^13.0.0"
   },
   "devDependencies": {
-    "@journeyapps-labs/lib-reactor-builder": "3.0.1",
+    "@journeyapps-labs/lib-reactor-builder": "3.0.2",
     "@types/async": "^3.2.25",
     "@types/lodash": "^4.17.24",
     "@types/react": "^19.2.14",

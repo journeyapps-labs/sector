@@ -3,9 +3,8 @@ import {
   EntityActionHandlerComponent,
   EntityDefinition,
   EntityDescriberComponent,
-  inject,
   InlineEntityEncoderComponent,
-  InlineTreePresenterComponent,
+  inject,
   SimpleParentEntitySearchEngine
 } from '@journeyapps-labs/reactor-mod';
 import { DataBrowserEntities } from '../entities';
@@ -14,6 +13,7 @@ import { AbstractConnection } from '../core/AbstractConnection';
 import { SchemaModelDefinition } from '../core/SchemaModelDefinition';
 import { QuerySchemaModelAction } from '../actions/schema-definitions/QuerySchemaModelAction';
 import { IndexModel } from '../core/IndexModel';
+import { SchemaModelTreePresenterComponent } from './SchemaModelTreePresenterComponent';
 
 export interface SchemaModelDefinitionEntityDefinitionEncoded {
   connection_id: string;
@@ -77,17 +77,7 @@ export class SchemaModelDefinitionEntityDefinition extends EntityDefinition<Sche
       })
     );
 
-    this.registerComponent(
-      new InlineTreePresenterComponent({
-        loadChildrenAsNodesAreOpened: true,
-        cacheTreeEntities: true,
-        augmentTreeNodeProps: () => {
-          return {
-            openOnSingleClick: false
-          };
-        }
-      })
-    );
+    this.registerComponent(new SchemaModelTreePresenterComponent({ loadChildrenAsNodesAreOpened: true }));
 
     this.registerComponent(
       new SimpleParentEntitySearchEngine<AbstractConnection, SchemaModelDefinition>({

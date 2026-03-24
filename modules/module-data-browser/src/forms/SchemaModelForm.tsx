@@ -7,6 +7,7 @@ import { DirtyWrapperInput } from './inputs/DirtyWrapperInput';
 import { TypeEngine, TypeHandler } from './TypeEngine';
 import { autorun, IReactionDisposer } from 'mobx';
 import { Variable } from '@journeyapps/db';
+import { OrderedSchemaFieldType } from '../core/SchemaModelDefinition';
 
 export interface SchemaModelFormOptions {
   definition: SchemaModelDefinition;
@@ -104,52 +105,56 @@ export class SchemaModelForm extends FormModel {
   constructor(protected options: SchemaModelFormOptions) {
     super();
     this.bindings = new Set<Binding>();
-    _.map(options.definition.definition.belongsTo, (relationship) => {
-      const definition = options.definition.connection.getSchemaModelDefinitionByName(relationship.foreignType.name);
-
-      let entity = new EntityInput({
-        name: relationship.name,
-        entityType: DataBrowserEntities.SCHEMA_MODEL_OBJECT,
-        parent: definition,
-        label: relationship.name,
-        value: null
-      });
-
-      return new Binding({
-        name: relationship.name,
-        model: this.options.object,
-        input: entity,
-        resolve: () => {
-          if (!options.object.data.belongs_to[relationship.name]) {
+    options.definition
+      .getOrderedFieldsAndRelationships()
+      .map((entry) => {
+        if (entry.type === OrderedSchemaFieldType.BELONGS_TO) {
+          const relationship = entry.object;
+          const definition = options.definition.connection.getSchemaModelDefinitionByName(
+            relationship.foreignType.name
+          );
+          if (!definition) {
             return null;
           }
-          return definition.resolve(options.object.data.belongs_to[relationship.name]);
+
+          const entity = new EntityInput({
+            name: relationship.name,
+            entityType: DataBrowserEntities.SCHEMA_MODEL_OBJECT,
+            parent: definition,
+            label: relationship.name,
+            value: null
+          });
+
+          return new Binding({
+            name: relationship.name,
+            model: this.options.object,
+            input: entity,
+            resolve: () => {
+              if (!options.object.data.belongs_to[relationship.name]) {
+                return null;
+              }
+              return definition.resolve(options.object.data.belongs_to[relationship.name]);
+            }
+          });
         }
-      });
-    })
-      .filter((f) => !!f)
-      .forEach((binding) => {
-        this.bindings.add(binding);
-        this.addInput(new DirtyWrapperInput(binding.input, options.object));
-      });
 
-    _.map(options.definition.definition.attributes, (attribute) => {
-      let field = this.typeEngine.getHandler(attribute.type)?.generateField({
-        name: attribute.name,
-        label: attribute.label,
-        type: attribute.type
-      });
-      if (!field) {
-        return;
-      }
+        const attribute = entry.object;
+        let field = this.typeEngine.getHandler(attribute.type)?.generateField({
+          name: attribute.name,
+          label: attribute.label,
+          type: attribute.type
+        });
+        if (!field) {
+          return null;
+        }
 
-      return new TypedBinding({
-        variable: attribute,
-        model: this.options.object,
-        input: field,
-        name: attribute.name
-      });
-    })
+        return new TypedBinding({
+          variable: attribute,
+          model: this.options.object,
+          input: field,
+          name: attribute.name
+        });
+      })
       .filter((binding) => !!binding)
       .forEach((binding) => {
         this.bindings.add(binding);

@@ -1,7 +1,6 @@
 import { Database, ObjectType } from '@journeyapps/db';
 import { Schema } from '@journeyapps/parser-schema';
 import { AbstractConnectionFactory } from './AbstractConnectionFactory';
-import * as _ from 'lodash';
 import { SchemaModelDefinition } from './SchemaModelDefinition';
 import { v4 } from 'uuid';
 import { BaseObserver } from '@journeyapps-labs/common-utils';
@@ -12,6 +11,8 @@ import { EntityDescription } from '@journeyapps-labs/reactor-mod';
 import { V4BackendClient, V4Index, V4Indexes } from '@journeyapps-labs/client-backend-v4';
 import { SchemaModelObject } from './SchemaModelObject';
 import { getDefaultConnectionColor } from './connection-colors';
+import { SchemaModelOrderValue, SchemaModelOrderingPreference } from '../preferences/SchemaOrderingPreferences';
+import * as _ from 'lodash';
 
 export interface AbstractConnectionSerialized {
   factory: string;
@@ -118,10 +119,18 @@ export abstract class AbstractConnection extends BaseObserver<AbstractConnection
     return connection.schema;
   }
 
+  protected getOrderedSchemaObjects(schema: Schema): ObjectType[] {
+    const objects = Object.keys(schema.objects).map((key) => schema.objects[key]);
+    if (SchemaModelOrderingPreference.getValue() === SchemaModelOrderValue.ALPHABETICAL) {
+      return _.sortBy(objects, (object) => (object.label || object.name || '').toLowerCase());
+    }
+    return objects;
+  }
+
   async reload() {
     await this.schema_models_collection.load(async () => {
       const schema = await this.getSchema();
-      return _.values(schema.objects);
+      return this.getOrderedSchemaObjects(schema);
     });
   }
 
@@ -156,7 +165,7 @@ export abstract class AbstractConnection extends BaseObserver<AbstractConnection
 
   protected async getSchemaModelDefinitions() {
     const schema = await this.getSchema();
-    return _.map(schema.objects, (o) => {
+    return this.getOrderedSchemaObjects(schema).map((o) => {
       return new SchemaModelDefinition({
         definition: o,
         connection: this

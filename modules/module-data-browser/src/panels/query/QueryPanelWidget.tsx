@@ -8,6 +8,7 @@ import { Page } from '../../core/query/Page';
 import { PageResultsWidget } from './PageResultsWidget';
 import { TableControlsWidget } from './TableControlsWidget';
 import { autorun } from 'mobx';
+import { TableControlsPositionPreference, TableControlsPositionValue } from '../../preferences/QueryControlPreferences';
 
 export interface QueryPanelWidgetProps {
   model: QueryPanelModel;
@@ -93,6 +94,21 @@ export const QueryPanelWidget: React.FC<QueryPanelWidgetProps> = observer((props
 
   const activePage =
     props.model.current_page_data || (props.model.query ? props.model.query.getPage(props.model.current_page) : null);
+  const controlsPosition = TableControlsPositionPreference.getValue();
+
+  const controls = (
+    <TableControlsWidget
+      query={props.model.query}
+      current_page={activePage}
+      loading={loading}
+      onLoadSavedQuery={async (id) => {
+        await props.model.loadSavedQuery(id);
+      }}
+      goToPage={(index) => {
+        props.model.current_page = index;
+      }}
+    />
+  );
 
   return (
     <LoadingPanelWidget loading={!props.model.query || !activePage}>
@@ -101,30 +117,16 @@ export const QueryPanelWidget: React.FC<QueryPanelWidgetProps> = observer((props
           <S.Container>
             <BorderLayoutWidget
               top={
-                <TableControlsWidget
-                  query={props.model.query}
-                  current_page={activePage}
-                  loading={loading}
-                  onLoadSavedQuery={async (id) => {
-                    await props.model.loadSavedQuery(id);
-                  }}
-                  goToPage={(index) => {
-                    props.model.current_page = index;
-                  }}
-                />
+                controlsPosition === TableControlsPositionValue.TOP ||
+                controlsPosition === TableControlsPositionValue.BOTH
+                  ? controls
+                  : null
               }
               bottom={
-                <TableControlsWidget
-                  query={props.model.query}
-                  current_page={activePage}
-                  loading={loading}
-                  onLoadSavedQuery={async (id) => {
-                    await props.model.loadSavedQuery(id);
-                  }}
-                  goToPage={(index) => {
-                    props.model.current_page = index;
-                  }}
-                />
+                controlsPosition === TableControlsPositionValue.BOTTOM ||
+                controlsPosition === TableControlsPositionValue.BOTH
+                  ? controls
+                  : null
               }
             >
               <PageResultsWidget

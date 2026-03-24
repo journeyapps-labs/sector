@@ -5,7 +5,6 @@
       "es2019"
     ],
     "module": "commonjs",
-    "moduleResolution": "node",
     "target": "es6",
     "strict": false,
     "declaration": true,
@@ -14,8 +13,7 @@
     "rootDir": "src",
     "skipLibCheck": true,
     "composite": true,
-    "incremental": true,
-    "baseUrl": "."
+    "incremental": true
   },
   "include": [
     "src/**/*.ts",
