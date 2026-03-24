@@ -7,20 +7,21 @@
   "license": "Apache-2.0",
   "scripts": {
     "build:module": "reactor build .",
+    "clean": "rm -rf dist-module",
     "watch:module": "pnpm build:module --watch"
   },
   "dependencies": {
     "@emotion/styled": "^11.14.1",
     "@journeyapps-labs/common-ioc": "^1.0.1",
     "@journeyapps-labs/common-utils": "^1.0.1",
-    "@journeyapps-labs/reactor-mod": "0.0.0-dev-20260324040739",
+    "@journeyapps-labs/reactor-mod": "5.4.0",
     "@journeyapps-labs/reactor-mod-data-browser": "workspace:^",
     "mobx": "^6.15.0",
     "react": "19.2.4",
     "uuid": "^13.0.0"
   },
   "devDependencies": {
-    "@journeyapps-labs/lib-reactor-builder": "0.0.0-dev-20260324040739",
+    "@journeyapps-labs/lib-reactor-builder": "3.0.2",
     "@types/uuid": "^11.0.0"
   }
 }

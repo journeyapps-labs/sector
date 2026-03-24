@@ -12,7 +12,7 @@
     "module": "es6",
     "target": "es2017",
     "sourceMap": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "strict": false,
     "composite": true
   }

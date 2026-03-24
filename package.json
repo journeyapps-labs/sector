@@ -2,14 +2,14 @@
   "name": "sector",
   "main": "index.js",
   "private": true,
-  "packageManager": "pnpm@10.32.1",
+  "packageManager": "pnpm@10.33.0",
   "scripts": {
     "build": "pnpm build:ts && pnpm build:modules",
     "build:modules": "pnpm run -r build:module",
     "build:prod": "NODE_ENV=production pnpm build",
     "build:ts": "./node_modules/.bin/tsc --build",
     "bump:reactor:dev": "./scripts/bump-reactor-dev.sh",
-    "clean": "pnpm -r clean && tsc --build --clean && rm -rf modules/*/dist && rm -rf libs/*/dist && rm -rf modules/*/dist-module",
+    "clean": "pnpm -r clean && tsc --build --clean",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx}\"",
     "ncu": "ncu -u && pnpm recursive exec -- ncu -u",
     "preinstall": "npx only-allow pnpm",
@@ -24,6 +24,6 @@
     "env-cmd": "^11.0.0",
     "npm-check-updates": "^19.6.5",
     "prettier": "3.8.1",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.2"
   }
 }
