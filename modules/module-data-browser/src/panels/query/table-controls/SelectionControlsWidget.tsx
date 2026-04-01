@@ -10,7 +10,7 @@ import {
 
 export interface SelectionControlsWidgetProps {
   selectedCount: number;
-  onDeleteSelected: () => Promise<any> | any;
+  onDeleteSelected: () => Promise<void>;
 }
 
 export const SelectionControlsWidget: React.FC<SelectionControlsWidgetProps> = (props) => {

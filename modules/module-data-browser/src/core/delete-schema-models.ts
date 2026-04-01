@@ -17,6 +17,13 @@ export interface DeleteSchemaModelsOptions {
   sourcePanel?: ReactorPanelModel;
 }
 
+const normalizeModels = (models: SchemaModelObject[]) => {
+  return _.uniqBy(
+    models.filter((model) => model?.model?.persisted),
+    (model) => model.id
+  );
+};
+
 const getErrorMessage = (error: unknown) => {
   if (error instanceof CrudError) {
     return error.firstError()?.detail || error.message;
@@ -37,11 +44,8 @@ const buildDeleteMarkdown = (models: SchemaModelObject[]) => {
   return `Delete **${models.length}** models?\n\nThis action cannot be undone.`;
 };
 
-export const deleteSchemaModels = async (options: DeleteSchemaModelsOptions): Promise<boolean> => {
-  const models = _.uniqBy(
-    options.models.filter((model) => model?.model?.persisted),
-    (model) => model.id
-  );
+export const runDeleteSchemaModels = async (options: DeleteSchemaModelsOptions): Promise<boolean> => {
+  const models = normalizeModels(options.models);
 
   if (models.length === 0) {
     return false;
@@ -55,19 +59,6 @@ export const deleteSchemaModels = async (options: DeleteSchemaModelsOptions): Pr
       description: 'Selected models must come from the same connection.',
       type: NotificationType.ERROR
     });
-    return false;
-  }
-
-  const confirmed = await ioc.get(DialogStore).showConfirmDialog({
-    title: models.length === 1 ? 'Delete model' : 'Delete selected models',
-    markdown: buildDeleteMarkdown(models),
-    yesBtn: {
-      label: models.length === 1 ? 'Delete model' : `Delete ${models.length} models`,
-      icon: 'trash'
-    }
-  });
-
-  if (!confirmed) {
     return false;
   }
 
@@ -111,4 +102,30 @@ export const deleteSchemaModels = async (options: DeleteSchemaModelsOptions): Pr
     });
     return false;
   }
+};
+
+export const deleteSchemaModels = async (options: DeleteSchemaModelsOptions): Promise<boolean> => {
+  const models = normalizeModels(options.models);
+
+  if (models.length <= 1) {
+    return false;
+  }
+
+  const confirmed = await ioc.get(DialogStore).showConfirmDialog({
+    title: 'Delete selected models',
+    markdown: buildDeleteMarkdown(models),
+    yesBtn: {
+      label: `Delete ${models.length} models`,
+      icon: 'trash'
+    }
+  });
+
+  if (!confirmed) {
+    return false;
+  }
+
+  return runDeleteSchemaModels({
+    ...options,
+    models
+  });
 };

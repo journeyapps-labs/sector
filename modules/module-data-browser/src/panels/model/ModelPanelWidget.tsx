@@ -16,7 +16,7 @@ import {
 } from '@journeyapps-labs/reactor-mod';
 import { SchemaModelForm } from '../../forms/SchemaModelForm';
 import { ModelPanelModel } from './ModelPanelFactory';
-import { deleteSchemaModels } from '../../core/delete-schema-models';
+import { DeleteSchemaModelAction } from '../../actions/schema-model/DeleteSchemaModelAction';
 
 export interface QueryPanelWidgetProps {
   model: ModelPanelModel;
@@ -59,17 +59,14 @@ export const ModelPanelWidget: React.FC<QueryPanelWidgetProps> = observer((props
   if (props.model.model) {
     const toolbarButtons: Btn[] = props.model.model.model?.persisted
       ? [
-          {
-            label: 'Delete object',
-            icon: 'trash',
-            action: async () => {
-              await deleteSchemaModels({
-                models: [props.model.model],
-                sourcePanel: props.model
-              });
-            }
-          }
-        ]
+          DeleteSchemaModelAction.get().representAsButton(
+            {
+              targetEntity: props.model.model,
+              sourcePanel: props.model
+            },
+            true
+          )
+        ].filter((button): button is Btn => !!button)
       : [];
 
     top = (

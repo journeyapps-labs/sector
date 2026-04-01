@@ -1,9 +1,20 @@
-import { ActionStore, EntityAction, EntityActionEvent, ioc } from '@journeyapps-labs/reactor-mod';
+import {
+  ActionStore,
+  EntityAction,
+  EntityActionEvent,
+  ioc,
+  setupDeleteConfirmation
+} from '@journeyapps-labs/reactor-mod';
 import { DataBrowserEntities } from '../../entities';
 import { SchemaModelObject } from '../../core/SchemaModelObject';
-import { deleteSchemaModels } from '../../core/delete-schema-models';
+import { runDeleteSchemaModels } from '../../core/delete-schema-models';
+import { ModelPanelModel } from '../../panels/model/ModelPanelFactory';
 
-export class DeleteSchemaModelAction extends EntityAction<SchemaModelObject> {
+export interface DeleteSchemaModelActionEvent extends EntityActionEvent<SchemaModelObject> {
+  sourcePanel?: ModelPanelModel;
+}
+
+export class DeleteSchemaModelAction extends EntityAction<SchemaModelObject, DeleteSchemaModelActionEvent> {
   static ID = 'DELETE_SCHEMA_MODEL';
 
   constructor() {
@@ -13,11 +24,16 @@ export class DeleteSchemaModelAction extends EntityAction<SchemaModelObject> {
       icon: 'trash',
       target: DataBrowserEntities.SCHEMA_MODEL_OBJECT
     });
+
+    setupDeleteConfirmation({
+      action: this
+    });
   }
 
-  async fireEvent(event: EntityActionEvent<SchemaModelObject>): Promise<any> {
-    await deleteSchemaModels({
-      models: [event.targetEntity]
+  async fireEvent(event: DeleteSchemaModelActionEvent): Promise<any> {
+    await runDeleteSchemaModels({
+      models: [event.targetEntity],
+      sourcePanel: event.sourcePanel
     });
   }
 

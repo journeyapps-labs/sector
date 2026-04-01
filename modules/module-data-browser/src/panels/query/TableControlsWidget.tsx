@@ -22,7 +22,7 @@ export interface TableControlsWidgetProps {
   onLoadSavedQuery?: (id: string) => Promise<any> | any;
   loading?: boolean;
   selectedCount: number;
-  onDeleteSelected: () => Promise<any> | any;
+  onDeleteSelected: () => Promise<void>;
 }
 
 export const TableControlsWidget: React.FC<TableControlsWidgetProps> = observer((props) => {
