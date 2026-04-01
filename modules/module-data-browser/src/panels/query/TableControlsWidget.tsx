@@ -12,6 +12,7 @@ import { SortControlsWidget } from './table-controls/SortControlsWidget';
 import { ChangesControlsWidget } from './table-controls/ChangesControlsWidget';
 import { FilterControlsWidget } from './table-controls/FilterControlsWidget';
 import { QueryControlPreferences } from '../../preferences/QueryControlPreferences';
+import { SelectionControlsWidget } from './table-controls/SelectionControlsWidget';
 
 export interface TableControlsWidgetProps {
   current_page: Page;
@@ -20,6 +21,8 @@ export interface TableControlsWidgetProps {
   query: AbstractQuery;
   onLoadSavedQuery?: (id: string) => Promise<any> | any;
   loading?: boolean;
+  selectedCount: number;
+  onDeleteSelected: () => Promise<any> | any;
 }
 
 export const TableControlsWidget: React.FC<TableControlsWidgetProps> = observer((props) => {
@@ -52,6 +55,7 @@ export const TableControlsWidget: React.FC<TableControlsWidgetProps> = observer(
       {simpleQuery && showSortControls ? (
         <SortControlsWidget simpleQuery={simpleQuery} goToPage={props.goToPage} />
       ) : null}
+      <SelectionControlsWidget selectedCount={props.selectedCount} onDeleteSelected={props.onDeleteSelected} />
       <ChangesControlsWidget query={props.query} currentPage={props.current_page} />
       {props.loading ? <S.Loading icon="spinner" spin={true} /> : null}
     </S.Container>

@@ -13,6 +13,7 @@ import { SchemaModelObject } from '../core/SchemaModelObject';
 import { SchemaModelDefinition } from '../core/SchemaModelDefinition';
 import { validate as validateUUID } from 'uuid';
 import { ViewHasManyAction } from '../actions/schema-model/ViewHasManyAction';
+import { DeleteSchemaModelAction } from '../actions/schema-model/DeleteSchemaModelAction';
 
 export interface SchemaModelObjectEntityDefinitionEncoded {
   connection_id: string;
@@ -98,6 +99,9 @@ export class SchemaModelObjectEntityDefinition extends EntityDefinition<SchemaMo
   }
 
   isActionAllowedForEntity(action: Action, entity: SchemaModelObject) {
+    if (action.id === DeleteSchemaModelAction.ID) {
+      return !!entity.model?.persisted;
+    }
     if (action.id === ViewHasManyAction.ID) {
       return Object.keys(entity.definition.definition.hasMany || {}).length > 0;
     }

@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import styled from '@emotion/styled';
 import {
   BorderLayoutWidget,
+  Btn,
   ioc,
   LoadingPanelWidget,
   PANEL_CONTENT_PADDING,
@@ -15,6 +16,7 @@ import {
 } from '@journeyapps-labs/reactor-mod';
 import { SchemaModelForm } from '../../forms/SchemaModelForm';
 import { ModelPanelModel } from './ModelPanelFactory';
+import { deleteSchemaModels } from '../../core/delete-schema-models';
 
 export interface QueryPanelWidgetProps {
   model: ModelPanelModel;
@@ -55,16 +57,24 @@ export const ModelPanelWidget: React.FC<QueryPanelWidgetProps> = observer((props
 
   let top = null;
   if (props.model.model) {
+    const toolbarButtons: Btn[] = props.model.model.model?.persisted
+      ? [
+          {
+            label: 'Delete object',
+            icon: 'trash',
+            action: async () => {
+              await deleteSchemaModels({
+                models: [props.model.model],
+                sourcePanel: props.model
+              });
+            }
+          }
+        ]
+      : [];
+
     top = (
       <PanelToolbarWidget
-        btns={
-          [
-            // {
-            //   label: 'Delete object',
-            //   action: () => {}
-            // }
-          ]
-        }
+        btns={toolbarButtons}
         meta={[
           {
             label: 'ID',

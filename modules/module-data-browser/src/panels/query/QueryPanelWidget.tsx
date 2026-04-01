@@ -9,6 +9,7 @@ import { PageResultsWidget } from './PageResultsWidget';
 import { TableControlsWidget } from './TableControlsWidget';
 import { autorun } from 'mobx';
 import { TableControlsPositionPreference, TableControlsPositionValue } from '../../preferences/QueryControlPreferences';
+import { deleteSchemaModels } from '../../core/delete-schema-models';
 
 export interface QueryPanelWidgetProps {
   model: QueryPanelModel;
@@ -101,6 +102,12 @@ export const QueryPanelWidget: React.FC<QueryPanelWidgetProps> = observer((props
       query={props.model.query}
       current_page={activePage}
       loading={loading}
+      selectedCount={props.model.selected_models.length}
+      onDeleteSelected={async () => {
+        await deleteSchemaModels({
+          models: props.model.selected_models
+        });
+      }}
       onLoadSavedQuery={async (id) => {
         await props.model.loadSavedQuery(id);
       }}
@@ -132,6 +139,13 @@ export const QueryPanelWidget: React.FC<QueryPanelWidgetProps> = observer((props
               <PageResultsWidget
                 query={props.model.query}
                 page={activePage}
+                selectedModels={props.model.selected_models}
+                onSelectionChange={(event) => {
+                  props.model.mergeSelectionForPage({
+                    page: activePage,
+                    models: event.rows.map((row) => row.model)
+                  });
+                }}
                 scrollTop={props.model.table_scroll_top}
                 scrollLeft={props.model.table_scroll_left}
                 onScroll={({ top, left }) => {

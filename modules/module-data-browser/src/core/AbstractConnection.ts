@@ -94,6 +94,27 @@ export abstract class AbstractConnection extends BaseObserver<AbstractConnection
     }
   }
 
+  async batchDelete(models: SchemaModelObject[]) {
+    if (models.length === 0) {
+      return;
+    }
+    const database = await this.getConnection();
+    let batch = new database.Batch();
+    for (let model of models) {
+      if (!model?.model?.persisted) {
+        continue;
+      }
+      batch.destroy(model.model);
+    }
+    await batch.execute();
+    for (let model of models) {
+      if (!model?.model?.persisted) {
+        continue;
+      }
+      model.definition.cache.delete(model.id);
+    }
+  }
+
   getSchemaModelDefinitionByName(name: string) {
     return this.schema_models.items.find((i) => i.definition.name === name);
   }
