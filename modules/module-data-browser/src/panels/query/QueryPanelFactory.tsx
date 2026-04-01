@@ -10,6 +10,9 @@ import { SavedQueryStore } from '../../stores/SavedQueryStore';
 import { AbstractConnection } from '../../core/AbstractConnection';
 import { SharedConnectionPanelFactory } from '../_shared/SharedConnectionPanelFactory';
 import { Page } from '../../core/query/Page';
+import { SchemaModelObject } from '../../core/SchemaModelObject';
+import { action } from 'mobx';
+import * as _ from 'lodash';
 
 export class QueryPanelModel extends ReactorPanelModel {
   @inject(ConnectionStore)
@@ -24,6 +27,9 @@ export class QueryPanelModel extends ReactorPanelModel {
   @observable.ref
   accessor current_page_data: Page | null;
 
+  @observable.ref
+  accessor selected_models: SchemaModelObject[];
+
   accessor table_scroll_top: number;
   accessor table_scroll_left: number;
 
@@ -33,8 +39,24 @@ export class QueryPanelModel extends ReactorPanelModel {
     this.query = query;
     this.current_page = 0;
     this.current_page_data = null;
+    this.selected_models = [];
     this.table_scroll_top = 0;
     this.table_scroll_left = 0;
+  }
+
+  @action clearSelection() {
+    this.selected_models = [];
+  }
+
+  @action mergeSelectionForPage(event: { page: Page; models: SchemaModelObject[] }) {
+    const pageRowKeys = new Set(event.page.asRows().map((row) => row.key));
+    const nextSelectedModels = this.selected_models.filter((model) => !pageRowKeys.has(model.id));
+    this.selected_models = _.uniqBy([...nextSelectedModels, ...event.models], (model) => model.id);
+  }
+
+  @action async reloadQuery() {
+    this.clearSelection();
+    await this.query.load();
   }
 
   isSerializable() {
@@ -71,6 +93,7 @@ export class QueryPanelModel extends ReactorPanelModel {
     }
     this.current_page = 0;
     this.current_page_data = null;
+    this.clearSelection();
     this.query = query;
     await query.load();
   }

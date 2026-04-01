@@ -1,15 +1,27 @@
 import * as React from 'react';
 import { useEffect, useRef } from 'react';
-import { Page } from '../../core/query/Page';
-import { themed, ioc, ScrollableDivCss, System, TableWidget, LoadingPanelWidget } from '@journeyapps-labs/reactor-mod';
+import { Page, PageRow } from '../../core/query/Page';
+import {
+  ComboBoxItem,
+  themed,
+  ioc,
+  ScrollableDivCss,
+  System,
+  MultiSelectChangeEvent,
+  MultiSelectTableWidget,
+  LoadingPanelWidget
+} from '@journeyapps-labs/reactor-mod';
 import { AbstractQuery } from '../../core/query/AbstractQuery';
 import { observer } from 'mobx-react';
 import { DataBrowserEntities } from '../../entities';
 import { SchemaModelObject } from '../../core/SchemaModelObject';
+import { deleteSchemaModels } from '../../core/delete-schema-models';
 
 export interface PageResultsWidgetProps {
   page: Page;
   query: AbstractQuery;
+  selectedModels: SchemaModelObject[];
+  onSelectionChange: (event: MultiSelectChangeEvent<PageRow>) => void;
   scrollTop: number;
   scrollLeft: number;
   onScroll: (offsets: { top: number; left: number }) => void;
@@ -18,7 +30,34 @@ export interface PageResultsWidgetProps {
 export const PageResultsWidget: React.FC<PageResultsWidgetProps> = observer((props) => {
   const system = ioc.get(System);
   const rows = props.page.loading ? [] : props.page.asRows();
+  const selectedRowKeys = props.selectedModels.map((model) => model.id);
   const ref = useRef<HTMLDivElement>(null);
+
+  const showContextMenu = (event: React.MouseEvent, row: PageRow) => {
+    const definition = system.getDefinition<SchemaModelObject>(DataBrowserEntities.SCHEMA_MODEL_OBJECT);
+    const isSelectedRow = props.selectedModels.some((model) => model.id === row.model.id);
+
+    const selectedItems: ComboBoxItem[] =
+      isSelectedRow && props.selectedModels.length > 1
+        ? [
+            {
+              key: 'delete-selected',
+              title: `Delete selected [${props.selectedModels.length}]`,
+              group: 'Selected',
+              icon: 'trash',
+              action: async () => {
+                await deleteSchemaModels({
+                  models: props.selectedModels
+                });
+              }
+            }
+          ]
+        : [];
+
+    definition.showContextMenuForEntity(row.model, event, {
+      additionalItems: selectedItems
+    } as any);
+  };
 
   useEffect(() => {
     if (!ref.current) {
@@ -43,12 +82,10 @@ export const PageResultsWidget: React.FC<PageResultsWidgetProps> = observer((pro
         });
       }}
     >
-      <TableWidget
-        onContextMenu={(event, row) => {
-          system
-            .getDefinition<SchemaModelObject>(DataBrowserEntities.SCHEMA_MODEL_OBJECT)
-            .showContextMenuForEntity(row.model, event);
-        }}
+      <MultiSelectTableWidget
+        onContextMenu={showContextMenu}
+        selectedRowKeys={selectedRowKeys}
+        onSelectionChange={props.onSelectionChange}
         rows={rows}
         columns={props.query.getColumns()}
       />

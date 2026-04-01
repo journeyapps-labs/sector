@@ -112,7 +112,6 @@ export const buildSimpleQueryColumns = (options: BuildSimpleQueryColumnsOptions)
               />
             ),
             noWrap: true,
-            shrink: true,
             accessor: (cell, row: PageRow) => {
               return (
                 <SmartBelongsToDisplayWidget
@@ -160,7 +159,6 @@ export const buildSimpleQueryColumns = (options: BuildSimpleQueryColumnsOptions)
             />
           ),
           noWrap: true,
-          shrink: true,
           accessor: (cell, row: PageRow) => {
             return <SmartCellDisplayWidget name={attribute.name} row={row} />;
           }
