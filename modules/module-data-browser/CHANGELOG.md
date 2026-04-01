@@ -1,5 +1,15 @@
 # @journeyapps-labs/reactor-mod-data-browser
 
+## 3.6.0
+
+### Minor Changes
+
+- 25ca8e5: Add schema model delete workflows to the data browser.
+  - Add a delete action for individual schema model records.
+  - Add batch delete for multi-selected query rows.
+  - Add query table selection controls and selected-row context menu actions for batch operations.
+  - Close open model panels and refresh query views after records are deleted.
+
 ## 3.5.0
 
 ### Minor Changes
