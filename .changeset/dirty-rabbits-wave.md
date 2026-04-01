@@ -1,3 +1,4 @@
+---
 '@journeyapps-labs/reactor-mod-data-browser': minor
 ---
 
