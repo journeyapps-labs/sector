@@ -20,7 +20,7 @@ export class CreateModelAction extends EntityAction<SchemaModelDefinition> {
     super({
       id: CreateModelAction.ID,
       name: 'Create schema model',
-      icon: 'search',
+      icon: 'plus',
       target: DataBrowserEntities.SCHEMA_MODEL_DEFINITION
     });
   }

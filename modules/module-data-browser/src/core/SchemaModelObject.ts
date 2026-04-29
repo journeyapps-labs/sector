@@ -1,6 +1,7 @@
 import { ApiObjectData, DatabaseAdapter, DatabaseObject } from '@journeyapps/db';
 import { SchemaModelDefinition } from './SchemaModelDefinition';
-import { action, observable } from 'mobx';
+import { action, observable, runInAction } from 'mobx';
+import { inject, NotificationStore, NotificationType, VisorStore } from '@journeyapps-labs/reactor-mod';
 
 export interface SchemaModelObjectOptions {
   definition: SchemaModelDefinition;
@@ -9,6 +10,12 @@ export interface SchemaModelObjectOptions {
 }
 
 export class SchemaModelObject {
+  @inject(VisorStore)
+  accessor visorStore: VisorStore;
+
+  @inject(NotificationStore)
+  accessor notificationStore: NotificationStore;
+
   @observable
   accessor data: ApiObjectData;
 
@@ -31,30 +38,42 @@ export class SchemaModelObject {
   async applyPatches() {
     if (!this.model) {
       const collection = await this.definition.getCollection();
-      this.model = collection.create();
+      runInAction(() => {
+        this.model = collection.create();
+      });
     }
     for (let entry of this.patch.entries()) {
       if (this.definition.definition.belongsTo[entry[0]]) {
-        this.model[entry[0]](entry[1].model);
+        this.model[entry[0]](entry[1]?.model || null);
       } else {
         this.model[entry[0]] = entry[1];
       }
     }
-    this.patch.clear();
+    this.clearEdits();
   }
 
   async save() {
-    await this.definition.connection.batchSave([this]);
+    await this.visorStore.wrap(`Saving ${this.definition.definition.label}`, async () => {
+      await this.definition.connection.batchSave([this]);
+    });
+    this.notificationStore.showNotification({
+      title: 'Model updated',
+      description: `${this.definition.definition.label} was updated`,
+      type: NotificationType.SUCCESS
+    });
   }
 
+  @action
   clearEdits() {
     this.patch.clear();
   }
 
+  @action
   revert(field: string) {
     this.patch.delete(field);
   }
 
+  @action
   set(field: string, value: any) {
     if (this.model?.[field] === value) {
       this.patch.delete(field);
@@ -72,7 +91,11 @@ export class SchemaModelObject {
   }
 
   async reload() {
-    await this.definition.load(this.id);
+    const model = await this.definition.load(this.id);
+    if (model && model !== this) {
+      this.setData(model.data);
+      this.definition.cache.set(this.id, this);
+    }
   }
 
   get definition(): SchemaModelDefinition {
@@ -80,6 +103,6 @@ export class SchemaModelObject {
   }
 
   get id() {
-    return this.data.id;
+    return this.data?.id;
   }
 }

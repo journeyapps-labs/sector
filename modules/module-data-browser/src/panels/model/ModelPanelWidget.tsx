@@ -42,7 +42,7 @@ export const ModelPanelWidget: React.FC<QueryPanelWidgetProps> = observer((props
   const _theme = ioc.get(ThemeStore).getCurrentTheme(theme);
 
   useEffect(() => {
-    if (!props.model.definition) {
+    if (!props.model.definition || !props.model.model) {
       return;
     }
     let _form = new SchemaModelForm({
@@ -95,8 +95,8 @@ export const ModelPanelWidget: React.FC<QueryPanelWidgetProps> = observer((props
                   label="Save"
                   icon="save"
                   iconColor={_theme.status.success}
-                  action={() => {
-                    props.model.model.save();
+                  action={async () => {
+                    await props.model.model.save();
                   }}
                 />
                 <PanelButtonWidget

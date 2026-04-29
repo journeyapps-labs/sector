@@ -1,5 +1,13 @@
 import * as React from 'react';
-import { BooleanSetting, IconWidget, ioc, PrefsStore, styled } from '@journeyapps-labs/reactor-mod';
+import {
+  BooleanSetting,
+  IconWidget,
+  ioc,
+  PanelButtonMode,
+  PanelButtonWidget,
+  PrefsStore,
+  styled
+} from '@journeyapps-labs/reactor-mod';
 import { AbstractQuery } from '../../core/query/AbstractQuery';
 import { observer } from 'mobx-react';
 import * as _ from 'lodash';
@@ -13,6 +21,7 @@ import { ChangesControlsWidget } from './table-controls/ChangesControlsWidget';
 import { FilterControlsWidget } from './table-controls/FilterControlsWidget';
 import { QueryControlPreferences } from '../../preferences/QueryControlPreferences';
 import { SelectionControlsWidget } from './table-controls/SelectionControlsWidget';
+import { CreateModelAction } from '../../actions/schema-definitions/CreateModelAction';
 
 export interface TableControlsWidgetProps {
   current_page: Page;
@@ -39,9 +48,20 @@ export const TableControlsWidget: React.FC<TableControlsWidgetProps> = observer(
   const showFilterControls = prefsStore.getPreference<BooleanSetting>(
     QueryControlPreferences.SHOW_FILTER_CONTROLS
   ).checked;
+  const createModelButton = simpleQuery?.options.definition
+    ? CreateModelAction.get().renderAsButton(
+        (btn) => {
+          return <PanelButtonWidget {...btn} label="Create model" mode={PanelButtonMode.PRIMARY} />;
+        },
+        {
+          targetEntity: simpleQuery.options.definition
+        }
+      )
+    : null;
 
   return (
     <S.Container className={props.className}>
+      {createModelButton}
       <PageControlsWidget query={props.query} currentPage={props.current_page} goToPage={props.goToPage} />
       <QueryControlsWidget
         query={props.query}
@@ -69,7 +89,7 @@ namespace S {
     column-gap: 20px;
     row-gap: 20px;
     padding: 5px 5px;
-    align-items: center;
+    align-items: flex-end;
     flex-wrap: wrap;
   `;
 

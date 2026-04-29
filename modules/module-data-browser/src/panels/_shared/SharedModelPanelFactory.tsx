@@ -36,8 +36,10 @@ export class SharedModelPanelModel extends ReactorPanelModel {
   }
 
   async decodeEntities(data: ReturnType<this['encodeEntities']>) {
-    this.definition = data.definition;
-    this.model = data.model || (await data.definition.generateNewModelObject());
+    const definition = data.definition;
+    const model = definition ? data.model || (await definition.generateNewModelObject()) : null;
+    this.definition = definition;
+    this.model = model;
   }
 }
 

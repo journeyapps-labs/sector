@@ -90,7 +90,8 @@ export abstract class AbstractConnection extends BaseObserver<AbstractConnection
     }
     await batch.execute();
     for (let model of models) {
-      model.reload();
+      await model.reload();
+      model.clearEdits();
     }
   }
 

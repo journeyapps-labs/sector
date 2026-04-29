@@ -21,6 +21,9 @@ export interface PageControlsWidgetProps {
 export const PageControlsWidget: React.FC<PageControlsWidgetProps> = observer((props) => {
   const hasCurrentPage = !!props.currentPage;
   const currentPageIndex = props.currentPage?.index ?? 0;
+  const totalPages = props.query.totalPages;
+  const totalPagesLoading = totalPages === 0 && !!props.currentPage?.loading;
+  const canGoNext = hasCurrentPage && totalPages > currentPageIndex + 1;
 
   return (
     <InputContainerWidget label="Page">
@@ -36,7 +39,7 @@ export const PageControlsWidget: React.FC<PageControlsWidgetProps> = observer((p
           }}
         />
         <PanelButtonWidget
-          disabled={!hasCurrentPage || props.query.totalPages === currentPageIndex + 1}
+          disabled={!canGoNext}
           label="Next"
           action={() => {
             if (!hasCurrentPage) {
@@ -47,20 +50,19 @@ export const PageControlsWidget: React.FC<PageControlsWidgetProps> = observer((p
         />
         <S.PageSelector>
           <PanelDropdownWidget
+            disabled={totalPages === 0}
             onChange={({ key }) => {
               props.goToPage?.(parseInt(key));
             }}
             selected={`${currentPageIndex}`}
-            items={_.range(0, props.query.totalPages).map((r) => {
+            items={_.range(0, totalPages).map((r) => {
               return {
                 title: `${r + 1}`,
                 key: `${r}`
               } as ComboBoxItem;
             })}
           />
-          <S.TotalPages>
-            / {props.query.totalPages === 0 ? <S.Spinner icon="spinner" spin={true} /> : props.query.totalPages}
-          </S.TotalPages>
+          <S.TotalPages>/ {totalPagesLoading ? <S.Spinner icon="spinner" spin={true} /> : totalPages}</S.TotalPages>
         </S.PageSelector>
       </S.Group>
     </InputContainerWidget>
