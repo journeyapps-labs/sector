@@ -110,7 +110,6 @@ export class SchemaModelForm extends FormModel {
       .map((entry) => {
         if (entry.type === OrderedSchemaFieldType.BELONGS_TO) {
           const relationship = entry.object;
-          const idVariable = options.definition.getBelongsToIdVariableForRelationship(relationship.name);
           const definition = options.definition.connection.getSchemaModelDefinitionByName(
             relationship.foreignType.name
           );
@@ -131,14 +130,11 @@ export class SchemaModelForm extends FormModel {
             model: this.options.object,
             input: entity,
             resolve: () => {
-              if (idVariable && options.object?.model) {
-                const objectId = options.object.model[idVariable.name];
-                return objectId ? definition.resolve(objectId) : null;
-              }
-              if (!options.object?.data?.belongs_to?.[relationship.name]) {
+              const objectId = options.object?.getBelongsToId(relationship.name);
+              if (!objectId) {
                 return null;
               }
-              return definition.resolve(options.object.data.belongs_to[relationship.name]);
+              return definition.resolve(objectId);
             }
           });
         }

@@ -82,6 +82,17 @@ export class SchemaModelObject {
     }
   }
 
+  getBelongsToId(relationshipName: string): string | null {
+    const idVariable = this.definition.getBelongsToIdVariableForRelationship(relationshipName);
+    if (idVariable && this.model?.[idVariable.name]) {
+      return this.model[idVariable.name];
+    }
+    if (this.data?.belongs_to?.[relationshipName]) {
+      return this.data.belongs_to[relationshipName];
+    }
+    return null;
+  }
+
   @action setData(data: ApiObjectData) {
     this.data = data;
     this.model = new DatabaseObject(this.options.adapter, this.definition.definition, data.id);
