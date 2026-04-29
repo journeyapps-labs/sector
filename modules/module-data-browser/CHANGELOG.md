@@ -1,5 +1,11 @@
 # @journeyapps-labs/reactor-mod-data-browser
 
+## 3.6.2
+
+### Patch Changes
+
+- cc44c87: small refactor
+
 ## 3.6.1
 
 ### Patch Changes
