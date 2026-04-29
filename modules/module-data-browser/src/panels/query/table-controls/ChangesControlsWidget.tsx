@@ -36,7 +36,7 @@ export const ChangesControlsWidget: React.FC<ChangesControlsWidgetProps> = obser
           icon="save"
           iconColor={_theme.status.success}
           action={async () => {
-            props.query.batchSave();
+            await props.query.batchSave();
           }}
         />
         <PanelButtonWidget

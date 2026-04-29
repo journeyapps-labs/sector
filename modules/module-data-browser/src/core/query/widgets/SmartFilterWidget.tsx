@@ -73,7 +73,7 @@ export const SmartFilterWidget: React.FC<SmartFilterWidgetProps> = (props) => {
       active={isActive}
       {...setupTooltipProps({
         tooltip: getFilterTooltip(props.filter),
-        tooltipPos: TooltipPosition.BOTTOM
+        tooltipPos: TooltipPosition.BOTTOM_RIGHT
       })}
       onClick={async (event) => {
         const filter = await props.setupFilter({

@@ -81,7 +81,7 @@ export class TypedBinding extends Binding {
     super({
       ...options,
       resolve: async () => {
-        return options.model?.model[options.name];
+        return options.model?.model?.[options.name];
       }
     });
     this.handler = this.typeEngine.getHandler(options.variable.type);
@@ -130,7 +130,7 @@ export class SchemaModelForm extends FormModel {
             model: this.options.object,
             input: entity,
             resolve: () => {
-              if (!options.object.data.belongs_to[relationship.name]) {
+              if (!options.object?.data?.belongs_to?.[relationship.name]) {
                 return null;
               }
               return definition.resolve(options.object.data.belongs_to[relationship.name]);
