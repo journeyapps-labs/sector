@@ -85,7 +85,7 @@ export abstract class AbstractConnection extends BaseObserver<AbstractConnection
     const database = await this.getConnection();
     let batch = new database.Batch();
     for (let model of models) {
-      await model.applyPatches({ clearPatches: false });
+      await model.applyPatches();
       batch.save(model.model);
     }
     await batch.execute();

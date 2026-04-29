@@ -6,13 +6,11 @@ import { SchemaModelObject } from './SchemaModelObject';
 import { LifecycleModel } from '@journeyapps-labs/lib-reactor-data-layer';
 import { BaseObserver } from '@journeyapps-labs/common-utils';
 import { queue, QueueObject } from 'async';
-import { v4 } from 'uuid';
-import { V4Index } from '@journeyapps-labs/client-backend-v4';
-import { action, observable } from 'mobx';
+import { observable } from 'mobx';
 import { IndexModel } from './IndexModel';
 import { TypeEngine } from '../forms/TypeEngine';
-import { STANDARD_MODEL_FIELD_LABELS, StandardModelFields, idVariable } from './query/StandardModelFields';
-import { SchemaFieldOrderValue, SchemaFieldOrderingPreference } from '../preferences/SchemaOrderingPreferences';
+import { idVariable, STANDARD_MODEL_FIELD_LABELS, StandardModelFields } from './query/StandardModelFields';
+import { SchemaFieldOrderingPreference, SchemaFieldOrderValue } from '../preferences/SchemaOrderingPreferences';
 
 export interface SchemaModelDefinitionListener {
   resolved: (event: { object: SchemaModelObject }) => any;

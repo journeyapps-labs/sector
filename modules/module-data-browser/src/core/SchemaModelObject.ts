@@ -1,6 +1,6 @@
 import { ApiObjectData, DatabaseAdapter, DatabaseObject } from '@journeyapps/db';
 import { SchemaModelDefinition } from './SchemaModelDefinition';
-import { action, observable } from 'mobx';
+import { action, observable, runInAction } from 'mobx';
 import { inject, NotificationStore, NotificationType, VisorStore } from '@journeyapps-labs/reactor-mod';
 
 export interface SchemaModelObjectOptions {
@@ -35,10 +35,12 @@ export class SchemaModelObject {
     this.patch = new Map<string, any>();
   }
 
-  async applyPatches(options: { clearPatches?: boolean } = {}) {
+  async applyPatches() {
     if (!this.model) {
       const collection = await this.definition.getCollection();
-      this.model = collection.create();
+      runInAction(() => {
+        this.model = collection.create();
+      });
     }
     for (let entry of this.patch.entries()) {
       if (this.definition.definition.belongsTo[entry[0]]) {
@@ -47,9 +49,7 @@ export class SchemaModelObject {
         this.model[entry[0]] = entry[1];
       }
     }
-    if (options.clearPatches ?? true) {
-      this.patch.clear();
-    }
+    this.clearEdits();
   }
 
   async save() {
@@ -63,14 +63,17 @@ export class SchemaModelObject {
     });
   }
 
+  @action
   clearEdits() {
     this.patch.clear();
   }
 
+  @action
   revert(field: string) {
     this.patch.delete(field);
   }
 
+  @action
   set(field: string, value: any) {
     if (this.model?.[field] === value) {
       this.patch.delete(field);
