@@ -1,5 +1,11 @@
 # @journeyapps-labs/reactor-mod-data-browser
 
+## 3.6.4
+
+### Patch Changes
+
+- c5fe798: New reactor apis
+
 ## 3.6.3
 
 ### Patch Changes
