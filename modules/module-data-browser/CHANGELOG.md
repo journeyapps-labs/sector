@@ -1,5 +1,11 @@
 # @journeyapps-labs/reactor-mod-data-browser
 
+## 3.6.3
+
+### Patch Changes
+
+- 5081ec5: Bump reactor to V6
+
 ## 3.6.2
 
 ### Patch Changes
