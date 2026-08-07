@@ -1,4 +1,4 @@
-import { EmptyReactorPanelModel, ioc, System, WorkspaceStore } from '@journeyapps-labs/reactor-mod';
+import { EmptyReactorPanelModel, ioc, System, WorkspaceModel, WorkspaceStore } from '@journeyapps-labs/reactor-mod';
 import { DataBrowserEntities } from '@journeyapps-labs/reactor-mod-data-browser';
 
 export const setupWorkspaces = () => {
@@ -22,18 +22,18 @@ export const setupWorkspaces = () => {
 
   workspaceStore.registerWorkspaceGenerator({
     generateAdvancedWorkspace: async () => {
-      return {
+      return new WorkspaceModel({
         name: 'Browse data',
         priority: 1,
         model: generateSimpleWorkspace()
-      };
+      });
     },
     generateSimpleWorkspace: async () => {
-      return {
+      return new WorkspaceModel({
         name: 'Browse data',
         priority: 1,
         model: generateSimpleWorkspace()
-      };
+      });
     }
   });
 };

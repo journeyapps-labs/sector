@@ -75,7 +75,7 @@ export class ConnectionEntityDefinition extends EntityDefinition<AbstractConnect
               <TreeBadgeWidget
                 icon="bolt"
                 background={'transparent'}
-                iconColor={theme.status.success}
+                foreground={theme.status.success}
                 tooltip="Connection online"
               />
             )

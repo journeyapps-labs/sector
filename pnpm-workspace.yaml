@@ -1,6 +1,7 @@
 packages:
   - './server'
   - './modules/*'
+shamefullyHoist: true
 allowBuilds:
   core-js-pure: true
   esbuild: true

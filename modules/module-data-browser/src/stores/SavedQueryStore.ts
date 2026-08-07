@@ -1,4 +1,4 @@
-import { AbstractStore, inject, LocalStorageSerializer } from '@journeyapps-labs/reactor-mod';
+import { AbstractPersistedStore, inject, LocalStorageSerializer } from '@journeyapps-labs/reactor-mod';
 import { action, computed, observable } from 'mobx';
 import { v4 } from 'uuid';
 import { SimpleQuery, SimpleQueryEncoded } from '../core/query/query-simple/SimpleQuery';
@@ -28,7 +28,7 @@ export class SavedQueryEntity {
   }
 }
 
-export class SavedQueryStore extends AbstractStore<SavedQueryStoreSerialized> {
+export class SavedQueryStore extends AbstractPersistedStore<SavedQueryStoreSerialized> {
   @inject(ConnectionStore)
   accessor connectionStore: ConnectionStore;
 

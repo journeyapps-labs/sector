@@ -59,13 +59,10 @@ export const ModelPanelWidget: React.FC<QueryPanelWidgetProps> = observer((props
   if (props.model.model) {
     const toolbarButtons: Btn[] = props.model.model.model?.persisted
       ? [
-          DeleteSchemaModelAction.get().representAsButton(
-            {
-              targetEntity: props.model.model,
-              sourcePanel: props.model
-            },
-            true
-          )
+          DeleteSchemaModelAction.get().representAsButton({
+            targetEntity: props.model.model,
+            sourcePanel: props.model
+          })
         ].filter((button): button is Btn => !!button)
       : [];
 

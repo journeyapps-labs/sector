@@ -3,7 +3,7 @@ import { inject, ioc, ReactorPanelModel } from '@journeyapps-labs/reactor-mod';
 import { QueryPanelWidget } from './QueryPanelWidget';
 import { AbstractQuery } from '../../core/query/AbstractQuery';
 import { ConnectionStore } from '../../stores/ConnectionStore';
-import { observable } from 'mobx';
+import { observable, observableRef } from 'mobx';
 import { WorkspaceEngine, WorkspaceModelFactoryEvent } from '@projectstorm/react-workspaces-core';
 import { AbstractSerializableQuery } from '../../core/query/AbstractSerializableQuery';
 import { SavedQueryStore } from '../../stores/SavedQueryStore';
@@ -24,10 +24,10 @@ export class QueryPanelModel extends ReactorPanelModel {
   @observable
   accessor current_page: number;
 
-  @observable.ref
+  @observableRef
   accessor current_page_data: Page | null;
 
-  @observable.ref
+  @observableRef
   accessor selected_models: SchemaModelObject[];
 
   accessor table_scroll_top: number;
@@ -109,7 +109,7 @@ export class QueryPanelFactory extends SharedConnectionPanelFactory<QueryPanelMo
       name: 'Query',
       allowManualCreation: false,
       isMultiple: true,
-      fullscreen: false,
+      renderTitlebar: true,
       type: QueryPanelFactory.TYPE,
       category: 'Databrowser'
     });

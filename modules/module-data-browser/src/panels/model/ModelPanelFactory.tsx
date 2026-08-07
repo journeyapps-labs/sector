@@ -23,7 +23,7 @@ export class ModelPanelFactory extends SharedModelPanelFactory<ModelPanelModel> 
       name: 'Model',
       allowManualCreation: false,
       isMultiple: true,
-      fullscreen: false,
+      renderTitlebar: true,
       type: ModelPanelFactory.TYPE,
       category: 'Databrowser'
     });

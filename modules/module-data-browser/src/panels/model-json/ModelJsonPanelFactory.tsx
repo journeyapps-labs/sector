@@ -45,7 +45,7 @@ export class ModelJsonPanelFactory extends SharedModelPanelFactory<ModelJsonPane
       name: 'Model',
       allowManualCreation: false,
       isMultiple: true,
-      fullscreen: false,
+      renderTitlebar: true,
       type: ModelJsonPanelFactory.TYPE,
       category: 'Databrowser'
     });

@@ -1,5 +1,9 @@
-import { AbstractReactorModule, UXStore, WorkspaceStore } from '@journeyapps-labs/reactor-mod';
-import { Container } from '@journeyapps-labs/common-ioc';
+import {
+  AbstractReactorModule,
+  ReactorModuleInitEvent,
+  ReactorModuleRegisterEvent,
+  UXStore
+} from '@journeyapps-labs/reactor-mod';
 import { SectorBodyWidget } from './widgets/SectorBodyWidget';
 import { setupWorkspaces } from './setupWorkspaces';
 
@@ -11,9 +15,8 @@ export class SectorModule extends AbstractReactorModule {
       name: 'Sector'
     });
   }
-  register(ioc: Container) {
+  register({ ioc }: ReactorModuleRegisterEvent) {
     const uxStore = ioc.get(UXStore);
-    const workspaceStore = ioc.get(WorkspaceStore);
     uxStore.primaryLogo = icon;
     uxStore.primaryHeader = {
       label: 'Sector',
@@ -30,5 +33,5 @@ export class SectorModule extends AbstractReactorModule {
     setupWorkspaces();
   }
 
-  async init(ioc: Container): Promise<any> {}
+  async init(_event: ReactorModuleInitEvent): Promise<any> {}
 }

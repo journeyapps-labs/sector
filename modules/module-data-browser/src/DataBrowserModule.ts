@@ -1,5 +1,12 @@
-import { AbstractReactorModule, ActionStore, PrefsStore, System, WorkspaceStore } from '@journeyapps-labs/reactor-mod';
-import { Container } from '@journeyapps-labs/common-ioc';
+import {
+  AbstractReactorModule,
+  ActionStore,
+  PrefsStore,
+  ReactorModuleInitEvent,
+  ReactorModuleRegisterEvent,
+  System,
+  WorkspaceStore
+} from '@journeyapps-labs/reactor-mod';
 import { ConnectionStore } from './stores/ConnectionStore';
 import { ConnectionEntityDefinition } from './entities/ConnectionEntityDefinition';
 import { ManualConnectionFactory } from './core/types/ManualConnectionFactory';
@@ -35,7 +42,8 @@ export class DataBrowserModule extends AbstractReactorModule {
     });
   }
 
-  register(ioc: Container) {
+  register(event: ReactorModuleRegisterEvent) {
+    const { ioc } = event;
     const system = ioc.get(System);
     const actionStore = ioc.get(ActionStore);
     const workspaceStore = ioc.get(WorkspaceStore);
@@ -57,8 +65,8 @@ export class DataBrowserModule extends AbstractReactorModule {
     actionStore.registerAction(new OpenSavedQueryAction());
     actionStore.registerAction(new RemoveSavedQueryAction());
 
-    system.addStore(ConnectionStore, connectionStore);
-    system.addStore(SavedQueryStore, new SavedQueryStore());
+    event.registerStore(ConnectionStore, connectionStore);
+    event.registerStore(SavedQueryStore, new SavedQueryStore());
     registerQueryControlPreferences(ioc.get(PrefsStore));
     registerSchemaOrderingPreferences(ioc.get(PrefsStore));
 
@@ -75,8 +83,5 @@ export class DataBrowserModule extends AbstractReactorModule {
     workspaceStore.registerFactory(new ModelJsonPanelFactory());
   }
 
-  async init(ioc: Container): Promise<any> {
-    ioc.get(ConnectionStore).init();
-    ioc.get(SavedQueryStore).init();
-  }
+  async init(_event: ReactorModuleInitEvent): Promise<any> {}
 }
