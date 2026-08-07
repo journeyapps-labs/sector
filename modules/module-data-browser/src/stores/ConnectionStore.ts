@@ -1,4 +1,4 @@
-import { AbstractStore, LocalStorageSerializer } from '@journeyapps-labs/reactor-mod';
+import { AbstractPersistedStore, LocalStorageSerializer } from '@journeyapps-labs/reactor-mod';
 import { AbstractConnection, AbstractConnectionSerialized } from '../core/AbstractConnection';
 import { computed, observable, runInAction, when } from 'mobx';
 import { AbstractConnectionFactory } from '../core/AbstractConnectionFactory';
@@ -8,7 +8,7 @@ export interface ConnectionStoreSerialized {
   connections: AbstractConnectionSerialized[];
 }
 
-export class ConnectionStore extends AbstractStore<ConnectionStoreSerialized> {
+export class ConnectionStore extends AbstractPersistedStore<ConnectionStoreSerialized> {
   @observable
   protected accessor _connections: Set<AbstractConnection>;
 

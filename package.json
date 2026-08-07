@@ -2,7 +2,7 @@
   "name": "sector",
   "main": "index.js",
   "private": true,
-  "packageManager": "pnpm@11.10.0",
+  "packageManager": "pnpm@11.20.0",
   "scripts": {
     "build": "pnpm build:ts && pnpm build:modules",
     "build:modules": "pnpm run -r build:module",
@@ -19,11 +19,11 @@
     "watch:ts": "pnpm build:ts --watch"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.31.0",
-    "concurrently": "10.0.3",
+    "@changesets/cli": "^2.31.1",
+    "concurrently": "10.0.4",
     "env-cmd": "^11.0.0",
-    "npm-check-updates": "^22.2.9",
-    "prettier": "3.9.4",
+    "npm-check-updates": "^23.0.1",
+    "prettier": "3.9.6",
     "typescript": "^7.0.2"
   }
 }
