@@ -4,6 +4,12 @@
 
 ### Patch Changes
 
+- 14ce141: Bump all dependencies
+
+## 3.6.3
+
+### Patch Changes
+
 - 5081ec5: Bump reactor to V6
 
 ## 3.6.2
